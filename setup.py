@@ -18,7 +18,7 @@ setup(
     url='https://github.com/rh-marketingops/dwm',
     license='GNU General Public License',
     author='Jeremiah Coleman',
-    tests_require=['pytest'],
+    tests_require=['nose', 'mongomock>=3.5.0'],
     install_requires=['pymongo>=3.2.2'],
     #cmdclass={'test': PyTest},
     author_email='colemanja91@gmail.com',

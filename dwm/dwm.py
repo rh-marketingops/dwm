@@ -6,7 +6,7 @@ from .wrappers import lookupAll, DeriveDataLookupAll
 from .helpers import _RunUserDefinedFunctions_, _CollectHistory_, _CollectHistoryAgg_
 
 ## DWM on a set of contact records
-def dwmAll(data, mongoDb, mongoConfig, configName, writeContactHistory=True, returnHistoryId=True, returnHistoryField='historyId'):
+def dwmAll(data, mongoDb, mongoConfig, configName, writeContactHistory=True, returnHistoryId=True, returnHistoryField='historyId', histIdField={"name": "emailAddress", "value": "emailAddress"}):
     '''
         Multi-record wrapper for dwmOne
 
@@ -23,7 +23,7 @@ def dwmAll(data, mongoDb, mongoConfig, configName, writeContactHistory=True, ret
     config = configColl.find_one({"configName": configName})
 
     for row in data:
-        row, historyId = dwmOne(data=row, mongoDb=mongoDb, mongoConfig=mongoConfig, config=config, writeContactHistory=writeContactHistory, returnHistoryId=returnHistoryId)
+        row, historyId = dwmOne(data=row, mongoDb=mongoDb, mongoConfig=mongoConfig, config=config, writeContactHistory=writeContactHistory, returnHistoryId=returnHistoryId, histIdField=histIdField)
         if returnHistoryId:
             row[returnHistoryField] = historyId
 
@@ -31,7 +31,7 @@ def dwmAll(data, mongoDb, mongoConfig, configName, writeContactHistory=True, ret
 
 ## DWM order on a single record
 
-def dwmOne(data, mongoDb, mongoConfig, config, writeContactHistory=True, returnHistoryId=True):
+def dwmOne(data, mongoDb, mongoConfig, config, writeContactHistory=True, returnHistoryId=True, histIdField={"name": "emailAddress", "value": "emailAddress"}):
 
     '''
         Wrapper for individual DWM functions
