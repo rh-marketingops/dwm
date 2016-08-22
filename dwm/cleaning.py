@@ -2,7 +2,7 @@ from pymongo import MongoClient
 from datetime import datetime
 import re
 
-from helpers import _CollectHistory_, _CollectHistoryAgg_, _DataClean_
+from .helpers import _CollectHistory_, _CollectHistoryAgg_, _DataClean_
 
 def DataLookup(fieldVal, coll, lookupType, fieldName, histObj={}):
     '''

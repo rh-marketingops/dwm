@@ -1,4 +1,4 @@
-from cleaning import DataLookup, RegexLookup, DeriveDataLookup, DeriveDataCopyValue, DeriveDataRegex
+from .cleaning import DataLookup, RegexLookup, DeriveDataLookup, DeriveDataCopyValue, DeriveDataRegex
 from datetime import datetime
 
 
@@ -69,7 +69,7 @@ def DeriveDataLookupAll(data, configFields, coll, histObj={}):
                     elif deriveSetConfig['type']=='copyValue':
 
                         fieldValNew, histObj = DeriveDataCopyValue(fieldName=field, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj)
-                        
+
                     elif deriveSetConfig['type']=='deriveRegex':
 
                         fieldValNew, histObj = DeriveDataRegex(fieldName=field, coll=coll, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj)
