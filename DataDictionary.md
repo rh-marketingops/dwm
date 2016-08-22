@@ -32,7 +32,11 @@ Field-level descriptions
   "createdBy": "createdByUser",
   "createdDate": dateUnixtime,
   "lastModifiedBy": "modifiedByUser",
-  "lastModifiedDate": dateUnixtime
+  "lastModifiedDate": dateUnixtime,
+  "fieldSources": {
+    "eloquaProd": "eloquaFieldName",
+    "databaseDev": "databaseFieldName"
+  }
 },
 {
   "fieldName": "firstName",
@@ -42,7 +46,11 @@ Field-level descriptions
   "createdBy": "createdByUser",
   "createdDate": dateUnixtime,
   "lastModifiedBy": "modifiedByUser",
-  "lastModifiedDate": dateUnixtime
+  "lastModifiedDate": dateUnixtime,
+  "fieldSources": {
+    "eloquaProd": "eloquaFieldName",
+    "databaseDev": "databaseFieldName"
+  }
 }
 ```
 
@@ -60,14 +68,6 @@ Which fields are managed, and which cleaning functions are used
   "fields": {
     "field1": {
       "lookup": ["fieldSpecificLookup", "genericLookup", "normLookup", "fieldSpecificRegex", "genericRegex", "normRegex"],
-      "fillGaps": {
-        "netprospex": {
-          "externalNameAPI": "Field_1"
-        },
-        "demandbase": {
-          "externalNameAPI": "CField1"
-        }
-        },
       "derive": {
         "1": {
           "type": "deriveValue",
@@ -179,18 +179,6 @@ To insert user-defined functions into the standard DWM process. One example is U
   "afterProcessing": {
     "1": "iwantaburrito"
   }
-}
-```
-
-### Field Mappings
-
-Maps the fields defined above to existing fields in external systems (i.e., Eloqua, Redshift) for export/import
-
-```javascript
-{
-  "externalSystemName": "eloqua_prod"
-  "externalFieldName": "C_Job_Role11",
-  "fieldName": "jobRole"
 }
 ```
 
