@@ -2,12 +2,12 @@
 
 ## Input data
 
-'''javascript
+```javascript
 {
   "emailAddress": "testing@test.com",
   "field1": "Hi! I'm a field value"
 }
-'''
+```
 
 ## Runtime settings
 
@@ -22,7 +22,7 @@ High-level settings dictating what actions DWM will run
 
 Field-level descriptions
 
-'''javascript
+```javascript
 {
   "fieldName": "jobRole",
   "fieldNameDisplay": "Job Role",
@@ -44,13 +44,13 @@ Field-level descriptions
   "lastModifiedBy": "modifiedByUser",
   "lastModifiedDate": dateUnixtime
 }
-'''
+```
 
 ### Run Config
 
 Which fields are managed, and which cleaning functions are used
 
-'''javascript
+```javascript
 {
   "configName": "cron",
   "createdBy": "createdByUser",
@@ -126,7 +126,7 @@ Which fields are managed, and which cleaning functions are used
     }
   }
 }
-'''
+```
 
 #### Setting types
 
@@ -151,7 +151,7 @@ Which fields are managed, and which cleaning functions are used
 
 To insert user-defined functions into the standard DWM process. One example is US zipcode cleanup.
 
-'''javascript
+```javascript
 {
   "beforeGenericValidation": {
     "1": "somefunction",
@@ -180,19 +180,19 @@ To insert user-defined functions into the standard DWM process. One example is U
     "1": "iwantaburrito"
   }
 }
-'''
+```
 
 ### Field Mappings
 
 Maps the fields defined above to existing fields in external systems (i.e., Eloqua, Redshift) for export/import
 
-'''javascript
+```javascript
 {
   "externalSystemName": "eloqua_prod"
   "externalFieldName": "C_Job_Role11",
   "fieldName": "jobRole"
 }
-'''
+```
 
 ## Data Cleaning "Rules"
 
@@ -200,7 +200,7 @@ Maps the fields defined above to existing fields in external systems (i.e., Eloq
 
 Defines a lookup value for transforming a single field value (generic or field-specific validation, normalization)
 
-'''javascript
+```javascript
 //generic validation lookup
 {
   "type": "genericLookup",
@@ -221,14 +221,14 @@ Defines a lookup value for transforming a single field value (generic or field-s
   "find": "i'm kind of the right value",
   "replace": "i'm the right value"
 }
-'''
+```
 
 ### Data derivation
 
 Defines a potentially multi-field based lookup mapped to a single field (fill-gaps or derived fields; i.e. Persona is a combination of Job Role and Department).
 Keeping the ```lookupVals``` in a sub-document allows for indexing on the ```derive``` collection.
 
-'''javascript
+```javascript
 // single-value derived lookup
 {
   "type": "deriveValue",
@@ -249,14 +249,14 @@ Keeping the ```lookupVals``` in a sub-document allows for indexing on the ```der
   },
   "value": "IT Decision Maker"
 }
-'''
+```
 
 ### Regex
 
 Defines a regular expression transformation that will be applied to a single field value (generic or field-specific validation, normalization).
 Should have a "description" to let others know what the regex is supposed to do.
 
-'''javascript
+```javascript
 // generic validation regex
 {
   "type": "genericRegex",
@@ -290,13 +290,13 @@ Should have a "description" to let others know what the regex is supposed to do.
   "replace": "Programmer/Developer",
   "description": "looks for 'developer' job titles to derive job role"
 }
-'''
+```
 
 ### Indexing
 
 To optimize performance (specifically for data derive lookups), the following indexes should be implemented within MongoDB:
 
-'''javascript
+```javascript
 
 // 'lookup' collection
 db.lookup.ensureIndex({'type': 1, 'find': 1})
@@ -305,14 +305,14 @@ db.lookup.ensureIndex({'type': 1, 'fieldName': 1, 'find': 1})
 // 'derive' collection
 db.derive.ensureIndex({'type': 1, "fieldName": 1, "lookupVals": 1})
 
-'''
+```
 
 ## Audit
 
 ### Contact history
 Captures contact-level field changes
 
-'''javascript
+```javascript
 {
   "emailAddress": "pmccrevice@jyang.org",
   "configName": "cron",
@@ -339,4 +339,4 @@ Captures contact-level field changes
     }
   }
 }
-'''
+```
