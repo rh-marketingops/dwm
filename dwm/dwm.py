@@ -123,7 +123,7 @@ def dwmOne(data, mongoDb, mongoConfig, config, writeContactHistory=True, returnH
     # check if need to write contact change history
     if writeContactHistory:
         history['timestamp'] = int(time.time())
-        history['emailAddress'] = data['emailAddress']
+        history[histIdField['name']] = data[histIdField['value']]
         historyId = contactHistoryColl.insert_one(history).inserted_id
 
     if writeContactHistory and returnHistoryId:

@@ -20,7 +20,7 @@ setup(
     author='Jeremiah Coleman',
     tests_require=['nose', 'mongomock>=3.5.0'],
     install_requires=['pymongo>=3.2.2'],
-    #cmdclass={'test': PyTest},
+    cmdclass={'test': nosetests},
     author_email='colemanja91@gmail.com',
     description='Best practices for marketing data quality management',
     long_description=readme(),
