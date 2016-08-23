@@ -6,7 +6,7 @@ from .wrappers import lookupAll, DeriveDataLookupAll
 from .helpers import _RunUserDefinedFunctions_, _CollectHistory_, _CollectHistoryAgg_
 
 ## DWM on a set of contact records
-def dwmAll(data, mongoDb, mongoConfig, configName, writeContactHistory=True, returnHistoryId=True, returnHistoryField='historyId', histIdField={"name": "emailAddress", "value": "emailAddress"}):
+def dwmAll(data, mongoDb, mongoConfig, configName, writeContactHistory=True, returnHistoryId=True, returnHistoryField='historyId', histIdField={"name": "emailAddress", "value": "emailAddress"}, udfNamespace=__name__):
     '''
         Multi-record wrapper for dwmOne
 
@@ -23,7 +23,7 @@ def dwmAll(data, mongoDb, mongoConfig, configName, writeContactHistory=True, ret
     config = configColl.find_one({"configName": configName})
 
     for row in data:
-        row, historyId = dwmOne(data=row, mongoDb=mongoDb, mongoConfig=mongoConfig, config=config, writeContactHistory=writeContactHistory, returnHistoryId=returnHistoryId, histIdField=histIdField)
+        row, historyId = dwmOne(data=row, mongoDb=mongoDb, mongoConfig=mongoConfig, config=config, writeContactHistory=writeContactHistory, returnHistoryId=returnHistoryId, histIdField=histIdField, udfNamespace=udfNamespace)
         if returnHistoryId:
             row[returnHistoryField] = historyId
 
@@ -31,7 +31,7 @@ def dwmAll(data, mongoDb, mongoConfig, configName, writeContactHistory=True, ret
 
 ## DWM order on a single record
 
-def dwmOne(data, mongoDb, mongoConfig, config, writeContactHistory=True, returnHistoryId=True, histIdField={"name": "emailAddress", "value": "emailAddress"}):
+def dwmOne(data, mongoDb, mongoConfig, config, writeContactHistory=True, returnHistoryId=True, histIdField={"name": "emailAddress", "value": "emailAddress"}, udfNamespace=__name__):
 
     '''
         Wrapper for individual DWM functions
@@ -67,56 +67,56 @@ def dwmOne(data, mongoDb, mongoConfig, config, writeContactHistory=True, returnH
 
     ## Run user-defined functions
 
-    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeGenericValidation")
+    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeGenericValidation", namespace=udfNamespace)
 
     # Run generic validation lookup
     data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='genericLookup', coll=lookupColl, histObj=history)
 
     ## Run user-defined functions
 
-    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeGenericRegex")
+    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeGenericRegex", namespace=udfNamespace)
 
     # Run generic validation regex
     data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='genericRegex', coll=regexColl, histObj=history)
 
     ## Run user-defined functions
 
-    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeFieldSpecificValidation")
+    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeFieldSpecificValidation", namespace=udfNamespace)
 
     # Run field-specific validation lookup
     data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='fieldSpecificLookup', coll=lookupColl, histObj=history)
 
     ## Run user-defined functions
 
-    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeFieldSpecificRegex")
+    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeFieldSpecificRegex", namespace=udfNamespace)
 
     # Run field-specific validation regex
     data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='fieldSpecificRegex', coll=regexColl, histObj=history)
 
     ## Run user-defined functions
 
-    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeNormalization")
+    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeNormalization", namespace=udfNamespace)
 
     # Run normalization lookup
     data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='normLookup', coll=lookupColl, histObj=history)
 
     ## Run user-defined functions
 
-    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeNormalizationRegex")
+    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeNormalizationRegex", namespace=udfNamespace)
 
     # Run normalization regex
     data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='normRegex', coll=regexColl, histObj=history)
 
     ## Run user-defined functions
 
-    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeDeriveData")
+    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeDeriveData", namespace=udfNamespace)
 
     # Fill gaps / refresh derived data
     data, history = DeriveDataLookupAll(data=data, configFields=fieldConfig, coll=deriveColl, histObj=history)
 
     ## Run user-defined functions
 
-    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="afterProcessing")
+    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="afterProcessing", namespace=udfNamespace)
 
     # check if need to write contact change history
     if writeContactHistory:

@@ -159,7 +159,7 @@ def DeriveDataCopyValue(fieldName, deriveInput, overwrite, fieldVal, histObj={})
 
     return fieldValNew, histObjUpd
 
-def DeriveDataRegex(fieldName, coll, deriveInput, overwrite, fieldVal, histObj):
+def DeriveDataRegex(fieldName, coll, deriveInput, overwrite, fieldVal, histObj={}):
     '''
         Derive field value by performing regex search on another field
 

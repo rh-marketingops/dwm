@@ -63,7 +63,7 @@ def _DataClean_(fieldVal):
 
     return fieldValNew
 
-def _RunUserDefinedFunctions_(config, data, histObj, position, namespace="__main__"):
+def _RunUserDefinedFunctions_(config, data, histObj, position, namespace=__name__):
     '''
         Given a configuration, run a set of user-defined functions at various positions within DWM logic
 

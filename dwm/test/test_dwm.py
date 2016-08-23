@@ -1,10 +1,14 @@
 import mongomock
+from nose.tools import *
 from dwm import dwmAll
 from dwm.test.test_lookup import lookup
 from .test_regex import regex
 from .test_derive import derive
 from dwm.test.test_configs import configs
 import dwm.test.test_records as test_records
+import dwm.test.test_udf as test_udf
+from dwm.test.test_udf import ex_udf
+import dwm.cleaning as cleaning
 
 ## Initialize pre-test mongomock
 
@@ -188,3 +192,86 @@ def test_deriveAll_deriveRegex_notChecked():
 
     dataOut = dwmAll(data = test_records.record_deriveAll_deriveRegex_notChecked, mongoDb = db, mongoConfig=mongoConfig, configName='test_deriveAll_deriveRegex')
     assert dataOut[0]['field3'] == ''
+
+def test_deriveAll_deriveRegex_overwriteFalse():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveRegex_overwriteFalse, mongoDb = db, mongoConfig=mongoConfig, configName='test_deriveAll_deriveRegex_overwriteFalse')
+    assert dataOut[0]['field1'] == 'oldvalue'
+
+# returnHistoryId False
+
+def test_returnHistoryId_False():
+
+    dataOut = dwmAll(data = test_records.record_returnHistoryId_False, mongoDb = db, mongoConfig=mongoConfig, configName='test_returnHistoryId_False', returnHistoryId=False)
+    assert 'historyId' not in dataOut[0].keys()
+
+# userDefinedFunctions
+
+def test_udf_beforeGenericValidation():
+
+    dataOut = dwmAll(data = test_records.record_udf_beforeGenericValidation, mongoDb = db, mongoConfig=mongoConfig, configName='test_udf_beforeGenericValidation', udfNamespace=__name__)
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_udf_beforeGenericRegex():
+
+    dataOut = dwmAll(data = test_records.record_udf_beforeGenericRegex, mongoDb = db, mongoConfig=mongoConfig, configName='test_udf_beforeGenericRegex', udfNamespace=__name__)
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_udf_beforeFieldSpecificValidation():
+
+    dataOut = dwmAll(data = test_records.record_udf_beforeFieldSpecificValidation, mongoDb = db, mongoConfig=mongoConfig, configName='test_udf_beforeFieldSpecificValidation', udfNamespace=__name__)
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_udf_beforeFieldSpecificRegex():
+
+    dataOut = dwmAll(data = test_records.record_udf_beforeFieldSpecificRegex, mongoDb = db, mongoConfig=mongoConfig, configName='test_udf_beforeFieldSpecificRegex', udfNamespace=__name__)
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_udf_beforeNormalization():
+
+    dataOut = dwmAll(data = test_records.record_udf_beforeNormalization, mongoDb = db, mongoConfig=mongoConfig, configName='test_udf_beforeNormalization', udfNamespace=__name__)
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_udf_beforeNormalizationRegex():
+
+    dataOut = dwmAll(data = test_records.record_udf_beforeNormalizationRegex, mongoDb = db, mongoConfig=mongoConfig, configName='test_udf_beforeNormalizationRegex', udfNamespace=__name__)
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_udf_beforeDeriveData():
+
+    dataOut = dwmAll(data = test_records.record_udf_beforeDeriveData, mongoDb = db, mongoConfig=mongoConfig, configName='test_udf_beforeDeriveData', udfNamespace=__name__)
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_udf_afterProcessing():
+
+    dataOut = dwmAll(data = test_records.record_udf_afterProcessing, mongoDb = db, mongoConfig=mongoConfig, configName='test_udf_afterProcessing', udfNamespace=__name__)
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+@raises(Exception)
+def test_udf_afterProcessing_invalidFcn():
+
+    dataOut = dwmAll(data = test_records.record_udf_afterProcessing_invalidFcn, mongoDb = db, mongoConfig=mongoConfig, configName='test_udf_afterProcessing_invalidFcn', udfNamespace=__name__)
+
+## bad lookup type:
+@raises(ValueError)
+def test_DataLookup_badType():
+
+    testVal, histObj = cleaning.DataLookup(fieldVal='', coll=db.lookup, lookupType='badlookup', fieldName='')
+
+# bad regex type:
+@raises(ValueError)
+def test_RegexLookup_badType():
+
+    testVal, histObj = cleaning.RegexLookup(fieldVal='', coll=db.lookup, lookupType='badregex', fieldName='')
+
+# multiple deriveCopy inputs:
+@raises(Exception)
+def test_DeriveDataCopyValue_badType():
+
+    testVal, histObj = cleaning.DeriveDataCopyValue(fieldName='test', deriveInput={"field1": "a", "field2": "b"}, overwrite=True, fieldVal='')
+
+# multiple deriveRegex inputs:
+@raises(Exception)
+def test_DeriveDataRegex_badType():
+
+    testVal, histObj = cleaning.DeriveDataRegex(fieldName='test', coll=db.derive, deriveInput={"field1": "a", "field2": "b"}, overwrite=True, fieldVal='')
