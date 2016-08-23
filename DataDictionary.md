@@ -135,9 +135,6 @@ Which fields are managed, and which cleaning functions are used
   - fieldSpecificRegex: use field-specific regex for bad data
   - genericLookup: lookup exact value for generic bad data
   - genericRegex: use generic regex for bad data
-- fillGaps
-  - netprospex
-  - demandbase
 - deriveValue
   - dict key: int value for priority order
   - type:
@@ -146,41 +143,15 @@ Which fields are managed, and which cleaning functions are used
 - normalization
   - normLookup: lookup exact value for field-specific normalization
   - normRegex: use field-specific regex for normalization
-
-### Ad-hoc function config
-
-To insert user-defined functions into the standard DWM process. One example is US zipcode cleanup.
-
-```javascript
-{
-  "beforeGenericValidation": {
-    "1": "somefunction",
-    "2": "anotherfunction"
-  },
-  "beforeGenericRegex": {
-    "1": "heylookafunction"
-  },
-  "beforeFieldSpecificValidation": {
-    "1": "reallyanotherone"
-  },
-  "beforeFieldSpecificRegex": {
-    "1": "okaythisisgettingridiculous"
-  },
-  "beforeNormalization": {
-    "1": "igiveup"
-  },
-  "beforeNormalizationRegex": {
-    "1": "okayjustonemore"
-    "2": "ireallymeanitthistime"
-  },
-  "beforeDeriveData": {
-    "1": "imtired"
-  },
-  "afterProcessing": {
-    "1": "iwantaburrito"
-  }
-}
-```
+- userDefinedFunctions
+  - beforeGenericValidation
+  - beforeGenericRegex
+  - beforeFieldSpecificValidation
+  - beforeFieldSpecificRegex
+  - beforeNormalization
+  - beforeNormalizationRegex
+  - beforeDeriveData
+  - afterProcessing
 
 ## Data Cleaning "Rules"
 
@@ -232,8 +203,8 @@ Keeping the ```lookupVals``` in a sub-document allows for indexing on the ```der
   "type": "deriveValue",
   "fieldName": "persona",
   "lookupVals": {
-    "jobRole": "Manager",
-    "department": "IT - Applications"
+    "jobRole": "MANAGER",
+    "department": "IT - APPLICATIONS"
   },
   "value": "IT Decision Maker"
 }

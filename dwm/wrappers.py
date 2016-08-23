@@ -46,7 +46,7 @@ def DeriveDataLookupAll(data, configFields, coll, histObj={}):
 
     for field in data.keys():
 
-        if field in configFields.keys() and data[field]!='':
+        if field in configFields.keys():
 
             fieldVal = data[field]
 
@@ -64,7 +64,7 @@ def DeriveDataLookupAll(data, configFields, coll, histObj={}):
                         deriveInput[val] = data[val]
 
                     if deriveSetConfig['type']=='deriveValue':
-                        # first test indicates this is the trouble maker
+
                         fieldValNew, histObj = DeriveDataLookup(fieldName=field, coll=coll, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj)
                     elif deriveSetConfig['type']=='copyValue':
 

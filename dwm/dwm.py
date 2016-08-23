@@ -118,8 +118,6 @@ def dwmOne(data, mongoDb, mongoConfig, config, writeContactHistory=True, returnH
 
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="afterProcessing")
 
-    #print("just finished cleaning for " + data['emailAddress'])
-
     # check if need to write contact change history
     if writeContactHistory:
         history['timestamp'] = int(time.time())

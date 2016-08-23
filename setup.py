@@ -20,14 +20,13 @@ setup(
     author='Jeremiah Coleman',
     tests_require=['nose', 'mongomock>=3.5.0'],
     install_requires=['pymongo>=3.2.2'],
-    cmdclass={'test': nosetests},
     author_email='colemanja91@gmail.com',
     description='Best practices for marketing data quality management',
     long_description=readme(),
     packages=['dwm'],
     include_package_data=True,
     platforms='any',
-    #test_suite='dwm.test.test_dwm',
+    test_suite = 'nose.collector',
     classifiers = [
         'Programming Language :: Python',
         'Development Status :: 4 - Beta',
@@ -39,6 +38,5 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Software Development :: Libraries :: Application Frameworks'
         ],
-    #extras_require={'testing': ['pytest']}
     keywords = 'marketing automation data quality cleanse washing cleaning'
 )
