@@ -1,12 +1,13 @@
 from pymongo import MongoClient
 from datetime import datetime
+from tqdm import tqdm
 import time
 
 from .wrappers import lookupAll, DeriveDataLookupAll
 from .helpers import _RunUserDefinedFunctions_, _CollectHistory_, _CollectHistoryAgg_
 
 ## DWM on a set of contact records
-def dwmAll(data, mongoDb, mongoConfig, configName, writeContactHistory=True, returnHistoryId=True, returnHistoryField='historyId', histIdField={"name": "emailAddress", "value": "emailAddress"}, udfNamespace=__name__):
+def dwmAll(data, mongoDb, mongoConfig, configName, writeContactHistory=True, returnHistoryId=True, returnHistoryField='historyId', histIdField={"name": "emailAddress", "value": "emailAddress"}, udfNamespace=__name__, verbose=False):
     '''
         Multi-record wrapper for dwmOne
 
@@ -25,10 +26,16 @@ def dwmAll(data, mongoDb, mongoConfig, configName, writeContactHistory=True, ret
     if not config:
         raise Exception("configName '" + configName + "' not found in collection '" + mongoConfig['config']) + "'"
 
-    for row in data:
-        row, historyId = dwmOne(data=row, mongoDb=mongoDb, mongoConfig=mongoConfig, config=config, writeContactHistory=writeContactHistory, returnHistoryId=returnHistoryId, histIdField=histIdField, udfNamespace=udfNamespace)
-        if returnHistoryId and writeContactHistory:
-            row[returnHistoryField] = historyId
+    if verbose:
+        for row in tqdm(data):
+            row, historyId = dwmOne(data=row, mongoDb=mongoDb, mongoConfig=mongoConfig, config=config, writeContactHistory=writeContactHistory, returnHistoryId=returnHistoryId, histIdField=histIdField, udfNamespace=udfNamespace)
+            if returnHistoryId and writeContactHistory:
+                row[returnHistoryField] = historyId
+    else:
+        for row in data:
+            row, historyId = dwmOne(data=row, mongoDb=mongoDb, mongoConfig=mongoConfig, config=config, writeContactHistory=writeContactHistory, returnHistoryId=returnHistoryId, histIdField=histIdField, udfNamespace=udfNamespace)
+            if returnHistoryId and writeContactHistory:
+                row[returnHistoryField] = historyId
 
     return data
 
