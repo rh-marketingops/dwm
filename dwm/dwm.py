@@ -45,77 +45,63 @@ def dwmOne(data, mongoDb, mongoConfig, config, writeContactHistory=True, returnH
     '''
 
     ## Setup mongo collections using mongoConfig
-
     lookupColl = mongoDb[mongoConfig['lookup']]
-
     regexColl = mongoDb[mongoConfig['regex']]
-
     deriveColl = mongoDb[mongoConfig['derive']]
-
     contactHistoryColl = mongoDb[mongoConfig['contactHistory']]
 
     # setup history collector
-
     history = {}
 
     # get user-defined function config
     udFun = config['userDefinedFunctions']
 
     ## Get runtime field configuration
-
     fieldConfig = config['fields']
 
     ## Run user-defined functions
-
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeGenericValidation", namespace=udfNamespace)
 
     # Run generic validation lookup
     data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='genericLookup', coll=lookupColl, histObj=history)
 
     ## Run user-defined functions
-
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeGenericRegex", namespace=udfNamespace)
 
     # Run generic validation regex
     data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='genericRegex', coll=regexColl, histObj=history)
 
     ## Run user-defined functions
-
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeFieldSpecificValidation", namespace=udfNamespace)
 
     # Run field-specific validation lookup
     data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='fieldSpecificLookup', coll=lookupColl, histObj=history)
 
     ## Run user-defined functions
-
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeFieldSpecificRegex", namespace=udfNamespace)
 
     # Run field-specific validation regex
     data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='fieldSpecificRegex', coll=regexColl, histObj=history)
 
     ## Run user-defined functions
-
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeNormalization", namespace=udfNamespace)
 
     # Run normalization lookup
     data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='normLookup', coll=lookupColl, histObj=history)
 
     ## Run user-defined functions
-
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeNormalizationRegex", namespace=udfNamespace)
 
     # Run normalization regex
     data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='normRegex', coll=regexColl, histObj=history)
 
     ## Run user-defined functions
-
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeDeriveData", namespace=udfNamespace)
 
     # Fill gaps / refresh derived data
     data, history = DeriveDataLookupAll(data=data, configFields=fieldConfig, coll=deriveColl, histObj=history)
 
     ## Run user-defined functions
-
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="afterProcessing", namespace=udfNamespace)
 
     # check if need to write contact change history

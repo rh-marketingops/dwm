@@ -212,6 +212,14 @@ def test_returnHistoryId_False():
     dataOut = dwmAll(data = test_records.record_returnHistoryId_False, mongoDb = db, mongoConfig=mongoConfig, configName='test_returnHistoryId_False', returnHistoryId=False)
     assert 'historyId' not in dataOut[0].keys()
 
+def test_writeContactHistory_False():
+
+    dataOut = dwmAll(data = test_records.record_writeContactHistory_False, mongoDb = db, mongoConfig=mongoConfig, configName='test_writeContactHistory_False', writeContactHistory=False)
+    assert 'historyId' not in dataOut[0].keys()
+
+#########################################
+## configuration does not exist
+
 #########################################
 # userDefinedFunctions
 

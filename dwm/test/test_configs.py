@@ -254,6 +254,20 @@ configs = [
       }
     },
     {
+        "configName": "test_writeContactHistory_False",
+        "fields": {},
+        "userDefinedFunctions": {
+            "beforeGenericValidation": {},
+            "beforeGenericRegex": {},
+            "beforeFieldSpecificValidation": {},
+            "beforeFieldSpecificRegex": {},
+            "beforeNormalization": {},
+            "beforeNormalizationRegex": {},
+            "beforeDeriveData": {},
+            "afterProcessing": {}
+      }
+    },
+    {
         "configName": "test_udf_beforeGenericValidation",
         "fields": {},
         "userDefinedFunctions": {
