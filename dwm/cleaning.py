@@ -121,7 +121,7 @@ def DeriveDataLookup(fieldName, coll, deriveInput, overwrite=True, fieldVal='', 
     if lval and (overwrite or (fieldVal=='')):
         fieldValNew = lval['value']
     # test 4
-    change = _CollectHistory_(lookupType='derive', fromVal=fieldVal, toVal=fieldValNew, using=deriveInput)
+    change = _CollectHistory_(lookupType='deriveValue', fromVal=fieldVal, toVal=fieldValNew, using=deriveInput)
 
     histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
 
@@ -153,13 +153,13 @@ def DeriveDataCopyValue(fieldName, deriveInput, overwrite, fieldVal, histObj={})
 
         fieldValNew = deriveInput[row]
 
-    change = _CollectHistory_(lookupType='derive', fromVal=fieldVal, toVal=fieldValNew, using=deriveInput)
+    change = _CollectHistory_(lookupType='copyValue', fromVal=fieldVal, toVal=fieldValNew, using=deriveInput)
 
     histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
 
     return fieldValNew, histObjUpd
 
-def DeriveDataRegex(fieldName, coll, deriveInput, overwrite, fieldVal, histObj):
+def DeriveDataRegex(fieldName, coll, deriveInput, overwrite, fieldVal, histObj={}):
     '''
         Derive field value by performing regex search on another field
 
@@ -205,7 +205,7 @@ def DeriveDataRegex(fieldName, coll, deriveInput, overwrite, fieldVal, histObj):
                 pattern = lval['pattern']
                 break
 
-    change = _CollectHistory_(lookupType='derive', fromVal=fieldVal, toVal=fieldValNew, using=deriveInput, pattern=pattern)
+    change = _CollectHistory_(lookupType='deriveRegex', fromVal=fieldVal, toVal=fieldValNew, using=deriveInput, pattern=pattern)
 
     histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
 

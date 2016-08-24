@@ -7,10 +7,10 @@ import os
 import sys
 
 import dwm
-
-def readme():
-    with open('README.md') as f:
-        return f.read()
+#
+# def readme():
+#     with open('README.md') as f:
+#         return f.read()
 
 setup(
     name='dwm',
@@ -18,16 +18,15 @@ setup(
     url='https://github.com/rh-marketingops/dwm',
     license='GNU General Public License',
     author='Jeremiah Coleman',
-    tests_require=['pytest'],
-    install_requires=['pymongo>=3.2.2'],
-    #cmdclass={'test': PyTest},
+    tests_require=['nose', 'mongomock>=3.5.0'],
+    install_requires=['pymongo>=3.2.2', 'tqdm>=4.8.4'],
     author_email='colemanja91@gmail.com',
     description='Best practices for marketing data quality management',
-    long_description=readme(),
+    #long_description=readme(),
     packages=['dwm'],
     include_package_data=True,
     platforms='any',
-    #test_suite='dwm.test.test_dwm',
+    test_suite = 'nose.collector',
     classifiers = [
         'Programming Language :: Python',
         'Development Status :: 4 - Beta',
@@ -39,6 +38,5 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Software Development :: Libraries :: Application Frameworks'
         ],
-    #extras_require={'testing': ['pytest']}
     keywords = 'marketing automation data quality cleanse washing cleaning'
 )

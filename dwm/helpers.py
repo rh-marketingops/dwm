@@ -20,7 +20,7 @@ def _CollectHistory_(lookupType, fromVal, toVal, using='', pattern=''):
     if fromVal != toVal:
         histObj[lookupType] = {"from": fromVal, "to": toVal}
 
-        if lookupType in ['deriveValue', 'deriveRegex'] and using!='':
+        if lookupType in ['deriveValue', 'deriveRegex', 'copyValue'] and using!='':
             histObj[lookupType]["using"] = using
         if lookupType in ['genericRegex', 'fieldSpecificRegex', 'normRegex', 'deriveRegex'] and pattern!='':
             histObj[lookupType]["pattern"] = pattern
@@ -63,7 +63,7 @@ def _DataClean_(fieldVal):
 
     return fieldValNew
 
-def _RunUserDefinedFunctions_(config, data, histObj, position, namespace="__main__"):
+def _RunUserDefinedFunctions_(config, data, histObj, position, namespace=__name__):
     '''
         Given a configuration, run a set of user-defined functions at various positions within DWM logic
 
