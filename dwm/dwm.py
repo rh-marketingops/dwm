@@ -22,6 +22,9 @@ def dwmAll(data, mongoDb, mongoConfig, configName, writeContactHistory=True, ret
 
     config = configColl.find_one({"configName": configName})
 
+    if not config:
+        raise Exception("configName '" + configName + "' not found in collection '" + mongoConfig['config']) + "'"
+
     for row in data:
         row, historyId = dwmOne(data=row, mongoDb=mongoDb, mongoConfig=mongoConfig, config=config, writeContactHistory=writeContactHistory, returnHistoryId=returnHistoryId, histIdField=histIdField, udfNamespace=udfNamespace)
         if returnHistoryId and writeContactHistory:

@@ -219,6 +219,10 @@ def test_writeContactHistory_False():
 
 #########################################
 ## configuration does not exist
+@raises(Exception)
+def test_configDoesNotExist():
+
+    dataOut = dwmAll(data = test_records.record_configDoesNotExist, mongoDb = db, mongoConfig=mongoConfig, configName='test_configDoesNotExist')
 
 #########################################
 # userDefinedFunctions
