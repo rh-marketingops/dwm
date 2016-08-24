@@ -9,6 +9,7 @@ import dwm.test.test_records as test_records
 import dwm.test.test_udf as test_udf
 from dwm.test.test_udf import ex_udf
 import dwm.cleaning as cleaning
+import dwm.helpers as helpers
 
 ## Initialize pre-test mongomock
 
@@ -40,7 +41,8 @@ mongoConfig = {
     "contactHistory": "contactHistory"
 }
 
-## Test against lookupAll
+######################################
+## Test lookups
 
 # genericLookup
 
@@ -94,6 +96,8 @@ def test_lookupAll_normLookup_notChecked():
     dataOut = dwmAll(data = test_records.record_lookupAll_normLookup_notChecked, mongoDb = db, mongoConfig=mongoConfig, configName='test_lookupAll_normLookup')
     assert dataOut[0]['field2'] != 'goodvalue'
 
+##############################
+## Test regex
 # genericRegex
 
 def test_regexAll_genericRegex_caught():
@@ -146,6 +150,8 @@ def test_regexAll_normRegex_notChecked():
     dataOut = dwmAll(data = test_records.record_regexAll_normRegex_notChecked, mongoDb = db, mongoConfig=mongoConfig, configName='test_regexAll_normRegex')
     assert dataOut[0]['field2'] != 'goodvalue'
 
+###################################
+## Test derive
 # deriveValue
 
 def test_deriveAll_deriveValue_caught():
@@ -167,7 +173,6 @@ def test_deriveAll_deriveValue_overwriteFalse():
 
     dataOut = dwmAll(data = test_records.record_deriveAll_deriveValue_overwriteFalse, mongoDb = db, mongoConfig=mongoConfig, configName='test_deriveAll_deriveValue_overwriteFalse')
     assert dataOut[0]['field1'] == 'oldvalue'
-
 
 # copyValue
 
@@ -198,6 +203,8 @@ def test_deriveAll_deriveRegex_overwriteFalse():
     dataOut = dwmAll(data = test_records.record_deriveAll_deriveRegex_overwriteFalse, mongoDb = db, mongoConfig=mongoConfig, configName='test_deriveAll_deriveRegex_overwriteFalse')
     assert dataOut[0]['field1'] == 'oldvalue'
 
+#########################################
+## Test options around history
 # returnHistoryId False
 
 def test_returnHistoryId_False():
@@ -205,6 +212,7 @@ def test_returnHistoryId_False():
     dataOut = dwmAll(data = test_records.record_returnHistoryId_False, mongoDb = db, mongoConfig=mongoConfig, configName='test_returnHistoryId_False', returnHistoryId=False)
     assert 'historyId' not in dataOut[0].keys()
 
+#########################################
 # userDefinedFunctions
 
 def test_udf_beforeGenericValidation():
@@ -247,6 +255,8 @@ def test_udf_afterProcessing():
     dataOut = dwmAll(data = test_records.record_udf_afterProcessing, mongoDb = db, mongoConfig=mongoConfig, configName='test_udf_afterProcessing', udfNamespace=__name__)
     assert dataOut[0]['field1'] == 'goodvalue'
 
+######################################
+## Test value exceptions in base-level functions
 @raises(Exception)
 def test_udf_afterProcessing_invalidFcn():
 
