@@ -7,10 +7,10 @@ import os
 import sys
 
 import dwm
-
-def readme():
-    with open('README.md') as f:
-        return f.read()
+#
+# def readme():
+#     with open('README.md') as f:
+#         return f.read()
 
 setup(
     name='dwm',
@@ -22,7 +22,7 @@ setup(
     install_requires=['pymongo>=3.2.2'],
     author_email='colemanja91@gmail.com',
     description='Best practices for marketing data quality management',
-    long_description=readme(),
+    #long_description=readme(),
     packages=['dwm'],
     include_package_data=True,
     platforms='any',
