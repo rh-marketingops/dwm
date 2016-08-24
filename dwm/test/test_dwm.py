@@ -211,27 +211,30 @@ def test_deriveAll_deriveRegex_overwriteFalse():
 
 def test_history_genericLookup_caught():
 
-    dataOut = dwmAll(data = test_records.record_lookupAll_genericLookup_caught, mongoDb = db, mongoConfig=mongoConfig, configName='test_lookupAll_genericLookup')
-    hist = db.contactHistory.find_one({dataOut['historyId']})
-    assert dataOut[0]['field1'] == ''
-#
-# def test_history_genericLookup_uncaught():
-#
-#     dataOut = dwmAll(data = test_records.record_lookupAll_genericLookup_uncaught, mongoDb = db, mongoConfig=mongoConfig, configName='test_lookupAll_genericLookup')
-#     assert dataOut[0]['field1'] != ''
-#
-# def test_history_genericLookup_notChecked():
-#
-#     dataOut = dwmAll(data = test_records.record_lookupAll_genericLookup_notChecked, mongoDb = db, mongoConfig=mongoConfig, configName='test_lookupAll_genericLookup')
-#     assert dataOut[0]['field2'] != ''
-#
+    dataOut = dwmAll(data = test_records.history_genericLookup_caught, mongoDb = db, mongoConfig=mongoConfig, configName='test_lookupAll_genericLookup')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['field1']['genericLookup']['from'] == 'badvalue'
+
+def test_history_genericLookup_uncaught():
+
+    dataOut = dwmAll(data = test_records.history_genericLookup_uncaught, mongoDb = db, mongoConfig=mongoConfig, configName='test_lookupAll_genericLookup')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field1' not in hist.keys()
+
+def test_history_genericLookup_notChecked():
+
+    dataOut = dwmAll(data = test_records.history_genericLookup_notChecked, mongoDb = db, mongoConfig=mongoConfig, configName='test_lookupAll_genericLookup')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field2' not in hist.keys()
+
 # # fieldSpecificLookup
-#
-# def test_history_fieldSpecificLookup_caught():
-#
-#     dataOut = dwmAll(data = test_records.record_lookupAll_fieldSpecificLookup_caught, mongoDb = db, mongoConfig=mongoConfig, configName='test_lookupAll_fieldSpecificLookup')
-#     assert dataOut[0]['field1'] == ''
-#
+
+def test_history_fieldSpecificLookup_caught():
+
+    dataOut = dwmAll(data = test_records.history_fieldSpecificLookup_caught, mongoDb = db, mongoConfig=mongoConfig, configName='test_lookupAll_fieldSpecificLookup')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['field1']['fieldSpecificLookup']['from'] == 'badvalue'
+
 # def test_history_fieldSpecificLookup_uncaught():
 #
 #     dataOut = dwmAll(data = test_records.record_lookupAll_fieldSpecificLookup_uncaught, mongoDb = db, mongoConfig=mongoConfig, configName='test_lookupAll_fieldSpecificLookup')

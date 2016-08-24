@@ -52,6 +52,62 @@ record_deriveAll_deriveRegex_notChecked = [{"emailAddress": "test@test.com", "fi
 
 record_deriveAll_deriveRegex_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findthis"}]
 
+#
+
+history_genericLookup_caught = [{"emailAddress": "test@test.com", "field1": "badvalue"}]
+
+history_genericLookup_uncaught = [{"emailAddress": "test@test.com", "field1": "badvalue-uncaught"}]
+
+history_genericLookup_notChecked = [{"emailAddress": "test@test.com", "field2": "badvalue"}]
+
+history_fieldSpecificLookup_caught = [{"emailAddress": "test@test.com", "field1": "badvalue"}]
+
+history_fieldSpecificLookup_uncaught = [{"emailAddress": "test@test.com", "field1": "badvalue-uncaught"}]
+
+history_fieldSpecificLookup_notChecked = [{"emailAddress": "test@test.com", "field2": "badvalue"}]
+
+history_normLookup_caught = [{"emailAddress": "test@test.com", "field1": "badvalue"}]
+
+history_normLookup_uncaught = [{"emailAddress": "test@test.com", "field1": "badvalue-uncaught"}]
+
+history_normLookup_notChecked = [{"emailAddress": "test@test.com", "field2": "badvalue"}]
+
+history_genericRegex_caught = [{"emailAddress": "test@test.com", "field1": "badvalue"}]
+
+history_genericRegex_uncaught = [{"emailAddress": "test@test.com", "field1": "badvalue-uncaught"}]
+
+history_genericRegex_notChecked = [{"emailAddress": "test@test.com", "field2": "badvalue"}]
+
+history_fieldSpecificRegex_caught = [{"emailAddress": "test@test.com", "field1": "badvalue"}]
+
+history_fieldSpecificRegex_uncaught = [{"emailAddress": "test@test.com", "field1": "badvalue-uncaught"}]
+
+history_fieldSpecificRegex_notChecked = [{"emailAddress": "test@test.com", "field2": "badvalue"}]
+
+history_normRegex_caught = [{"emailAddress": "test@test.com", "field1": "badvalue"}]
+
+history_normRegex_uncaught = [{"emailAddress": "test@test.com", "field1": "badvalue-uncaught"}]
+
+history_normRegex_notChecked = [{"emailAddress": "test@test.com", "field2": "badvalue"}]
+
+history_deriveValue_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findthis"}]
+
+history_deriveValue_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findthis"}]
+
+history_deriveValue_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "dontfindthis"}]
+
+history_deriveValue_notChecked = [{"emailAddress": "test@test.com", "field3": "", "field2": "findthis"}]
+
+history_copyValue = [{"emailAddress": "test@test.com", "field1": "", "field2": "newvalue"}]
+
+history_deriveRegex_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findthis"}]
+
+history_deriveRegex_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "dontfindthis"}]
+
+history_deriveRegex_notChecked = [{"emailAddress": "test@test.com", "field3": "", "field2": "findthis"}]
+
+history_deriveRegex_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findthis"}]
+
 record_returnHistoryId_False = [{"emailAddress": "test@test.com"}]
 
 record_writeContactHistory_False = [{"emailAddress": "test@test.com"}]
