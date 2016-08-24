@@ -19,7 +19,7 @@ setup(
     license='GNU General Public License',
     author='Jeremiah Coleman',
     tests_require=['nose', 'mongomock>=3.5.0'],
-    install_requires=['pymongo>=3.2.2'],
+    install_requires=['pymongo>=3.2.2', 'tqdm>=4.8.4'],
     author_email='colemanja91@gmail.com',
     description='Best practices for marketing data quality management',
     #long_description=readme(),
