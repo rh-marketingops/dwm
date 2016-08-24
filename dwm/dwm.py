@@ -24,7 +24,7 @@ def dwmAll(data, mongoDb, mongoConfig, configName, writeContactHistory=True, ret
 
     for row in data:
         row, historyId = dwmOne(data=row, mongoDb=mongoDb, mongoConfig=mongoConfig, config=config, writeContactHistory=writeContactHistory, returnHistoryId=returnHistoryId, histIdField=histIdField, udfNamespace=udfNamespace)
-        if returnHistoryId:
+        if returnHistoryId and writeContactHistory:
             row[returnHistoryField] = historyId
 
     return data
