@@ -104,18 +104,18 @@ This package was designed to work with MongoDB 2.4 (running on Openshift), but h
 Runtime configuration for DWM is stored in a JSON document within MongoDB. It is retrieved by the unique "configName" field when the ```dwmAll``` function is called, and dictates which fields are cleaned, what types of lookups, regexes and derivation rules are called, and which user-defined functions should be called.
 Multiple configurations can be stored and called for different purposes. For example, a configuration for use directly against a database may include rules for 20 fields, while one running within an API may only run against five fields.
 
-Full example is given in the DataDictionary.md file. 
+Full example is given in the DataDictionary.md file.
 
 __Required Fields:__
 
  - ```configName```: Must be a unique string
  - ```fields```: Includes a document for each field to be cleaned; each should include the following:
- ..- ```lookup```: an array of which validation rules should be applied: ```genericLookup, genericRegex, fieldSpecificLookup, fieldSpecificRegex, normLookup, normRegex```
- ..- ```derive```: a document of documents, each named in order of execution (1,2,...) and containing the following sub-fields:
- ....- ```type```: string indicating what type of derivation should be applied: ```deriveValue, copyValue, deriveRegex```
- ....- ```fieldSet```: array of field names to be used in derive process. Must contain only one value if ```type==copyValue OR deriveRegex```.
- ....- ```overwrite```: boolean indicating whether to write over an existing value
- ....- ```blankIfNoMatch```: overwrite existing value with a blank value if no match found
+  * ```lookup```: an array of which validation rules should be applied: ```genericLookup, genericRegex, fieldSpecificLookup, fieldSpecificRegex, normLookup, normRegex```
+  * ```derive```: a document of documents, each named in order of execution (1,2,...) and containing the following sub-fields:
+    * ```type```: string indicating what type of derivation should be applied: ```deriveValue, copyValue, deriveRegex```
+    * ```fieldSet```: array of field names to be used in derive process. Must contain only one value if ```type==copyValue OR deriveRegex```.
+    * ```overwrite```: boolean indicating whether to write over an existing value
+    * ```blankIfNoMatch```: overwrite existing value with a blank value if no match found
  - ```userDefinedFunctions```: document of the following sub-documents with ordered numeric names, indicating when user-defined functions should be run: ```beforeGenericValidation, beforeGenericRegex, beforeFieldSpecificValidation, beforeFieldSpecificRegex, beforeNormalization, beforeNormalizationRegex, beforeDeriveData, afterProcessing```
 
 ## Lookups, Derivation, and Regex rules
