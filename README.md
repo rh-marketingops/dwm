@@ -126,29 +126,33 @@ A complete schema for these items is in the DataDictionary.md file. Also include
 
 User-Defined functions must take exactly two inputs, ```data``` (a single dictionary of data to which transformations are applied) and ```histObj``` (a dictionary object used to record field-level changes), and output the same two (with changes applied to ```data``` and any relevant updates made to ```histObj```). Helper functions for recording history are included in the dwm package.
 
-UDFs should ideally be defined in a file separate from the script calling the DWM functions, then loaded in independently. If using UDFs, then the ```dwmAll``` parameter must be set ```python udfNamespace=__name__```
+UDFs should ideally be defined in a file separate from the script calling the DWM functions, then loaded in independently. If using UDFs, then the ```dwmAll``` parameter must be set ``python udfNamespace=__name__```
 
 __Example:__
 
-```udf.py```
+__udf.py__
 
-```python
+``python
 from dwm import _CollectHistory_, _CollectHistoryAgg_
 def myFunction(data, histObj):
 
-  data['myField'] = 'Hi! This is a data change.'
+  fieldOld = data['myField']
 
-  change = _CollectHistory_(lookupType='UDF-myFunction', fromVal=zipOld, toVal=zipNew) ## recommended format for lookupType: "UDF-nameOfFunction"
+  fieldNew = 'Hi! This is a data change'
+
+  data['myField'] = fieldNew
+
+  change = _CollectHistory_(lookupType='UDF-myFunction', fromVal=fieldOld, toVal=fieldNew) ## recommended format for lookupType: "UDF-nameOfFunction"
 
   histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName='myField')
 
   return data, histObj
 
-```
+``
 
-```example.py```
+__example.py__
 
-```python
+``python
 from dwm import dwmAll
 from udf import myFunction
 
@@ -156,7 +160,7 @@ from udf import myFunction
 
 dataOut = dwm.dwmAll(data=data, mongoDb=db, mongoConfig=mongoConfig, configName='myConfig', returnHistoryId=False, udfNamespace=__name__)
 
-```
+``
 
 
 ## Scheduled Jobs
