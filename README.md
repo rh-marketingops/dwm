@@ -165,7 +165,7 @@ dataOut = dwm.dwmAll(data=data, mongoDb=db, mongoConfig=mongoConfig, configName=
 
 ## Scheduled Jobs
 
-
+Scheduled jobs are likely the most robust option for consistent data cleaning.
 
 # Examples
 
