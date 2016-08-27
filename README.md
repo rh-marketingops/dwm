@@ -72,11 +72,15 @@ Derivation includes both lookups and regex (with the same advantage/disadvantage
 
 __Example:__ Our marketing database has two roles related to a contacts' specific job, "Job Title" and "Job Role". "Job Title" was an free-text field on our legacy freemium/registration forms, and is still provided as an option for our marketers to upload to. "Job Role" is the current supported job info collection field on forms, and is a picklist of expected values. Since our segmentation processes require a "Job Role" value, we sometimes have to apply a derivation rule to get that value from "Job Title". In this case, if ```Job Title == "Senior Applications Programmer"```, the result would be ```Job Role == "Programmer/Developer"```. In this case, we are applying a derivation rule to the "Job Title" value to get a new "Job Role" value.
 
+Within the runtime configuration, derivation rules are ordered within a dictionary to maintain rule-hierarchy. So, if Rule 1 does not yield a result, then Rule 2 would be tried. The process will exit after one of the derivation rules produces a new value.
+
 ## Audit History
 
 Record-level audit history is a record of what changes were made to which data fields. This includes what the previous value was, what the new/replacement value was, and what rule caused the change. Although it is optional in this package, it is recommended for any automation of these processes to provide both a record for troubleshooting and transparency for the business users of the database.
 
 ## Data Flow
+
+
 
 # Setup Process
 
@@ -94,6 +98,10 @@ Python 2.7 is the recommended minimum, although a 3.x release is advisable if un
 MongoDB is required for persistent storage of runtime configurations, lookup tables, regex rules, and derivation rules. It also serves as an (optional, but recommended) home for record-level audit history. Also, since operational data will be stored here, you should have some sort of routine backup process in place.
 
 This package was designed to work with MongoDB 2.4 (running on Openshift), but has also been lightly tested with 3.3.0.
+
+## Configuration
+
+## Lookups, Derivation, and Regex rules
 
 ## Scheduled Jobs
 
