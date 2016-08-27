@@ -54,16 +54,51 @@ Also included may be thrid-party data enrichment. For example, if you have an AP
 
 # Architecture
 
+
+
 ## Cleaning Methods
 
 ### Lookups
 
+Lookups utilize tables of expected values to apply to data cleaning with the above business logic. The advantage of lookups is fine-grained control over the definition of "bad data", as well as catching values that may not be consistently catchable with regular expressions. The disadvantage is that you have to manually create and update each lookup value.
+
 ### Regex
 
+Regex applies consistent data cleaning rules. The advantages and disadvantages are the opposite of lookups; you can create fewer rules that require less maintenance, but you loose a lot of fine-grained control.
+
 ### Derivation Rules
+
+Derivation includes both lookups and regex (with the same advantage/disadvantage split), but with the expectation of applying those to fields other than the target field.
+
+__Example:__ Our marketing database has two roles related to a contacts' specific job, "Job Title" and "Job Role". "Job Title" was an free-text field on our legacy freemium/registration forms, and is still provided as an option for our marketers to upload to. "Job Role" is the current supported job info collection field on forms, and is a picklist of expected values. Since our segmentation processes require a "Job Role" value, we sometimes have to apply a derivation rule to get that value from "Job Title". In this case, if ```Job Title == "Senior Applications Programmer"```, the result would be ```Job Role == "Programmer/Developer"```. In this case, we are applying a derivation rule to the "Job Title" value to get a new "Job Role" value.
+
+## Audit History
+
+Record-level audit history is a record of what changes were made to which data fields. This includes what the previous value was, what the new/replacement value was, and what rule caused the change. Although it is optional in this package, it is recommended for any automation of these processes to provide both a record for troubleshooting and transparency for the business users of the database.
 
 ## Data Flow
 
 # Setup Process
 
+## Hosting
+
+ - Local machine: it's entirely possible to run this complete process on your individual laptop/desktop, although is not recommended due to backup and business continuity risks.
+ - PaaS: Platform-as-a-Service is the recommended route to get up-and-running quickly. This way, developers don't have to worry about the engineering concerns of making sure their services remain running. Options are Red Hat's Openshift, Heroku, and other options available on AWS. Be warned that the PaaS may have to be internally hosted at your workplace to ensure connectivity to internal databases.
+
+## Python
+
+Python 2.7 is the recommended minimum, although a 3.x release is advisable if unicode support is required. This package is tested to work with Python 2.7, 3.3, 3.4, and 3.5.
+
+## MongoDB
+
+MongoDB is required for persistent storage of runtime configurations, lookup tables, regex rules, and derivation rules. It also serves as an (optional, but recommended) home for record-level audit history. Also, since operational data will be stored here, you should have some sort of routine backup process in place.
+
+This package was designed to work with MongoDB 2.4 (running on Openshift), but has also been lightly tested with 3.3.0.
+
+## Scheduled Jobs
+
+
+
 # Examples
+
+__Coming Soon: Red Hat's Marketing Operations implementation via Openshift__
