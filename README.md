@@ -38,7 +38,7 @@ Field-Specific validation is the removal of data that is junk in one field, but 
 
 ## Normalization
 
-Normalization is the correction of data to conform with a certain expected set of values. For example, ```Proggrrammer/Developer``` is almost a valid "Job Role" value ```Programmer/Developer```, but is mis-spelled. Another example is ```Programmer```, which obviously would fall into the previous category, but is not an exact value match.
+Normalization is the correction of data to conform with a certain expected set of values. For example, `Proggrrammer/Developer` is almost a valid "Job Role" value `Programmer/Developer`, but is mis-spelled. Another example is `Programmer`, which obviously would fall into the previous category, but is not an exact value match.
 
 Note that normalization usually cannot be applied to fields that are expected to be free-text, such as "First Name" or "Company Name". If certain rules need to be applied to those fields, use of the __User-Defined Functions__ is recommended.
 
@@ -70,7 +70,7 @@ Regex applies consistent data cleaning rules. The advantages and disadvantages a
 
 Derivation includes both lookups and regex (with the same advantage/disadvantage split), but with the expectation of applying those to fields other than the target field.
 
-__Example:__ Our marketing database has two roles related to a contacts' specific job, "Job Title" and "Job Role". "Job Title" was an free-text field on our legacy freemium/registration forms, and is still provided as an option for our marketers to upload to. "Job Role" is the current supported job info collection field on forms, and is a picklist of expected values. Since our segmentation processes require a "Job Role" value, we sometimes have to apply a derivation rule to get that value from "Job Title". In this case, if ```Job Title == "Senior Applications Programmer"```, the result would be ```Job Role == "Programmer/Developer"```. In this case, we are applying a derivation rule to the "Job Title" value to get a new "Job Role" value.
+__Example:__ Our marketing database has two roles related to a contacts' specific job, "Job Title" and "Job Role". "Job Title" was an free-text field on our legacy freemium/registration forms, and is still provided as an option for our marketers to upload to. "Job Role" is the current supported job info collection field on forms, and is a picklist of expected values. Since our segmentation processes require a "Job Role" value, we sometimes have to apply a derivation rule to get that value from "Job Title". In this case, if `Job Title == "Senior Applications Programmer"`, the result would be `Job Role == "Programmer/Developer"`. In this case, we are applying a derivation rule to the "Job Title" value to get a new "Job Role" value.
 
 Within the runtime configuration, derivation rules are ordered within a dictionary to maintain rule-hierarchy. So, if Rule 1 does not yield a result, then Rule 2 would be tried. The process will exit after one of the derivation rules produces a new value.
 
@@ -101,22 +101,22 @@ This package was designed to work with MongoDB 2.4 (running on Openshift), but h
 
 ## Configuration
 
-Runtime configuration for DWM is stored in a JSON document within MongoDB. It is retrieved by the unique "configName" field when the ```dwmAll``` function is called, and dictates which fields are cleaned, what types of lookups, regexes and derivation rules are called, and which user-defined functions should be called.
+Runtime configuration for DWM is stored in a JSON document within MongoDB. It is retrieved by the unique "configName" field when the `dwmAll` function is called, and dictates which fields are cleaned, what types of lookups, regexes and derivation rules are called, and which user-defined functions should be called.
 Multiple configurations can be stored and called for different purposes. For example, a configuration for use directly against a database may include rules for 20 fields, while one running within an API may only run against five fields.
 
 Full example is given in the DataDictionary.md file.
 
 __Required Fields:__
 
- - ```configName```: Must be a unique string
- - ```fields```: Includes a document for each field to be cleaned; each should include the following:
-  * ```lookup```: an array of which validation rules should be applied: ```genericLookup, genericRegex, fieldSpecificLookup, fieldSpecificRegex, normLookup, normRegex```
-  * ```derive```: a document of documents, each named in order of execution (1,2,...) and containing the following sub-fields:
-    * ```type```: string indicating what type of derivation should be applied: ```deriveValue, copyValue, deriveRegex```
-    * ```fieldSet```: array of field names to be used in derive process. Must contain only one value if ```type==copyValue OR deriveRegex```.
-    * ```overwrite```: boolean indicating whether to write over an existing value
-    * ```blankIfNoMatch```: overwrite existing value with a blank value if no match found
- - ```userDefinedFunctions```: document of the following sub-documents with ordered numeric names, indicating when user-defined functions should be run: ```beforeGenericValidation, beforeGenericRegex, beforeFieldSpecificValidation, beforeFieldSpecificRegex, beforeNormalization, beforeNormalizationRegex, beforeDeriveData, afterProcessing```
+ - `configName`: Must be a unique string
+ - `fields`: Includes a document for each field to be cleaned; each should include the following:
+  * `lookup`: an array of which validation rules should be applied: `genericLookup, genericRegex, fieldSpecificLookup, fieldSpecificRegex, normLookup, normRegex`
+  * `derive`: a document of documents, each named in order of execution (1,2,...) and containing the following sub-fields:
+    * `type`: string indicating what type of derivation should be applied: `deriveValue, copyValue, deriveRegex`
+    * `fieldSet`: array of field names to be used in derive process. Must contain only one value if `type==copyValue OR deriveRegex`.
+    * `overwrite`: boolean indicating whether to write over an existing value
+    * `blankIfNoMatch`: overwrite existing value with a blank value if no match found
+ - `userDefinedFunctions`: document of the following sub-documents with ordered numeric names, indicating when user-defined functions should be run: `beforeGenericValidation, beforeGenericRegex, beforeFieldSpecificValidation, beforeFieldSpecificRegex, beforeNormalization, beforeNormalizationRegex, beforeDeriveData, afterProcessing`
 
 ## Lookups, Derivation, and Regex rules
 
@@ -124,15 +124,15 @@ A complete schema for these items is in the DataDictionary.md file. Also include
 
 ## User-Defined Functions
 
-User-Defined functions must take exactly two inputs, ```data``` (a single dictionary of data to which transformations are applied) and ```histObj``` (a dictionary object used to record field-level changes), and output the same two (with changes applied to ```data``` and any relevant updates made to ```histObj```). Helper functions for recording history are included in the dwm package.
+User-Defined functions must take exactly two inputs, `data` (a single dictionary of data to which transformations are applied) and `histObj` (a dictionary object used to record field-level changes), and output the same two (with changes applied to `data` and any relevant updates made to `histObj`). Helper functions for recording history are included in the dwm package.
 
-UDFs should ideally be defined in a file separate from the script calling the DWM functions, then loaded in independently. If using UDFs, then the ```dwmAll``` parameter must be set ``python udfNamespace=__name__```
+UDFs should ideally be defined in a file separate from the script calling the DWM functions, then loaded in independently. If using UDFs, then the `dwmAll` parameter must be set `udfNamespace=__name__`
 
 __Example:__
 
 __udf.py__
 
-``python
+```python
 from dwm import _CollectHistory_, _CollectHistoryAgg_
 def myFunction(data, histObj):
 
@@ -148,11 +148,11 @@ def myFunction(data, histObj):
 
   return data, histObj
 
-``
+```
 
 __example.py__
 
-``python
+```python
 from dwm import dwmAll
 from udf import myFunction
 
@@ -160,7 +160,7 @@ from udf import myFunction
 
 dataOut = dwm.dwmAll(data=data, mongoDb=db, mongoConfig=mongoConfig, configName='myConfig', returnHistoryId=False, udfNamespace=__name__)
 
-``
+```
 
 
 ## Scheduled Jobs
