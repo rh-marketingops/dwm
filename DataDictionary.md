@@ -153,9 +153,11 @@ Which fields are managed, and which cleaning functions are used
   - beforeDeriveData
   - afterProcessing
 
-## Data Cleaning "Rules"
+## Data cleaning schema
 
-### Data lookup
+The following "schema" are grouped by which collection dwm expects to find them in.
+
+### lookup
 
 Defines a lookup value for transforming a single field value (generic or field-specific validation, normalization)
 
@@ -182,7 +184,7 @@ Defines a lookup value for transforming a single field value (generic or field-s
 }
 ```
 
-### Data derivation
+### derive
 
 Defines a potentially multi-field based lookup mapped to a single field (fill-gaps or derived fields; i.e. Persona is a combination of Job Role and Department).
 Keeping the ```lookupVals``` in a sub-document allows for indexing on the ```derive``` collection.
@@ -208,9 +210,19 @@ Keeping the ```lookupVals``` in a sub-document allows for indexing on the ```der
   },
   "value": "IT Decision Maker"
 }
+
+// derive value by regex on another field
+{
+  "type": "deriveRegex",
+  "fieldName": "field1",
+  "deriveFieldName": "field2",
+  "pattern": "^coolpattern$",
+  "replace": "Programmer/Developer",
+  "description": "looks for 'developer' job titles to derive job role"
+}
 ```
 
-### Regex
+### regex
 
 Defines a regular expression transformation that will be applied to a single field value (generic or field-specific validation, normalization).
 Should have a "description" to let others know what the regex is supposed to do.
@@ -240,15 +252,6 @@ Should have a "description" to let others know what the regex is supposed to do.
   "description": "looks for 'developer' job roles"
 }
 
-// derive value by regex on another field
-{
-  "type": "deriveRegex",
-  "fieldName": "field1",
-  "deriveFieldName": "field2",
-  "pattern": "^coolpattern$",
-  "replace": "Programmer/Developer",
-  "description": "looks for 'developer' job titles to derive job role"
-}
 ```
 
 ### Indexing
