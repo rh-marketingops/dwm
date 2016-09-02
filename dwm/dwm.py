@@ -31,6 +31,9 @@ def dwmAll(data, mongoDb, mongoConfig, configName, udfNamespace=__name__, verbos
         returnHistoryId = True
         returnHistoryField = config["history"]["returnHistoryField"]
         histIdField = config["history"]["histIdField"]
+    else:
+        writeContactHistory = False
+        returnHistoryId = False
 
     if verbose:
         for row in tqdm(data):
