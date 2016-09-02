@@ -215,7 +215,6 @@ def test_deriveAll_deriveRegex_overwriteFalse():
 def test_derive_sort():
 
     dataOut = dwmAll(data = test_records.record_derive_sort, mongoDb = db, mongoConfig=mongoConfig, configName='test_derive_sort')
-    print(dataOut[0]['field1'])
     assert dataOut[0]['field1'] == 'correctvalue'
 
 ######################################

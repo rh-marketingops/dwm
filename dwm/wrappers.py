@@ -52,7 +52,7 @@ def DeriveDataLookupAll(data, configFields, coll, histObj={}):
 
             fieldValNew = fieldVal
 
-            for deriveSet in sorted(configFields[field]['derive'].keys()):
+            for deriveSet in configFields[field]['derive'].keys():
 
                 deriveSetConfig = configFields[field]['derive'][deriveSet]
 
