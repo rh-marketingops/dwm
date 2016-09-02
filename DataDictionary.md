@@ -124,6 +124,10 @@ Which fields are managed, and which cleaning functions are used
     "afterProcessing": {
       "1": "iwantaburrito"
     }
+  },
+  "history": {
+    "returnHistoryField": "historyId",
+    "histIdField": {"name": "emailAddress", "value": "emailAddress"}
   }
 }
 ```
