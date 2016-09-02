@@ -36,6 +36,10 @@ def dwmAll(data, mongoDb, mongoConfig, configName, udfNamespace=__name__, verbos
 
         config["fields"][field]["derive"] = collections.OrderedDict(sorted(config["fields"][field]["derive"].items()))
 
+    for position in config["userDefinedFunctions"]:
+
+        config["userDefinedFunctions"][position] = collections.OrderedDict(sorted(config["userDefinedFunctions"][position].items()))
+
     if verbose:
         for row in tqdm(data):
             row, historyId = dwmOne(data=row, mongoDb=mongoDb, mongoConfig=mongoConfig, config=config, writeContactHistory=writeContactHistory, returnHistoryId=returnHistoryId, histIdField=histIdField, udfNamespace=udfNamespace)
