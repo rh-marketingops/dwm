@@ -44,6 +44,13 @@ mongoConfig = {
 ######################################
 ## Test lookups
 
+# Test verbosity
+
+def test_verbose():
+
+    dataOut = dwmAll(data = test_records.record_lookupAll_genericLookup_caught, mongoDb = db, mongoConfig=mongoConfig, configName='test_lookupAll_genericLookup', verbose=True)
+    assert dataOut[0]['field1'] == ''
+
 # genericLookup
 
 def test_lookupAll_genericLookup_caught():
@@ -203,6 +210,13 @@ def test_deriveAll_deriveRegex_overwriteFalse():
     dataOut = dwmAll(data = test_records.record_deriveAll_deriveRegex_overwriteFalse, mongoDb = db, mongoConfig=mongoConfig, configName='test_deriveAll_deriveRegex_overwriteFalse')
     assert dataOut[0]['field1'] == 'oldvalue'
 
+# ensure proper sorting on derive
+
+def test_derive_sort():
+
+    dataOut = dwmAll(data = test_records.record_derive_sort, mongoDb = db, mongoConfig=mongoConfig, configName='test_derive_sort')
+    print(dataOut[0]['field1'])
+    assert dataOut[0]['field1'] == 'correctvalue'
 
 ######################################
 ## test contact history

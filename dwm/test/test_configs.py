@@ -182,6 +182,42 @@ configs = [
         }
     },
     {
+        "configName": "test_derive_sort",
+        "fields": {
+            "field1": {
+                "lookup": [],
+                "derive": {
+                    "2": {
+                        "type": "deriveValue",
+                        "fieldSet": ["field4"],
+                        "overwrite": True
+                    },
+                    "1": {
+                        "type": "deriveValue",
+                        "fieldSet": ["field3"],
+                        "overwrite": True
+                    }
+                }
+            }
+        },
+        "userDefinedFunctions": {
+            "beforeGenericValidation": {},
+            "beforeGenericRegex": {},
+            "beforeFieldSpecificValidation": {},
+            "beforeFieldSpecificRegex": {},
+            "beforeNormalization": {},
+            "beforeNormalizationRegex": {},
+            "beforeDeriveData": {},
+            "afterProcessing": {}
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
+    },
+    {
         "configName": "test_deriveAll_copyValue",
         "fields": {
             "field1": {
