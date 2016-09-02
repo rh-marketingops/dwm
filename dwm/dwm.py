@@ -2,12 +2,13 @@ from pymongo import MongoClient
 from datetime import datetime
 from tqdm import tqdm
 import time
+import collections
 
 from .wrappers import lookupAll, DeriveDataLookupAll
 from .helpers import _RunUserDefinedFunctions_, _CollectHistory_, _CollectHistoryAgg_
 
 ## DWM on a set of contact records
-def dwmAll(data, mongoDb, mongoConfig, configName, writeContactHistory=True, returnHistoryId=True, returnHistoryField='historyId', histIdField={"name": "emailAddress", "value": "emailAddress"}, udfNamespace=__name__, verbose=False):
+def dwmAll(data, mongoDb, mongoConfig, configName, udfNamespace=__name__, verbose=False):
     '''
         Multi-record wrapper for dwmOne
 
@@ -25,6 +26,19 @@ def dwmAll(data, mongoDb, mongoConfig, configName, writeContactHistory=True, ret
 
     if not config:
         raise Exception("configName '" + configName + "' not found in collection '" + mongoConfig['config']) + "'"
+
+    writeContactHistory = config["history"]["writeContactHistory"]
+    returnHistoryId = config["history"]["returnHistoryId"]
+    returnHistoryField = config["history"]["returnHistoryField"]
+    histIdField = config["history"]["histIdField"]
+
+    for field in config["fields"]:
+
+        config["fields"][field]["derive"] = collections.OrderedDict(sorted(config["fields"][field]["derive"].items()))
+
+    for position in config["userDefinedFunctions"]:
+
+        config["userDefinedFunctions"][position] = collections.OrderedDict(sorted(config["userDefinedFunctions"][position].items()))
 
     if verbose:
         for row in tqdm(data):

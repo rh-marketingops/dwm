@@ -81,7 +81,7 @@ def _RunUserDefinedFunctions_(config, data, histObj, position, namespace=__name_
 
         posConfig = udfConfig[position]
 
-        for udf in sorted(posConfig.keys()):
+        for udf in posConfig.keys():
 
             posConfigUDF = posConfig[udf]
 

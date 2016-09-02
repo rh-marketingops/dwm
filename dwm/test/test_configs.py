@@ -17,7 +17,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_lookupAll_fieldSpecificLookup",
@@ -36,7 +42,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_lookupAll_normLookup",
@@ -55,7 +67,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_regexAll_genericRegex",
@@ -74,7 +92,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_regexAll_fieldSpecificRegex",
@@ -93,7 +117,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_regexAll_normRegex",
@@ -112,7 +142,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_deriveAll_deriveValue",
@@ -137,7 +173,49 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
+    },
+    {
+        "configName": "test_derive_sort",
+        "fields": {
+            "field1": {
+                "lookup": [],
+                "derive": {
+                    "2": {
+                        "type": "deriveValue",
+                        "fieldSet": ["field4"],
+                        "overwrite": True
+                    },
+                    "1": {
+                        "type": "deriveValue",
+                        "fieldSet": ["field3"],
+                        "overwrite": True
+                    }
+                }
+            }
+        },
+        "userDefinedFunctions": {
+            "beforeGenericValidation": {},
+            "beforeGenericRegex": {},
+            "beforeFieldSpecificValidation": {},
+            "beforeFieldSpecificRegex": {},
+            "beforeNormalization": {},
+            "beforeNormalizationRegex": {},
+            "beforeDeriveData": {},
+            "afterProcessing": {}
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_deriveAll_copyValue",
@@ -162,7 +240,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_deriveAll_deriveRegex",
@@ -187,7 +271,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_deriveAll_deriveValue_overwriteFalse",
@@ -212,7 +302,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_deriveAll_deriveRegex_overwriteFalse",
@@ -237,7 +333,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_returnHistoryId_False",
@@ -251,7 +353,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": False,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_writeContactHistory_False",
@@ -265,7 +373,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": False,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_udf_beforeGenericValidation",
@@ -281,7 +395,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_udf_beforeGenericRegex",
@@ -297,7 +417,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_udf_beforeFieldSpecificValidation",
@@ -313,7 +439,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_udf_beforeFieldSpecificRegex",
@@ -329,7 +461,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_udf_beforeNormalization",
@@ -345,7 +483,13 @@ configs = [
             "beforeNormalizationRegex": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_udf_beforeNormalizationRegex",
@@ -361,7 +505,13 @@ configs = [
             },
             "beforeDeriveData": {},
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_udf_beforeDeriveData",
@@ -377,7 +527,13 @@ configs = [
                 "1": "ex_udf"
             },
             "afterProcessing": {}
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_udf_afterProcessing",
@@ -393,7 +549,37 @@ configs = [
             "afterProcessing": {
                 "1": "ex_udf"
             }
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
+    },
+    {
+        "configName": "test_udf_sort",
+        "fields": {},
+        "userDefinedFunctions": {
+            "beforeGenericValidation": {
+                "3": "ex_udf",
+                "1": "sort_udf_1",
+                "2": "sort_udf_2"
+            },
+            "beforeGenericRegex": {},
+            "beforeFieldSpecificValidation": {},
+            "beforeFieldSpecificRegex": {},
+            "beforeNormalization": {},
+            "beforeNormalizationRegex": {},
+            "beforeDeriveData": {},
+            "afterProcessing": {}
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     },
     {
         "configName": "test_udf_afterProcessing_invalidFcn",
@@ -409,6 +595,12 @@ configs = [
             "afterProcessing": {
                 "1": "bad_udf"
             }
-      }
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
     }
 ]

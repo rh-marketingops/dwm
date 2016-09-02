@@ -7,7 +7,7 @@ from .test_derive import derive
 from dwm.test.test_configs import configs
 import dwm.test.test_records as test_records
 import dwm.test.test_udf as test_udf
-from dwm.test.test_udf import ex_udf
+from dwm.test.test_udf import ex_udf, sort_udf_1, sort_udf_2
 import dwm.cleaning as cleaning
 import dwm.helpers as helpers
 
@@ -43,6 +43,13 @@ mongoConfig = {
 
 ######################################
 ## Test lookups
+
+# Test verbosity
+
+def test_verbose():
+
+    dataOut = dwmAll(data = test_records.record_lookupAll_genericLookup_caught, mongoDb = db, mongoConfig=mongoConfig, configName='test_lookupAll_genericLookup', verbose=True)
+    assert dataOut[0]['field1'] == ''
 
 # genericLookup
 
@@ -203,6 +210,12 @@ def test_deriveAll_deriveRegex_overwriteFalse():
     dataOut = dwmAll(data = test_records.record_deriveAll_deriveRegex_overwriteFalse, mongoDb = db, mongoConfig=mongoConfig, configName='test_deriveAll_deriveRegex_overwriteFalse')
     assert dataOut[0]['field1'] == 'oldvalue'
 
+# ensure proper sorting on derive
+
+def test_derive_sort():
+
+    dataOut = dwmAll(data = test_records.record_derive_sort, mongoDb = db, mongoConfig=mongoConfig, configName='test_derive_sort')
+    assert dataOut[0]['field1'] == 'correctvalue'
 
 ######################################
 ## test contact history
@@ -396,12 +409,12 @@ def test_history_deriveRegex_overwriteFalse():
 
 def test_returnHistoryId_False():
 
-    dataOut = dwmAll(data = test_records.record_returnHistoryId_False, mongoDb = db, mongoConfig=mongoConfig, configName='test_returnHistoryId_False', returnHistoryId=False)
+    dataOut = dwmAll(data = test_records.record_returnHistoryId_False, mongoDb = db, mongoConfig=mongoConfig, configName='test_returnHistoryId_False')
     assert 'historyId' not in dataOut[0].keys()
 
 def test_writeContactHistory_False():
 
-    dataOut = dwmAll(data = test_records.record_writeContactHistory_False, mongoDb = db, mongoConfig=mongoConfig, configName='test_writeContactHistory_False', writeContactHistory=False)
+    dataOut = dwmAll(data = test_records.record_writeContactHistory_False, mongoDb = db, mongoConfig=mongoConfig, configName='test_writeContactHistory_False')
     assert 'historyId' not in dataOut[0].keys()
 
 #########################################
@@ -452,6 +465,11 @@ def test_udf_beforeDeriveData():
 def test_udf_afterProcessing():
 
     dataOut = dwmAll(data = test_records.record_udf_afterProcessing, mongoDb = db, mongoConfig=mongoConfig, configName='test_udf_afterProcessing', udfNamespace=__name__)
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_udf_sort():
+
+    dataOut = dwmAll(data = test_records.record_udf_sort, mongoDb = db, mongoConfig=mongoConfig, configName='test_udf_sort', udfNamespace=__name__)
     assert dataOut[0]['field1'] == 'goodvalue'
 
 ######################################

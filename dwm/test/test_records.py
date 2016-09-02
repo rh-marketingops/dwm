@@ -36,6 +36,8 @@ record_regexAll_normRegex_notChecked = [{"emailAddress": "test@test.com", "field
 
 record_deriveAll_deriveValue_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findthis"}]
 
+record_derive_sort = [{"emailAddress": "test@test.com", "field1": "", "field3": "findthis", "field4": "nofindthis"}]
+
 record_deriveAll_deriveValue_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findthis"}]
 
 record_deriveAll_deriveValue_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "dontfindthis"}]
@@ -129,5 +131,7 @@ record_udf_beforeNormalizationRegex = [{"emailAddress": "test@test.com", "field1
 record_udf_beforeDeriveData = [{"emailAddress": "test@test.com", "field1": ""}]
 
 record_udf_afterProcessing = [{"emailAddress": "test@test.com", "field1": ""}]
+
+record_udf_sort = [{"emailAddress": "test@test.com", "field1": ""}]
 
 record_udf_afterProcessing_invalidFcn = [{"emailAddress": "test@test.com", "field1": ""}]
