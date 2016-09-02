@@ -7,7 +7,7 @@ from .test_derive import derive
 from dwm.test.test_configs import configs
 import dwm.test.test_records as test_records
 import dwm.test.test_udf as test_udf
-from dwm.test.test_udf import ex_udf
+from dwm.test.test_udf import ex_udf, sort_udf_1, sort_udf_2
 import dwm.cleaning as cleaning
 import dwm.helpers as helpers
 
@@ -465,6 +465,11 @@ def test_udf_beforeDeriveData():
 def test_udf_afterProcessing():
 
     dataOut = dwmAll(data = test_records.record_udf_afterProcessing, mongoDb = db, mongoConfig=mongoConfig, configName='test_udf_afterProcessing', udfNamespace=__name__)
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_udf_sort():
+
+    dataOut = dwmAll(data = test_records.record_udf_sort, mongoDb = db, mongoConfig=mongoConfig, configName='test_udf_sort', udfNamespace=__name__)
     assert dataOut[0]['field1'] == 'goodvalue'
 
 ######################################

@@ -558,6 +558,30 @@ configs = [
         }
     },
     {
+        "configName": "test_udf_sort",
+        "fields": {},
+        "userDefinedFunctions": {
+            "beforeGenericValidation": {
+                "3": "ex_udf",
+                "1": "sort_udf_1",
+                "2": "sort_udf_2"
+            },
+            "beforeGenericRegex": {},
+            "beforeFieldSpecificValidation": {},
+            "beforeFieldSpecificRegex": {},
+            "beforeNormalization": {},
+            "beforeNormalizationRegex": {},
+            "beforeDeriveData": {},
+            "afterProcessing": {}
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
+    },
+    {
         "configName": "test_udf_afterProcessing_invalidFcn",
         "fields": {},
         "userDefinedFunctions": {
