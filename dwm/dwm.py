@@ -26,16 +26,10 @@ def dwmAll(data, mongoDb, mongoConfig, configName, udfNamespace=__name__, verbos
     if not config:
         raise Exception("configName '" + configName + "' not found in collection '" + mongoConfig['config']) + "'"
 
-    if len(config["history"])>0:
-        writeContactHistory = True
-        returnHistoryId = True
-        returnHistoryField = config["history"]["returnHistoryField"]
-        histIdField = config["history"]["histIdField"]
-    else:
-        writeContactHistory = False
-        returnHistoryId = False
-        returnHistoryField = "historyId"
-        histIdField = {"name": "emailAddress", "value": "emailAddress"}
+    writeContactHistory = config["history"]["writeContactHistory"]
+    returnHistoryId = config["history"]["returnHistoryId"]
+    returnHistoryField = config["history"]["returnHistoryField"]
+    histIdField = config["history"]["histIdField"]
 
     if verbose:
         for row in tqdm(data):
