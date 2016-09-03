@@ -106,7 +106,6 @@ def DeriveDataLookup(fieldName, coll, deriveInput, overwrite=True, fieldVal='', 
 
     #for field in lookupVals:
         #lookupVals[field] = _DataClean_(lookupVals[field]) # ordering of lookupVals matters when you do it this way
-        lookupVals["lookupVals." + field] = _DataClean_(lookupVals[field])
 
     lookupDict = {}
 
