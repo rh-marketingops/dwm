@@ -78,6 +78,9 @@ def RegexLookup(fieldVal, coll, fieldName, lookupType, histObj={}):
             pattern = row['pattern']
             break
 
+    if reVal:
+        reVal.close()
+
     change = _CollectHistory_(lookupType=lookupType, fromVal=fieldVal, toVal=fieldValNew, pattern=pattern)
 
     histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
@@ -207,6 +210,9 @@ def DeriveDataRegex(fieldName, coll, deriveInput, overwrite, fieldVal, histObj={
 
                 pattern = lval['pattern']
                 break
+
+        if reVal:
+            reVal.close()
 
     change = _CollectHistory_(lookupType='deriveRegex', fromVal=fieldVal, toVal=fieldValNew, using=deriveInput, pattern=pattern)
 
