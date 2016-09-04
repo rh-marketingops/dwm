@@ -114,7 +114,7 @@ def DeriveDataLookup(fieldName, coll, deriveInput, overwrite=True, fieldVal='', 
     #lookupDict['lookupVals'] = lookupVals this makes lookupVals order matter
     #for field in deriveInput: ##indexing doesn't work with this
     #    lookupDict["lookupVals." + field] = _DataClean_(deriveInput[field])
-    lookupDict['lookupVals'] = {"$elemMatch": {lookupVals}}
+    lookupDict['lookupVals'] = {"$elemMatch": lookupVals}
 
     # test 2
     lval = coll.find_one(lookupDict)
