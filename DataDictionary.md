@@ -267,11 +267,11 @@ To optimize performance (specifically for data derive lookups), the following in
 ```javascript
 
 // 'lookup' collection
-db.lookup.ensureIndex({'type': 1, 'find': 1})
-db.lookup.ensureIndex({'type': 1, 'fieldName': 1, 'find': 1})
+db.lookup.ensureIndex({'type': 1, 'find': 1}, {unique: true, dropDups: true})
+db.lookup.ensureIndex({'type': 1, 'fieldName': 1, 'find': 1}, {unique: true, dropDups: true})
 
 // 'derive' collection
-db.derive.ensureIndex({'type': 1, "fieldName": 1, "lookupVals": 1})
+db.derive.ensureIndex({'type': 1, "fieldName": 1, "lookupVals": 1}, {unique: true, dropDups: true})
 
 ```
 
