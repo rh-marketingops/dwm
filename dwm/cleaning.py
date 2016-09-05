@@ -110,11 +110,18 @@ def DeriveDataLookup(fieldName, coll, deriveInput, overwrite=True, fieldVal='', 
     #for field in lookupVals:
     #    lookupVals[field] = _DataClean_(lookupVals[field]) # ordering of lookupVals matters when you do it this way
 
+    fields = []
+    vals = []
+    for field in lookupVals:
+        fields.append(field)
+        vals.append(_DataClean_(lookupVals[field]))
+
     lookupDict = {}
 
     lookupDict['fieldName'] = fieldName
     lookupDict['type'] = 'deriveValue'
-    lookupDict['lookupVals'] = {"$elemMatch": lookupVals}
+    lookupDict['lookupVals.field'] = {"$all": fields}
+    lookupDict['lookupVals.value'] = {"$all": vals}
 
     # test 2
     lval = coll.find_one(lookupDict)
