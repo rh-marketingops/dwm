@@ -107,16 +107,13 @@ def DeriveDataLookup(fieldName, coll, deriveInput, overwrite=True, fieldVal='', 
 
     lookupVals = deriveInput
 
-    for field in lookupVals:
-        lookupVals[field] = _DataClean_(lookupVals[field]) # ordering of lookupVals matters when you do it this way
+    #for field in lookupVals:
+    #    lookupVals[field] = _DataClean_(lookupVals[field]) # ordering of lookupVals matters when you do it this way
 
     lookupDict = {}
 
     lookupDict['fieldName'] = fieldName
     lookupDict['type'] = 'deriveValue'
-    #lookupDict['lookupVals'] = lookupVals this makes lookupVals order matter
-    #for field in deriveInput: ##indexing doesn't work with this
-    #    lookupDict["lookupVals." + field] = _DataClean_(deriveInput[field])
     lookupDict['lookupVals'] = {"$elemMatch": lookupVals}
 
     # test 2
