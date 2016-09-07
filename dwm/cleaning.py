@@ -119,7 +119,7 @@ def DeriveDataLookup(fieldName, coll, deriveInput, overwrite=True, fieldVal='', 
 
     for row in lookupVals:
         lookupDict['lookupVals.field']["$all"].append(row)
-        lookupDict['lookupVals.value']["$all"].append(lookupVals[row])
+        lookupDict['lookupVals.value']["$all"].append(_DataClean_(lookupVals[row]))
 
     # test 2
     lval = coll.find_one(lookupDict)
