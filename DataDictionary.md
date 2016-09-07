@@ -271,7 +271,7 @@ db.lookup.ensureIndex({'type': 1, 'find': 1})
 db.lookup.ensureIndex({'type': 1, 'fieldName': 1, 'find': 1})
 
 // 'derive' collection
-db.derive.ensureIndex({'type': 1, "fieldName": 1, "lookupVals": 1})
+db.derive.ensureIndex({'type': 1, "fieldName": 1, "lookupVals.find": 1, "lookupVals.value": 1})
 
 ```
 

@@ -123,7 +123,7 @@ def dwmOne(data, mongoDb, mongoConfig, config, writeContactHistory=True, returnH
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeDeriveData", namespace=udfNamespace)
 
     # Fill gaps / refresh derived data
-    data, history = DeriveDataLookupAll(data=data, configFields=fieldConfig, coll=deriveColl, histObj=history)
+    #data, history = DeriveDataLookupAll(data=data, configFields=fieldConfig, coll=deriveColl, histObj=history)
 
     ## Run user-defined functions
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="afterProcessing", namespace=udfNamespace)
