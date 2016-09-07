@@ -107,13 +107,19 @@ def DeriveDataLookup(fieldName, coll, deriveInput, overwrite=True, fieldVal='', 
 
     lookupVals = deriveInput
 
-    for field in sorted(lookupVals.keys()):
-        lookupVals[field] = _DataClean_(lookupVals[field]) # ordering of lookupVals matters when you do it this way
+    #for field in sorted(lookupVals.keys()):
+    #    lookupVals[field] = _DataClean_(lookupVals[field]) # ordering of lookupVals matters when you do it this way
 
     lookupDict = {}
 
     lookupDict['fieldName'] = fieldName
     lookupDict['type'] = 'deriveValue'
+    lookupDict['lookupVals.field'] = { "$all": [] }
+    lookupDict['lookupVals.value'] = { "$all": [] }
+
+    for row in lookupVals:
+        lookupDict['lookupVals.field']["$all"].append(row)
+        lookupDict['lookupVals.value']["$all"].append(lookupVals[row])
 
     # test 2
     lval = coll.find_one(lookupDict)
