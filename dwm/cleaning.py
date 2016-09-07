@@ -103,32 +103,25 @@ def DeriveDataLookup(fieldName, coll, deriveInput, overwrite=True, fieldVal='', 
         * fieldVal -- existing field value
         * histObj -- object to which field change history (if any) should be appended
     '''
-    # test 1
 
     lookupVals = deriveInput
 
-    #for field in sorted(lookupVals.keys()):
-    #    lookupVals[field] = _DataClean_(lookupVals[field]) # ordering of lookupVals matters when you do it this way
+    for field in sorted(lookupVals.keys()):
+        lookupVals[field] = _DataClean_(lookupVals[field]) # ordering of lookupVals matters when you do it this way
 
     lookupDict = {}
 
-    lookupDict['fieldName'] = fieldName
     lookupDict['type'] = 'deriveValue'
-    lookupDict['lookupVals.field'] = { "$all": [] }
-    lookupDict['lookupVals.value'] = { "$all": [] }
+    lookupDict['fieldName'] = fieldName
+    lookupDict['lookupVals'] = lookupVals
 
-    for row in lookupVals:
-        lookupDict['lookupVals.field']["$all"].append(row)
-        lookupDict['lookupVals.value']["$all"].append(_DataClean_(lookupVals[row]))
-
-    # test 2
     lval = coll.find_one(lookupDict)
 
     fieldValNew = fieldVal
-    # test 3
+
     if lval and (overwrite or (fieldVal=='')):
         fieldValNew = lval['value']
-    # test 4
+
     change = _CollectHistory_(lookupType='deriveValue', fromVal=fieldVal, toVal=fieldValNew, using=deriveInput)
 
     histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
