@@ -2,7 +2,7 @@ from .cleaning import DataLookup, RegexLookup, DeriveDataLookup, DeriveDataCopyV
 from datetime import datetime
 
 
-def lookupAll(data, configFields, lookupType, coll, histObj={}):
+def lookupAll(data, configFields, lookupType, db, histObj={}):
     '''
         Perform one type of direct data lookup or regex lookup for all relevant fields. Multi-field wrapper for DataLookup and RegexLookup
 
@@ -10,7 +10,7 @@ def lookupAll(data, configFields, lookupType, coll, histObj={}):
         * data -- Row of data to which lookup type should be applied
         * configFields -- runtime configuration dict Fields
         * lookupType -- one of ['genericLookup', 'fieldSpecificLookup', 'normLookup', 'genericRegex', 'fieldSpecificRegex', 'normRegex']
-        * coll -- pymongo client collection where lookup or regex documents are stored
+        * db -- pymongo client db
         * histObj -- object to which field change history (if any) should be appended
     '''
 
@@ -22,25 +22,25 @@ def lookupAll(data, configFields, lookupType, coll, histObj={}):
 
                 if lookupType in ['genericLookup', 'fieldSpecificLookup', 'normLookup']:
 
-                    fieldValNew, histObj = DataLookup(fieldVal=data[field], coll=coll, lookupType=lookupType, fieldName=field, histObj=histObj)
+                    fieldValNew, histObj = DataLookup(fieldVal=data[field], db=db, lookupType=lookupType, fieldName=field, histObj=histObj)
 
                 elif lookupType in ['genericRegex', 'fieldSpecificRegex', 'normRegex']:
 
-                    fieldValNew, histObj = RegexLookup(fieldVal=data[field], coll=coll, fieldName=field, lookupType=lookupType, histObj=histObj)
+                    fieldValNew, histObj = RegexLookup(fieldVal=data[field], db=db, fieldName=field, lookupType=lookupType, histObj=histObj)
 
                 data[field] = fieldValNew
 
     return data, histObj
 
 
-def DeriveDataLookupAll(data, configFields, coll, histObj={}):
+def DeriveDataLookupAll(data, configFields, db, histObj={}):
     '''
         Perform one type of data derivation for all relevant fields. Wrapper for DeriveDataLookup
 
         Arguments:
         * data -- Row of data to which lookup type should be applied
         * configFields -- runtime configuration dict Fields
-        * coll -- pymongo client collection where lookup documents are stored
+        * db -- pymongo client db
         * histObj -- object to which field change history (if any) should be appended
     '''
 
@@ -65,14 +65,14 @@ def DeriveDataLookupAll(data, configFields, coll, histObj={}):
 
                     if deriveSetConfig['type']=='deriveValue':
 
-                        fieldValNew, histObj = DeriveDataLookup(fieldName=field, coll=coll, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj)
+                        fieldValNew, histObj = DeriveDataLookup(fieldName=field, db=db, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj)
                     elif deriveSetConfig['type']=='copyValue':
 
                         fieldValNew, histObj = DeriveDataCopyValue(fieldName=field, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj)
 
                     elif deriveSetConfig['type']=='deriveRegex':
 
-                        fieldValNew, histObj = DeriveDataRegex(fieldName=field, coll=coll, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj)
+                        fieldValNew, histObj = DeriveDataRegex(fieldName=field, db=db, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj)
 
 
                 if fieldValNew!=fieldVal:
