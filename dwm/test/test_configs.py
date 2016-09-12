@@ -159,7 +159,40 @@ configs = [
                     "1": {
                         "type": "deriveValue",
                         "fieldSet": ["field2"],
-                        "overwrite": True
+                        "overwrite": True,
+                        "blankIfNoMatch": False
+                    }
+                }
+            }
+        },
+        "userDefinedFunctions": {
+            "beforeGenericValidation": {},
+            "beforeGenericRegex": {},
+            "beforeFieldSpecificValidation": {},
+            "beforeFieldSpecificRegex": {},
+            "beforeNormalization": {},
+            "beforeNormalizationRegex": {},
+            "beforeDeriveData": {},
+            "afterProcessing": {}
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
+    },
+    {
+        "configName": "test_deriveAll_deriveValue_blankIfNoMatch",
+        "fields": {
+            "field1": {
+                "lookup": [],
+                "derive": {
+                    "1": {
+                        "type": "deriveValue",
+                        "fieldSet": ["field2"],
+                        "overwrite": True,
+                        "blankIfNoMatch": True
                     }
                 }
             }
@@ -190,12 +223,14 @@ configs = [
                     "2": {
                         "type": "deriveValue",
                         "fieldSet": ["field4"],
-                        "overwrite": True
+                        "overwrite": True,
+                        "blankIfNoMatch": False
                     },
                     "1": {
                         "type": "deriveValue",
                         "fieldSet": ["field3"],
-                        "overwrite": True
+                        "overwrite": True,
+                        "blankIfNoMatch": False
                     }
                 }
             }
@@ -257,7 +292,40 @@ configs = [
                     "1": {
                         "type": "deriveRegex",
                         "fieldSet": ["field2"],
-                        "overwrite": True
+                        "overwrite": True,
+                        "blankIfNoMatch": False
+                    }
+                }
+            }
+        },
+        "userDefinedFunctions": {
+            "beforeGenericValidation": {},
+            "beforeGenericRegex": {},
+            "beforeFieldSpecificValidation": {},
+            "beforeFieldSpecificRegex": {},
+            "beforeNormalization": {},
+            "beforeNormalizationRegex": {},
+            "beforeDeriveData": {},
+            "afterProcessing": {}
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
+    },
+    {
+        "configName": "test_deriveAll_deriveRegex_blankIfNoMatch",
+        "fields": {
+            "field1": {
+                "lookup": [],
+                "derive": {
+                    "1": {
+                        "type": "deriveRegex",
+                        "fieldSet": ["field2"],
+                        "overwrite": True,
+                        "blankIfNoMatch": True
                     }
                 }
             }
@@ -288,7 +356,8 @@ configs = [
                     "1": {
                         "type": "deriveValue",
                         "fieldSet": ["field2"],
-                        "overwrite": False
+                        "overwrite": False,
+                        "blankIfNoMatch": False
                     }
                 }
             }
@@ -319,7 +388,8 @@ configs = [
                     "1": {
                         "type": "deriveRegex",
                         "fieldSet": ["field2"],
-                        "overwrite": False
+                        "overwrite": False,
+                        "blankIfNoMatch": False
                     }
                 }
             }

@@ -200,6 +200,11 @@ def test_deriveAll_deriveValue_overwriteFalse():
     dataOut = dwmAll(data = test_records.record_deriveAll_deriveValue_overwriteFalse, db = db, configName='test_deriveAll_deriveValue_overwriteFalse')
     assert dataOut[0]['field1'] == 'oldvalue'
 
+def test_deriveAll_deriveValue_blankIfNoMatch():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveValue_blankIfNoMatch, db = db, configName='test_deriveAll_deriveValue_blankIfNoMatch')
+    assert dataOut[0]['field1'] == ''
+
 # copyValue
 
 def test_deriveAll_copyValue():
@@ -228,6 +233,11 @@ def test_deriveAll_deriveRegex_overwriteFalse():
 
     dataOut = dwmAll(data = test_records.record_deriveAll_deriveRegex_overwriteFalse, db = db, configName='test_deriveAll_deriveRegex_overwriteFalse')
     assert dataOut[0]['field1'] == 'oldvalue'
+
+def test_deriveAll_deriveRegex_blankIfNoMatch():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveRegex_blankIfNoMatch, db = db, configName='test_deriveAll_deriveRegex_blankIfNoMatch')
+    assert dataOut[0]['field1'] == ''
 
 # ensure proper sorting on derive
 
@@ -387,6 +397,12 @@ def test_history_deriveValue_overwriteFalse():
     hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
     assert 'field1' not in hist.keys()
 
+def test_history_deriveValue_blankIfNoMatch():
+
+    dataOut = dwmAll(data = test_records.history_deriveValue_blankIfNoMatch, db = db, configName='test_deriveAll_deriveValue_blankIfNoMatch')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['field1']['deriveValue']['using']['blankIfNoMatch'] == 'no match found'
+
 # copyValue
 
 def test_history_copyValue():
@@ -421,6 +437,11 @@ def test_history_deriveRegex_overwriteFalse():
     hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
     assert 'field1' not in hist.keys()
 
+def test_history_deriveRegex_blankIfNoMatch():
+
+    dataOut = dwmAll(data = test_records.history_deriveRegex_blankIfNoMatch, db = db, configName='test_deriveAll_deriveRegex_blankIfNoMatch')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['field1']['deriveRegex']['pattern'] == 'no matching pattern'
 
 #########################################
 ## Test options around history

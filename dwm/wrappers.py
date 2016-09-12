@@ -65,14 +65,14 @@ def DeriveDataLookupAll(data, configFields, db, histObj={}):
 
                     if deriveSetConfig['type']=='deriveValue':
 
-                        fieldValNew, histObj = DeriveDataLookup(fieldName=field, db=db, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj)
+                        fieldValNew, histObj = DeriveDataLookup(fieldName=field, db=db, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj, blankIfNoMatch=deriveSetConfig['blankIfNoMatch'])
                     elif deriveSetConfig['type']=='copyValue':
 
                         fieldValNew, histObj = DeriveDataCopyValue(fieldName=field, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj)
 
                     elif deriveSetConfig['type']=='deriveRegex':
 
-                        fieldValNew, histObj = DeriveDataRegex(fieldName=field, db=db, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj)
+                        fieldValNew, histObj = DeriveDataRegex(fieldName=field, db=db, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj, blankIfNoMatch=deriveSetConfig['blankIfNoMatch'])
 
 
                 if fieldValNew!=fieldVal:

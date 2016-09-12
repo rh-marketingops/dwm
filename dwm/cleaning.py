@@ -91,7 +91,7 @@ def RegexLookup(fieldVal, db, fieldName, lookupType, histObj={}):
 
     return fieldValNew, histObjUpd
 
-def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', histObj={}):
+def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', histObj={}, blankIfNoMatch=False):
     '''
         Derive a data value given a single derivation rule
 
@@ -111,7 +111,7 @@ def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', hi
     lookupVals = deriveInput
 
     # Using a sort on field keys b/c using this type of lookup and only needing one index is dependent on field order
-    # TODO: find a way to do this that doesn't involve sorting for every field on every record 
+    # TODO: find a way to do this that doesn't involve sorting for every field on every record
     for field in sorted(lookupVals.keys()):
         lookupVals[field] = _DataClean_(lookupVals[field])
 
@@ -126,10 +126,15 @@ def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', hi
 
     fieldValNew = fieldVal
 
+    deriveUsing = deriveInput
+
     if lval and (overwrite or (fieldVal=='')):
         fieldValNew = lval['value']
+    elif blankIfNoMatch and not lval:
+        fieldValNew = ''
+        deriveUsing = {'blankIfNoMatch': 'no match found'}
 
-    change = _CollectHistory_(lookupType='deriveValue', fromVal=fieldVal, toVal=fieldValNew, using=deriveInput)
+    change = _CollectHistory_(lookupType='deriveValue', fromVal=fieldVal, toVal=fieldValNew, using=deriveUsing)
 
     histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
 
@@ -167,7 +172,7 @@ def DeriveDataCopyValue(fieldName, deriveInput, overwrite, fieldVal, histObj={})
 
     return fieldValNew, histObjUpd
 
-def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={}):
+def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={}, blankIfNoMatch=False):
     '''
         Derive field value by performing regex search on another field
 
@@ -187,6 +192,8 @@ def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={})
         raise Exception("more than one value in deriveInput")
 
     fieldValNew = fieldVal
+
+    deriveUsing = deriveInput
 
     row = list(deriveInput.keys())[0]
 
@@ -216,6 +223,11 @@ def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={})
 
         if reVal:
             reVal.close()
+            
+        if fieldValNew == fieldVal and blankIfNoMatch:
+            fieldValNew = ''
+            pattern = 'no matching pattern'
+            deriveUsing = {"blankIfNoMatch": "no match found"}
 
     change = _CollectHistory_(lookupType='deriveRegex', fromVal=fieldVal, toVal=fieldValNew, using=deriveInput, pattern=pattern)
 
