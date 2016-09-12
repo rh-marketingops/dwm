@@ -40,6 +40,8 @@ record_derive_sort = [{"emailAddress": "test@test.com", "field1": "", "field3": 
 
 record_deriveAll_deriveValue_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findthis"}]
 
+record_deriveAll_deriveValue_blankIfNoMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "youwillnotfindthis"}]
+
 record_deriveAll_deriveValue_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "dontfindthis"}]
 
 record_deriveAll_deriveValue_notChecked = [{"emailAddress": "test@test.com", "field3": "", "field2": "findthis"}]

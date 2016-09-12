@@ -200,6 +200,11 @@ def test_deriveAll_deriveValue_overwriteFalse():
     dataOut = dwmAll(data = test_records.record_deriveAll_deriveValue_overwriteFalse, db = db, configName='test_deriveAll_deriveValue_overwriteFalse')
     assert dataOut[0]['field1'] == 'oldvalue'
 
+def test_deriveAll_deriveValue_blankIfNoMatch():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveValue_blankIfNoMatch, db = db, configName='test_deriveAll_deriveValue_blankIfNoMatch')
+    assert dataOut[0]['field1'] == ''
+
 # copyValue
 
 def test_deriveAll_copyValue():
