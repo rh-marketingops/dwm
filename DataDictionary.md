@@ -264,16 +264,19 @@ Should have a "description" to let others know what the regex is supposed to do.
 
 ### Indexing
 
-To optimize performance (specifically for data derive lookups), the following indexes should be implemented within MongoDB:
+To optimize performance (specifically for deriveValue lookups), the following indexes should be implemented within MongoDB:
 
 ```javascript
 
-// 'lookup' collection
-db.lookup.ensureIndex({'type': 1, 'find': 1})
-db.lookup.ensureIndex({'type': 1, 'fieldName': 1, 'find': 1})
+db.genericLookup.ensureIndex({"find": 1})
+db.fieldSpecificLookup.ensureIndex({"fieldName": 1, "find": 1})
+db.normLookup.ensureIndex({"fieldName": 1, "find": 1})
 
-// 'derive' collection
-db.derive.ensureIndex({'type': 1, "fieldName": 1, "lookupVals": 1})
+db.fieldSpecificRegex.ensureIndex({"fieldName": 1})
+db.normRegex.ensureIndex({"fieldName": 1})
+
+db.deriveValue.ensureIndex({"fieldName": 1, "lookupVals": 1})
+db.deriveRegex.ensureIndex({"fieldName": 1})
 
 ```
 
