@@ -10,7 +10,9 @@ from .test_genericRegex import genericRegex
 from .test_fieldSpecificRegex import fieldSpecificRegex
 from .test_normRegex import normRegex
 
-from .test_derive import derive
+from .test_deriveValue import deriveValue
+from .test_deriveRegex import deriveRegex
+
 from dwm.test.test_configs import configs
 import dwm.test.test_records as test_records
 import dwm.test.test_udf as test_udf
@@ -46,9 +48,13 @@ for row in normRegex:
 
     db.normRegex.insert_one(row)
 
-for row in derive:
+for row in deriveValue:
 
-    db.derive.insert_one(row)
+    db.deriveValue.insert_one(row)
+
+for row in deriveRegex:
+
+    db.deriveRegex.insert_one(row)
 
 for row in configs:
 
