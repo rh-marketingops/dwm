@@ -83,7 +83,7 @@ Record-level audit history is a record of what changes were made to which data f
 
 ## Data Flow
 
-<iframe src="/diagrams/DWM_Arch_DataFlow.html"
+<iframe src="/diagrams/DWM_Arch_DataFlow.html"></iframe>
 
 1. Data is gathered for cleaning by the Python script utilizing the DWM package (i.e., using an API to export contact data from a Marketing Automation Platform)
 2. Data is passed, along with a `configName`, to the `dwmAll` function
