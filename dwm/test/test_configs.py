@@ -452,6 +452,26 @@ configs = [
         }
     },
     {
+        "configName": "test_writeContactHistory_writeConfig",
+        "fields": {},
+        "userDefinedFunctions": {
+            "beforeGenericValidation": {},
+            "beforeGenericRegex": {},
+            "beforeFieldSpecificValidation": {},
+            "beforeFieldSpecificRegex": {},
+            "beforeNormalization": {},
+            "beforeNormalizationRegex": {},
+            "beforeDeriveData": {},
+            "afterProcessing": {}
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
+    },
+    {
         "configName": "test_udf_beforeGenericValidation",
         "fields": {},
         "userDefinedFunctions": {
