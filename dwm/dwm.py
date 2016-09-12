@@ -55,7 +55,7 @@ def dwmAll(data, mongoDb, mongoConfig, configName, udfNamespace=__name__, verbos
 
 ## DWM order on a single record
 
-def dwmOne(data, mongoDb, mongoConfig, config, writeContactHistory=True, returnHistoryId=True, histIdField={"name": "emailAddress", "value": "emailAddress"}, udfNamespace=__name__):
+def dwmOne(data, mongoDb, config, writeContactHistory=True, returnHistoryId=True, histIdField={"name": "emailAddress", "value": "emailAddress"}, udfNamespace=__name__):
 
     '''
         Wrapper for individual DWM functions
@@ -63,16 +63,9 @@ def dwmOne(data, mongoDb, mongoConfig, config, writeContactHistory=True, returnH
         Arguments:
         * data -- single data record to clean; key values should map to system field names (i.e., "Job Role" is keyed as "jobRole", the internal DWM name, not "C_Job_Role11", which is the Eloqua name)
         * mongoDb -- PyMongo MongoClient DB instance (i.e., mongoDb = MongoClient('connectionString')['dbName'])
-        * mongoConfig -- dictionary of mongo collections to reference for the following: lookup, regex, derive, contactHistory
         * configName -- name of configuration to use
         * writeContactHistory -- bool; whether or not to write a before/after snapshot to contactHistory
     '''
-
-    ## Setup mongo collections using mongoConfig
-    lookupColl = mongoDb[mongoConfig['lookup']]
-    regexColl = mongoDb[mongoConfig['regex']]
-    deriveColl = mongoDb[mongoConfig['derive']]
-    contactHistoryColl = mongoDb[mongoConfig['contactHistory']]
 
     # setup history collector
     history = {}
@@ -87,43 +80,43 @@ def dwmOne(data, mongoDb, mongoConfig, config, writeContactHistory=True, returnH
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeGenericValidation", namespace=udfNamespace)
 
     # Run generic validation lookup
-    data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='genericLookup', coll=lookupColl, histObj=history)
+    data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='genericLookup', db=mongoDb, histObj=history)
 
     ## Run user-defined functions
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeGenericRegex", namespace=udfNamespace)
 
     # Run generic validation regex
-    data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='genericRegex', coll=regexColl, histObj=history)
+    data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='genericRegex', db=mongoDb, histObj=history)
 
     ## Run user-defined functions
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeFieldSpecificValidation", namespace=udfNamespace)
 
     # Run field-specific validation lookup
-    data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='fieldSpecificLookup', coll=lookupColl, histObj=history)
+    data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='fieldSpecificLookup', db=mongoDb, histObj=history)
 
     ## Run user-defined functions
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeFieldSpecificRegex", namespace=udfNamespace)
 
     # Run field-specific validation regex
-    data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='fieldSpecificRegex', coll=regexColl, histObj=history)
+    data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='fieldSpecificRegex', db=mongoDb, histObj=history)
 
     ## Run user-defined functions
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeNormalization", namespace=udfNamespace)
 
     # Run normalization lookup
-    data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='normLookup', coll=lookupColl, histObj=history)
+    data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='normLookup', db=mongoDb, histObj=history)
 
     ## Run user-defined functions
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeNormalizationRegex", namespace=udfNamespace)
 
     # Run normalization regex
-    data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='normRegex', coll=regexColl, histObj=history)
+    data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='normRegex', db=mongoDb, histObj=history)
 
     ## Run user-defined functions
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeDeriveData", namespace=udfNamespace)
 
     # Fill gaps / refresh derived data
-    data, history = DeriveDataLookupAll(data=data, configFields=fieldConfig, coll=deriveColl, histObj=history)
+    data, history = DeriveDataLookupAll(data=data, configFields=fieldConfig, db=mongoDb, histObj=history)
 
     ## Run user-defined functions
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="afterProcessing", namespace=udfNamespace)
@@ -132,7 +125,7 @@ def dwmOne(data, mongoDb, mongoConfig, config, writeContactHistory=True, returnH
     if writeContactHistory:
         history['timestamp'] = int(time.time())
         history[histIdField['name']] = data[histIdField['value']]
-        historyId = contactHistoryColl.insert_one(history).inserted_id
+        historyId = db['contactHistory'].insert_one(history).inserted_id
 
     if writeContactHistory and returnHistoryId:
         return data, historyId
