@@ -457,6 +457,12 @@ def test_writeContactHistory_False():
     dataOut = dwmAll(data = test_records.record_writeContactHistory_False, db = db, configName='test_writeContactHistory_False')
     assert 'historyId' not in dataOut[0].keys()
 
+def test_writeContactHistory_writeConfig():
+
+    dataOut = dwmAll(data = test_records.history_deriveRegex_blankIfNoMatch, db = db, configName='test_deriveAll_deriveRegex_blankIfNoMatch')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['configName']
+
 #########################################
 ## configuration does not exist
 @raises(Exception)
