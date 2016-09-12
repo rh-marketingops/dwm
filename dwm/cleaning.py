@@ -126,12 +126,13 @@ def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', hi
 
     fieldValNew = fieldVal
 
+    deriveUsing = deriveInput
+
     if lval and (overwrite or (fieldVal=='')):
         fieldValNew = lval['value']
-        derivedUsing = deriveInput
     elif blankIfNoMatch and not lval:
         fieldValNew = ''
-        derivedUsing = {'blankIfNoMatch': 'no match found'}
+        deriveUsing = {'blankIfNoMatch': 'no match found'}
 
     change = _CollectHistory_(lookupType='deriveValue', fromVal=fieldVal, toVal=fieldValNew, using=deriveUsing)
 
@@ -192,6 +193,8 @@ def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={},
 
     fieldValNew = fieldVal
 
+    deriveUsing = deriveInput
+
     row = list(deriveInput.keys())[0]
 
     pattern = ''
@@ -223,6 +226,7 @@ def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={},
         elif fieldValNew == fieldVal and blankIfNoMatch:
             fieldVal = ''
             pattern = 'no matching pattern'
+            deriveUsing = {"blankIfNoMatch": "no match found"}
 
     change = _CollectHistory_(lookupType='deriveRegex', fromVal=fieldVal, toVal=fieldValNew, using=deriveInput, pattern=pattern)
 
