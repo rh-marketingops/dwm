@@ -64,6 +64,17 @@ To be cleaned, a field must be present in the config document *and* in the data 
 - If the config includes ```jobRole``` but the record passed to DWM does *not* include ```jobRole```, then cleaning rules will not be applied to ```jobRole```
 - if the config does *not* include ```jobRole``` but the record passed to DWM *does* include ```jobRole```, then cleaning rules will not be applied to ```jobRole```
 
+#### Why store config separately from code?
+
+- Flexibility
+  - Ability to run multiple different configurations for different circumstances
+    - A standard configuration runs on a cron job every hour
+    - A single user decides to run a one-time cleanup of a field
+    - Standard configuration separate from cron job provided for API users
+  - Allow creation of UI for business users to easily modify configuration
+- Transparency + Security
+ - Allow non-owner business users to view the current configuration; promotes openness of data cleaning practices
+
 #### Special cases for ```derive``` configurations
 
 Similarly, for ```deriveValue```, ```deriveRegex```, and ```copyValue```, derivation rules will only be applied when the specified field *and all* of the fields listed in ```fieldSet``` are present in the record passed to DWM:
@@ -73,7 +84,7 @@ Similarly, for ```deriveValue```, ```deriveRegex```, and ```copyValue```, deriva
 Also included are two parameters:
 
 - overwrite: if the target field already has a value, should it be overwritten?
-- blankIfNoMatch: if the derive rules do not find a match, should the field be cleared out? 
+- blankIfNoMatch: if the derive rules do not find a match, should the field be cleared out?
 
 #### Example:
 
@@ -152,132 +163,6 @@ Also included are two parameters:
 }
 ```
 
-
-## Runtime settings
-
-High-level settings dictating what actions DWM will run
-
- - Why not hard-code?
-  - Allows for individual configuration of fields from a UI
-  - Also allows one-time settings to be run (i.e., as a DWM Admin, I want to run validation and normalization only on the field "Job Role" for a specific segment)
-  - Initial setup (before UI is built) will be akin to hard-coding
-
-
-
-### Run Config
-
-Which fields are managed, and which cleaning functions are used
-
-```javascript
-{
-  "configName": "cron",
-  "createdBy": "createdByUser",
-  "createdDate": dateUnixtime,
-  "lastModifiedBy": "modifiedByUser",
-  "lastModifiedDate": dateUnixtime,
-  "fields": {
-    "field1": {
-      "lookup": ["fieldSpecificLookup", "genericLookup", "normLookup", "fieldSpecificRegex", "genericRegex", "normRegex"],
-      "derive": {
-        "1": {
-          "type": "deriveValue",
-          "fieldSet": ["field2", "field3"],
-          "overwrite": true,
-          "blankIfNoMatch": false
-          },
-        "2": {
-          "type": "copyValue",
-          "fieldSet": ["field3"],
-          "overwrite": false,
-          "blankIfNoMatch": false
-          },
-        "4": {
-          "type": "deriveRegex",
-          "fieldSet": ["field6"],
-          "overwrite": true,
-          "blankIfNoMatch": false
-        },
-        "3": {
-          "type": "deriveValue",
-          "fieldSet": ["field2", "field4"],
-          "overwrite": true,
-          "blankIfNoMatch": true
-          }
-      }
-    },
-    ...
-  },
-  "userDefinedFunctions": {
-    "beforeGenericValidation": {
-      "1": "somefunction",
-      "2": "anotherfunction"
-    },
-    "beforeGenericRegex": {
-      "1": "heylookafunction"
-    },
-    "beforeFieldSpecificValidation": {
-      "1": "reallyanotherone"
-    },
-    "beforeFieldSpecificRegex": {
-      "1": "okaythisisgettingridiculous"
-    },
-    "beforeNormalization": {
-      "1": "igiveup"
-    },
-    "beforeNormalizationRegex": {
-      "1": "okayjustonemore",
-      "2": "ireallymeanitthistime"
-    },
-    "beforeDeriveData": {
-      "1": "imtired"
-    },
-    "afterProcessing": {
-      "1": "iwantaburrito"
-    }
-  },
-  "history": {
-    "writeContactHistory": true,
-    "returnHistoryId": true,
-    "returnHistoryField": "historyId",
-    "histIdField": {"name": "emailAddress", "value": "emailAddress"}
-  }
-}
-```
-
-#### Setting types
-
-- validation:
-  - fieldSpecificLookup: lookup exact value for field-specific bad data
-  - fieldSpecificRegex: use field-specific regex for bad data
-  - genericLookup: lookup exact value for generic bad data
-  - genericRegex: use generic regex for bad data
-- deriveValue
-  - dict key: int value for priority order
-  - type:
-  - fieldSet: list of field names on which to lookup
-  - overwrite: lookup value even if field already has value
-- normalization
-  - normLookup: lookup exact value for field-specific normalization
-  - normRegex: use field-specific regex for normalization
-- userDefinedFunctions
-  - beforeGenericValidation
-  - beforeGenericRegex
-  - beforeFieldSpecificValidation
-  - beforeFieldSpecificRegex
-  - beforeNormalization
-  - beforeNormalizationRegex
-  - beforeDeriveData
-  - afterProcessing
-- history
-  - writeContactHistory: Should a history record be written to the database
-  - returnHistoryId: return MongoDB ```_id``` of history record
-  - returnHistoryField: if returnHistoryId, field name of returned ```_id```
-  - histIdField: Identifier for history records
-
-## Data cleaning schema
-
-The following "schema" are grouped by which collection dwm expects to find them in.
-
 ### genericLookup
 
 ```javascript
@@ -286,7 +171,6 @@ The following "schema" are grouped by which collection dwm expects to find them 
   "type": "genericLookup",
   "find": "aaaaaaaaaaaa"
 }
-
 ```
 
 ### fieldSpecificLookup
@@ -299,7 +183,6 @@ The following "schema" are grouped by which collection dwm expects to find them 
   "fieldName": "field1",
   "find": "thisemailshouldnotbehere@wtf.org"
 }
-
 ```
 
 ### normLookup
@@ -343,7 +226,6 @@ Keeping the ```lookupVals``` in a sub-document allows for indexing on the ```der
   },
   "value": "IT Decision Maker"
 }
-
 ```
 
 ### deriveRegex
@@ -397,31 +279,11 @@ Keeping the ```lookupVals``` in a sub-document allows for indexing on the ```der
   "replace": "Programmer/Developer",
   "description": "looks for 'developer' job roles"
 }
-
 ```
 
-### Indexing
+### contactHistory
 
-To optimize performance (specifically for deriveValue lookups), the following indexes should be implemented within MongoDB:
-
-```javascript
-
-db.genericLookup.ensureIndex({"find": 1})
-db.fieldSpecificLookup.ensureIndex({"fieldName": 1, "find": 1})
-db.normLookup.ensureIndex({"fieldName": 1, "find": 1})
-
-db.fieldSpecificRegex.ensureIndex({"fieldName": 1})
-db.normRegex.ensureIndex({"fieldName": 1})
-
-db.deriveValue.ensureIndex({"fieldName": 1, "lookupVals": 1})
-db.deriveRegex.ensureIndex({"fieldName": 1})
-
-```
-
-## Audit
-
-### Contact history
-Captures contact-level field changes
+Provides an audit history of records to promote transparency and allow for troubleshooting. 
 
 ```javascript
 {
@@ -450,4 +312,22 @@ Captures contact-level field changes
     }
   }
 }
+```
+
+## Indexing
+
+To optimize performance (specifically for deriveValue lookups), the following indexes should be implemented within MongoDB:
+
+```javascript
+
+db.genericLookup.ensureIndex({"find": 1})
+db.fieldSpecificLookup.ensureIndex({"fieldName": 1, "find": 1})
+db.normLookup.ensureIndex({"fieldName": 1, "find": 1})
+
+db.fieldSpecificRegex.ensureIndex({"fieldName": 1})
+db.normRegex.ensureIndex({"fieldName": 1})
+
+db.deriveValue.ensureIndex({"fieldName": 1, "lookupVals": 1})
+db.deriveRegex.ensureIndex({"fieldName": 1})
+
 ```
