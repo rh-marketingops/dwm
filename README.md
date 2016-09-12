@@ -77,7 +77,7 @@ Also included may be third-party data enrichment. For example, if you have an AP
 
 ## Audit History
 
-Record-level audit history is a record of what changes were made to which data fields. This includes what the previous value was, what the new/replacement value was, and what rule caused the change. Although it is optional in this package, it is recommended for any automation of these processes to provide both a record for troubleshooting and transparency for the business users of the database.
+Record-level audit history is a record of what changes were made to which data fields. This includes what the previous value was, what the new/replacement value was, and what rule caused the change. The record is somewhat akin to a git commit, in that it only records where changes were made, and does not keep a record of anything that remained unchanged. Although it is optional in this package, it is recommended for any automation of these processes to provide both a record for troubleshooting and transparency for the business users of the database.
 
 # Architecture
 
@@ -86,10 +86,20 @@ Record-level audit history is a record of what changes were made to which data f
 ![alt text](/diagrams/DWM_Arch_DataFlow.png "High-level flow of using dwmAll")
 
 1. Data is gathered for cleaning by the Python script utilizing the DWM package (i.e., using an API to export contact data from a Marketing Automation Platform)
-2. Data is passed, along with a `configName`, to the `dwmAll` function
-3. Script takes post-processing action (i.e., using an API to import the cleaned data back into a Marketing Automation Platform)
+2. Connect to MongoDB using pymongo `MongoClient`
+3. Data is passed (as a list of dictionaries), along with a `configName` and MongoDB connection, to the `dwmAll` function
+4. Script takes post-processing action (i.e., using an API to import the cleaned data back into a Marketing Automation Platform)
 
 ## dwmAll
+
+This function is the highest-level wrapper for all DWM functions.
+
+1. Use `configName` to retrieve config document from MongoDB
+2. Apply sorting to relevant parts of config (`derive` and `userDefinedFunctions`)
+  - Do this because you can't store a Python OrderedDict in MongoDB, and the order in which some rules are applied can be important
+3. Loop through data, passing each record to `dwmOne` along with config and MongoDB collection
+4. If configured to write history *and* return the history ID, append the `_id` to each record
+5. Return list of dictionaries with cleaned data 
 
 ## dwmOne
 
