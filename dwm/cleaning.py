@@ -4,26 +4,28 @@ import re
 
 from .helpers import _CollectHistory_, _CollectHistoryAgg_, _DataClean_
 
-def DataLookup(fieldVal, coll, lookupType, fieldName, histObj={}):
+def DataLookup(fieldVal, db, lookupType, fieldName, histObj={}):
     '''
         Lookup a value to replace the input value for a given field
 
         Arguments:
         * fieldVal -- field value against which to perform lookup
-        * coll -- pymongo client collection where lookup documents are stored
+        * db -- pymongo client db
         * lookupType -- one of ['genericLookup', 'fieldSpecificLookup', 'normLookup']
         * fieldName -- lookup field name
         * histObj -- object to which field change history (if any) should be appended
     '''
 
     if (lookupType=='genericLookup'):
-        lookupDict = {"type": lookupType, "find": _DataClean_(fieldVal)}
+        lookupDict = {"find": _DataClean_(fieldVal)}
     elif (lookupType in ['fieldSpecificLookup', 'normLookup']):
-        lookupDict = {"type": lookupType, "fieldName": fieldName, "find": _DataClean_(fieldVal)}
+        lookupDict = {"fieldName": fieldName, "find": _DataClean_(fieldVal)}
     else:
-        raise ValueError("Invalid type")
+        raise ValueError("Invalid lookupType")
 
     fieldValNew = fieldVal
+
+    coll = db[lookupType]
 
     lval = coll.find_one(lookupDict)
 
@@ -40,27 +42,29 @@ def DataLookup(fieldVal, coll, lookupType, fieldName, histObj={}):
     return fieldValNew, histObjUpd
 
 
-def RegexLookup(fieldVal, coll, fieldName, lookupType, histObj={}):
+def RegexLookup(fieldVal, db, fieldName, lookupType, histObj={}):
     '''
         Lookup and perform a regex replace
 
         Arguments:
         * fieldVal -- field value against which to perform regex replace
-        * coll -- pymongo client collection where regex documents are stored
+        * db -- pymongo client db
         * fieldName -- regex field name
         * lookupType -- one of ['fieldSpecificRegex', 'genericRegex', 'normRegex']
         * histObj -- object to which field change history (if any) should be appended
     '''
 
     if (lookupType=='genericRegex'):
-        lookupDict = {"type": lookupType}
+        lookupDict = {}
     elif (lookupType in ['fieldSpecificRegex', 'normRegex']):
-        lookupDict = {"type": lookupType, "fieldName": fieldName}
+        lookupDict = {"fieldName": fieldName}
     else:
         raise ValueError("Invalid type")
 
     fieldValNew = fieldVal
     pattern = ''
+
+    coll = db[lookupType]
 
     reVal = coll.find(lookupDict)
 
@@ -87,13 +91,13 @@ def RegexLookup(fieldVal, coll, fieldName, lookupType, histObj={}):
 
     return fieldValNew, histObjUpd
 
-def DeriveDataLookup(fieldName, coll, deriveInput, overwrite=True, fieldVal='', histObj={}):
+def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', histObj={}):
     '''
         Derive a data value given a single derivation rule
 
         Arguments:
         * fieldName -- field name for which to derive a value
-        * coll -- pymongo client collection where derivation lookup documents are stored
+        * db -- pymongo client db
         * deriveInput -- an input dictionary with the field values to lookup
             {
                 "lookupField1": "lookupVal1",
@@ -106,14 +110,17 @@ def DeriveDataLookup(fieldName, coll, deriveInput, overwrite=True, fieldVal='', 
 
     lookupVals = deriveInput
 
+    # Using a sort on field keys b/c using this type of lookup and only needing one index is dependent on field order
+    # TODO: find a way to do this that doesn't involve sorting for every field on every record 
     for field in sorted(lookupVals.keys()):
-        lookupVals[field] = _DataClean_(lookupVals[field]) # ordering of lookupVals matters when you do it this way
+        lookupVals[field] = _DataClean_(lookupVals[field])
 
     lookupDict = {}
 
-    lookupDict['type'] = 'deriveValue'
     lookupDict['fieldName'] = fieldName
     lookupDict['lookupVals'] = lookupVals
+
+    coll = db['deriveValue']
 
     lval = coll.find_one(lookupDict)
 
@@ -160,13 +167,13 @@ def DeriveDataCopyValue(fieldName, deriveInput, overwrite, fieldVal, histObj={})
 
     return fieldValNew, histObjUpd
 
-def DeriveDataRegex(fieldName, coll, deriveInput, overwrite, fieldVal, histObj={}):
+def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={}):
     '''
         Derive field value by performing regex search on another field
 
         Arguments:
         * fieldName -- field name for which to derive a value
-        * coll -- pymongo client collection where derivation regex documents are stored
+        * db -- pymongo client db
         * deriveInput -- an input dictionary with the field values to lookup
             {
                 "lookupField1": "lookupVal1"
@@ -189,9 +196,10 @@ def DeriveDataRegex(fieldName, coll, deriveInput, overwrite, fieldVal, histObj={
 
         lookupDict = {}
 
-        lookupDict['type'] = 'deriveRegex'
         lookupDict['deriveFieldName'] = row
         lookupDict['fieldName'] = fieldName
+
+        coll = db['deriveRegex']
 
         reVal = coll.find(lookupDict)
 
