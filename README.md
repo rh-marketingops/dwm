@@ -110,6 +110,8 @@ This function is the highest-level wrapper for all DWM functions.
 
 This function applies wrapper functions to each data record. It follows the specification above, in *Business Logic: Order*.
 
+![alt text](/diagrams/DWM_Arch_dwmOne.png "High-level flow of using dwmOne")
+
 1. Create a history collector `{}`
 2. Run `userDefinedFunctions=beforeGenericValidation`
 3. Run `lookupAll` with `lookupType='genericLookup'`
