@@ -195,6 +195,8 @@ Defines a lookup value for transforming a single field value (generic or field-s
 Defines a potentially multi-field based lookup mapped to a single field (fill-gaps or derived fields; i.e. Persona is a combination of Job Role and Department).
 Keeping the ```lookupVals``` in a sub-document allows for indexing on the ```derive``` collection.
 
+*IMPORTANT* ```lookupVals``` sub-document must be keyed alphabetically! This allows both indexing and querying to work properly.
+
 ```javascript
 // single-value derived lookup
 {
