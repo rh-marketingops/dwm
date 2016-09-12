@@ -99,9 +99,9 @@ Python 2.7 is the recommended minimum, although a 3.x release is advisable if un
 
 ## MongoDB
 
-MongoDB is required for persistent storage of runtime configurations, lookup tables, regex rules, and derivation rules. It also serves as an (optional, but recommended) home for record-level audit history. Also, since operational data will be stored here, you should have some sort of routine backup process in place.
+MongoDB is required for persistent storage of runtime configurations, lookup tables, regex rules, and derivation rules. It also serves as an (optional, but recommended) home for record-level audit history. Also, since operational data will be stored here, you should have some sort of routine backup process in place. Exact description of the schema is included in the DataDictionary.
 
-This package was designed with MongoDB 3.2.x, but due to multi-key indexing requirements at least 2.5.5 is advised. 
+This package was designed with MongoDB 3.2.x, but due to multi-key indexing requirements at least 2.5.5 is advised.
 
 ## Configuration
 
