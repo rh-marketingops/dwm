@@ -83,7 +83,7 @@ Record-level audit history is a record of what changes were made to which data f
 
 ## Data Flow
 
-![alt text](/diagrams/DWM_Arch_DataFlow.png "High-level flow of using dwmAll")
+![alt text](/diagrams/DWM_Arch_DataFlow.png "High-level flow of using the DWM")
 
 1. Data is gathered for cleaning by the Python script utilizing the DWM package (i.e., using an API to export contact data from a Marketing Automation Platform)
 2. Connect to MongoDB using pymongo `MongoClient`
@@ -94,12 +94,14 @@ Record-level audit history is a record of what changes were made to which data f
 
 This function is the highest-level wrapper for all DWM functions.
 
+![alt text](/diagrams/DWM_Arch_dwmAll.png "High-level flow of using dwmAll")
+
 1. Use `configName` to retrieve config document from MongoDB
 2. Apply sorting to relevant parts of config (`derive` and `userDefinedFunctions`)
   - Do this because you can't store a Python OrderedDict in MongoDB, and the order in which some rules are applied can be important
 3. Loop through data, passing each record to `dwmOne` along with config and MongoDB collection
 4. If configured to write history *and* return the history ID, append the `_id` to each record
-5. Return list of dictionaries with cleaned data 
+5. Return list of dictionaries with cleaned data
 
 ## dwmOne
 
@@ -114,7 +116,7 @@ This function is the highest-level wrapper for all DWM functions.
 ## Hosting
 
  - Local machine: it's entirely possible to run this complete process on your individual laptop/desktop, although may not recommended due to backup and business continuity risks.
- - PaaS: Platform-as-a-Service is the recommended route to get up-and-running quickly. This way, developers don't have to worry about the engineering concerns of making sure their services remain running. Options are Red Hat's Openshift, Heroku, and other options available on AWS. Be warned that the PaaS may have to be internally hosted at your workplace to ensure connectivity to internal databases.
+ - PaaS: Platform-as-a-Service is the recommended route to get up-and-running quickly. This way, developers don't have to worry about the engineering concerns of making sure their services remain running. We're using Red Hat's Openshift, but there are other options (such as Heroku) available on AWS. Be warned that the PaaS may have to be internally hosted at your workplace to ensure connectivity to internal databases. You should also be aware of potential security concerns around PII, especially if you're storing record history, and may need to work with your IT team to ensure secure storage/transit for such data.
 
 ## Python
 
