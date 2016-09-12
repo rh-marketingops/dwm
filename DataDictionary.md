@@ -1,26 +1,27 @@
-# Data structure definitions
+# DWM - Data Dictionary
 
 ## Input data
 
-```javascript
+Data input is expected to be one dictionary per record to be cleaned. Keys map to field names.
+
+If ```writeContactHistory``` is configured, then at a minimum that field must be included in the dictionary for each record.
+
+```python
 {
   "emailAddress": "testing@test.com",
   "field1": "Hi! I'm a field value"
 }
 ```
 
-## Runtime settings
+## Stored Settings
 
-High-level settings dictating what actions DWM will run
+Stored settings are documents stored in the production MongoDB that dictate how DWM operates. This includes the actual cleaning rules/values which will be applied, configuration for what rules to apply to which fields, record-level histories, and field information which can be displayed in a UI to help business users better define their configurations.
 
- - Why not hard-code?
-  - Allows for individual configuration of fields from a UI
-  - Also allows one-time settings to be run (i.e., as a DWM Admin, I want to run validation and normalization only on the field "Job Role" for a specific segment)
-  - Initial setup (before UI is built) will be akin to hard-coding
+The following defines each collection.
 
 ### Available fields
 
-Field-level descriptions
+Field-level descriptions. Currently not used in processing, but defining schema now as future versions may include validation of field values based on field constraints.
 
 ```javascript
 {
@@ -53,6 +54,115 @@ Field-level descriptions
   }
 }
 ```
+
+### config
+
+Which fields are cleaned by a single run.
+
+To be cleaned, a field must be present in the config document *and* in the data record passed to DWM:
+- If the config includes ```jobRole``` and the record passed to DWM includes the field ```jobRole```, then cleaning rules will be applied to ```jobRole```
+- If the config includes ```jobRole``` but the record passed to DWM does *not* include ```jobRole```, then cleaning rules will not be applied to ```jobRole```
+- if the config does *not* include ```jobRole``` but the record passed to DWM *does* include ```jobRole```, then cleaning rules will not be applied to ```jobRole```
+
+#### Special cases for ```derive``` configurations
+
+Similarly, for ```deriveValue```, ```deriveRegex```, and ```copyValue```, derivation rules will only be applied when the specified field *and all* of the fields listed in ```fieldSet``` are present in the record passed to DWM:
+- If the config includes a ```deriveValue``` rule for ```persona``` which requires ```jobRole``` and ```department```, and the record passed includes all three, then DWM will attempt to derive ```persona```
+- If the config includes a ```deriveValue``` rule for ```persona``` which requires ```jobRole``` and ```department```, and the record passed only includes ```jobRole``` and ```persona```, then it will not attempt to derive a value for ```persona```
+
+Also included are two parameters:
+
+- overwrite: if the target field already has a value, should it be overwritten?
+- blankIfNoMatch: if the derive rules do not find a match, should the field be cleared out? 
+
+#### Example:
+
+```javascript
+{
+  "configName": "configyMcConfigFace",
+  "createdBy": "createdByUser",
+  "createdDate": dateUnixtime,
+  "lastModifiedBy": "modifiedByUser",
+  "lastModifiedDate": dateUnixtime,
+  "fields": {
+    "field1": {
+      "lookup": ["fieldSpecificLookup", "genericLookup", "normLookup", "fieldSpecificRegex", "genericRegex", "normRegex"],
+      "derive": {
+        "1": {
+          "type": "deriveValue",
+          "fieldSet": ["field2", "field3"],
+          "overwrite": true,
+          "blankIfNoMatch": false
+          },
+        "2": {
+          "type": "copyValue",
+          "fieldSet": ["field3"],
+          "overwrite": false
+          },
+        "4": {
+          "type": "deriveRegex",
+          "fieldSet": ["field6"],
+          "overwrite": true,
+          "blankIfNoMatch": false
+        },
+        "3": {
+          "type": "deriveValue",
+          "fieldSet": ["field2", "field4"],
+          "overwrite": true,
+          "blankIfNoMatch": true
+          }
+      }
+    },
+    ...
+  },
+  "userDefinedFunctions": {
+    "beforeGenericValidation": {
+      "1": "somefunction",
+      "2": "anotherfunction"
+    },
+    "beforeGenericRegex": {
+      "1": "heylookafunction"
+    },
+    "beforeFieldSpecificValidation": {
+      "1": "reallyanotherone"
+    },
+    "beforeFieldSpecificRegex": {
+      "1": "okaythisisgettingridiculous"
+    },
+    "beforeNormalization": {
+      "1": "igiveup"
+    },
+    "beforeNormalizationRegex": {
+      "1": "okayjustonemore",
+      "2": "ireallymeanitthistime"
+    },
+    "beforeDeriveData": {
+      "1": "imtired"
+    },
+    "afterProcessing": {
+      "1": "iwantaburrito"
+    }
+  },
+  "history": {
+    "writeContactHistory": true,
+    "returnHistoryId": true,
+    "returnHistoryField": "historyId",
+    "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+  }
+}
+```
+
+
+## Runtime settings
+
+High-level settings dictating what actions DWM will run
+
+ - Why not hard-code?
+  - Allows for individual configuration of fields from a UI
+  - Also allows one-time settings to be run (i.e., as a DWM Admin, I want to run validation and normalization only on the field "Job Role" for a specific segment)
+  - Initial setup (before UI is built) will be akin to hard-coding
+
+
 
 ### Run Config
 
@@ -168,9 +278,7 @@ Which fields are managed, and which cleaning functions are used
 
 The following "schema" are grouped by which collection dwm expects to find them in.
 
-### lookup
-
-Defines a lookup value for transforming a single field value (generic or field-specific validation, normalization)
+### genericLookup
 
 ```javascript
 //generic validation lookup
@@ -179,12 +287,24 @@ Defines a lookup value for transforming a single field value (generic or field-s
   "find": "aaaaaaaaaaaa"
 }
 
+```
+
+### fieldSpecificLookup
+
+```javascript
+
 //field-specific validation lookup
 {
   "type": "fieldSpecificLookup",
   "fieldName": "field1",
   "find": "thisemailshouldnotbehere@wtf.org"
 }
+
+```
+
+### normLookup
+
+```javascript
 
 // normalization lookup
 {
@@ -195,7 +315,7 @@ Defines a lookup value for transforming a single field value (generic or field-s
 }
 ```
 
-### derive
+### deriveValue
 
 Defines a potentially multi-field based lookup mapped to a single field (fill-gaps or derived fields; i.e. Persona is a combination of Job Role and Department).
 Keeping the ```lookupVals``` in a sub-document allows for indexing on the ```derive``` collection.
@@ -224,6 +344,12 @@ Keeping the ```lookupVals``` in a sub-document allows for indexing on the ```der
   "value": "IT Decision Maker"
 }
 
+```
+
+### deriveRegex
+
+```javascript
+
 // derive value by regex on another field
 {
   "type": "deriveRegex",
@@ -235,10 +361,7 @@ Keeping the ```lookupVals``` in a sub-document allows for indexing on the ```der
 }
 ```
 
-### regex
-
-Defines a regular expression transformation that will be applied to a single field value (generic or field-specific validation, normalization).
-Should have a "description" to let others know what the regex is supposed to do.
+### genericRegex
 
 ```javascript
 // generic validation regex
@@ -247,6 +370,11 @@ Should have a "description" to let others know what the regex is supposed to do.
   "pattern": "[coolpattern]",
   "description": "looks for strings that are all the same character"
 }
+```
+
+### fieldSpecificRegex
+
+```javascript
 
 // field-specific validation regex
 {
@@ -255,6 +383,11 @@ Should have a "description" to let others know what the regex is supposed to do.
   "pattern": "[anothercoolpattern]",
   "description": "looks for string of only numbers"
 }
+```
+
+### normRegex
+
+```javascript
 
 // normalization regex
 {
