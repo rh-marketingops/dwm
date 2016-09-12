@@ -1,7 +1,9 @@
 import mongomock
 from nose.tools import *
 from dwm import dwmAll
-from dwm.test.test_lookup import lookup
+from .test_genericLookup import genericLookup
+from .test_fieldSpecificLookup import fieldSpecificLookup
+from .test_normLookup import normLookup
 from .test_regex import regex
 from .test_derive import derive
 from dwm.test.test_configs import configs
@@ -15,9 +17,17 @@ import dwm.helpers as helpers
 
 db = mongomock.MongoClient().db
 
-for row in lookup:
+for row in genericLookup:
 
-    db.lookup.insert_one(row)
+    db.genericLookup.insert_one(row)
+
+for row in fieldSpecificLookup:
+
+    db.fieldSpecificLookup.insert_one(row)
+
+for row in normLookup:
+
+    db.normLookup.insert_one(row)
 
 for row in regex:
 
