@@ -502,13 +502,13 @@ def test_udf_afterProcessing_invalidFcn():
 @raises(ValueError)
 def test_DataLookup_badType():
 
-    testVal, histObj = cleaning.DataLookup(fieldVal='', coll=db.lookup, lookupType='badlookup', fieldName='')
+    testVal, histObj = cleaning.DataLookup(fieldVal='', db=db, lookupType='badlookup', fieldName='')
 
 # bad regex type:
 @raises(ValueError)
 def test_RegexLookup_badType():
 
-    testVal, histObj = cleaning.RegexLookup(fieldVal='', coll=db.lookup, lookupType='badregex', fieldName='')
+    testVal, histObj = cleaning.RegexLookup(fieldVal='', db=db, lookupType='badregex', fieldName='')
 
 # multiple deriveCopy inputs:
 @raises(Exception)
@@ -520,4 +520,4 @@ def test_DeriveDataCopyValue_badType():
 @raises(Exception)
 def test_DeriveDataRegex_badType():
 
-    testVal, histObj = cleaning.DeriveDataRegex(fieldName='test', coll=db.derive, deriveInput={"field1": "a", "field2": "b"}, overwrite=True, fieldVal='')
+    testVal, histObj = cleaning.DeriveDataRegex(fieldName='test', db=db, deriveInput={"field1": "a", "field2": "b"}, overwrite=True, fieldVal='')
