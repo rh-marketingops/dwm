@@ -1,10 +1,15 @@
 import mongomock
 from nose.tools import *
 from dwm import dwmAll
+
 from .test_genericLookup import genericLookup
 from .test_fieldSpecificLookup import fieldSpecificLookup
 from .test_normLookup import normLookup
-from .test_regex import regex
+
+from .test_genericRegex import genericRegex
+from .test_fieldSpecificRegex import fieldSpecificRegex
+from .test_normRegex import normRegex
+
 from .test_derive import derive
 from dwm.test.test_configs import configs
 import dwm.test.test_records as test_records
@@ -29,9 +34,17 @@ for row in normLookup:
 
     db.normLookup.insert_one(row)
 
-for row in regex:
+for row in genericRegex:
 
-    db.regex.insert_one(row)
+    db.genericRegex.insert_one(row)
+
+for row in fieldSpecificRegex:
+
+    db.fieldSpecificRegex.insert_one(row)
+
+for row in normRegex:
+
+    db.normRegex.insert_one(row)
 
 for row in derive:
 
