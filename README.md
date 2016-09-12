@@ -15,7 +15,7 @@ This package was originally developed for use by Red Hat's Marketing Operations 
 
 # Business logic
 
-The following are what we have determined to be the general "best practices" for maintaining data quality.
+The following are what we have determined to be (as a best practice) the general rules available for cleaning a set of data. Theoretically, any string field can have these rules applied to them; however, when configuring DWM, one should evaluate whether or not a rule is appropriate for a given field.
 
 ## Validation
 
@@ -75,6 +75,8 @@ The above three processes are the most common processes that need to be applied 
 
 Also included may be third-party data enrichment. For example, if you have an API contract with a company that provides IP address geolocation, or provides additional company info based on email domain, you can define a function to interact with that API and pull additional data into the fields of interest.
 
+## Order
+
 ## Audit History
 
 Record-level audit history is a record of what changes were made to which data fields. This includes what the previous value was, what the new/replacement value was, and what rule caused the change. The record is somewhat akin to a git commit, in that it only records where changes were made, and does not keep a record of anything that remained unchanged. Although it is optional in this package, it is recommended for any automation of these processes to provide both a record for troubleshooting and transparency for the business users of the database.
@@ -86,9 +88,10 @@ Record-level audit history is a record of what changes were made to which data f
 ![alt text](/diagrams/DWM_Arch_DataFlow.png "High-level flow of using the DWM")
 
 1. Data is gathered for cleaning by the Python script utilizing the DWM package (i.e., using an API to export contact data from a Marketing Automation Platform)
-2. Connect to MongoDB using pymongo `MongoClient`
-3. Data is passed (as a list of dictionaries), along with a `configName` and MongoDB connection, to the `dwmAll` function
-4. Script takes post-processing action (i.e., using an API to import the cleaned data back into a Marketing Automation Platform)
+2. Import custom functions (if applicable)
+3. Connect to MongoDB using pymongo `MongoClient`
+4. Data is passed (as a list of dictionaries), along with a `configName` and MongoDB connection, to the `dwmAll` function
+5. Script takes post-processing action (i.e., using an API to import the cleaned data back into a Marketing Automation Platform)
 
 ## dwmAll
 
@@ -105,7 +108,32 @@ This function is the highest-level wrapper for all DWM functions.
 
 ## dwmOne
 
+This function applies wrapper functions to each data record. It follows the specification above, in *Business Logic: Order*.
+
+1. Create a history collector `{}`
+2. Run `userDefinedFunctions=beforeGenericValidation`
+3. Run `lookupAll` with `lookupType='genericLookup'`
+4. Run `userDefinedFunctions=beforeGenericRegex`
+5. Run `lookupAll` with `lookupType='genericRegex'`
+6. Run `userDefinedFunctions=beforeFieldSpecificValidation`
+7. Run `lookupAll` with `lookupType='fieldSpecificLookup'`
+8. Run `userDefinedFunctions=beforeFieldSpecificRegex`
+9. Run `lookupAll` with `lookupType='fieldSpecificRegex'`
+10. Run `userDefinedFunctions=beforeNormalization`
+11. Run `lookupAll` with `lookupType='normLookup'`
+12. Run `userDefinedFunctions=beforeNormalizationRegex`
+13. Run `lookupAll` with `lookupType='normRegex'`
+14. Run `userDefinedFunctions=beforeDeriveData`
+15. Run `DeriveDataLookupAll`
+16. Run `userDefinedFunctions=afterProcessing`
+17. If `writeContactHistory==True`, write the history collector to the `contactHistory` collection in MongoDB
+18. Return data record and history ID (if applicable, `None` otherwise)
+
 ## Wrapper functions
+
+### `lookupAll`
+
+### `DeriveDataLookupAll`
 
 ## Cleaning functions
 
