@@ -158,6 +158,11 @@ Which fields are managed, and which cleaning functions are used
   - beforeNormalizationRegex
   - beforeDeriveData
   - afterProcessing
+- history
+  - writeContactHistory: Should a history record be written to the database
+  - returnHistoryId: return MongoDB ```_id``` of history record
+  - returnHistoryField: if returnHistoryId, field name of returned ```_id```
+  - histIdField: Identifier for history records
 
 ## Data cleaning schema
 
