@@ -56,6 +56,8 @@ record_deriveAll_deriveRegex_notChecked = [{"emailAddress": "test@test.com", "fi
 
 record_deriveAll_deriveRegex_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findthis"}]
 
+record_deriveAll_deriveRegex_blankIfNoMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "youwillnotfindthis"}]
+
 #
 
 history_genericLookup_caught = [{"emailAddress": "test@test.com", "field1": "badvalue"}]
@@ -98,6 +100,8 @@ history_deriveValue_caught = [{"emailAddress": "test@test.com", "field1": "", "f
 
 history_deriveValue_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findthis"}]
 
+history_deriveValue_blankIfNoMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "youwillnotfindthis"}]
+
 history_deriveValue_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "dontfindthis"}]
 
 history_deriveValue_notChecked = [{"emailAddress": "test@test.com", "field3": "", "field2": "findthis"}]
@@ -111,6 +115,8 @@ history_deriveRegex_uncaught = [{"emailAddress": "test@test.com", "field1": "", 
 history_deriveRegex_notChecked = [{"emailAddress": "test@test.com", "field3": "", "field2": "findthis"}]
 
 history_deriveRegex_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findthis"}]
+
+history_deriveRegex_blankIfNoMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "youwillnotfindthis"}]
 
 record_returnHistoryId_False = [{"emailAddress": "test@test.com"}]
 

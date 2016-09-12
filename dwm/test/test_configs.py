@@ -316,6 +316,38 @@ configs = [
         }
     },
     {
+        "configName": "test_deriveAll_deriveRegex_blankIfNoMatch",
+        "fields": {
+            "field1": {
+                "lookup": [],
+                "derive": {
+                    "1": {
+                        "type": "deriveRegex",
+                        "fieldSet": ["field2"],
+                        "overwrite": True,
+                        "blankIfNoMatch": True
+                    }
+                }
+            }
+        },
+        "userDefinedFunctions": {
+            "beforeGenericValidation": {},
+            "beforeGenericRegex": {},
+            "beforeFieldSpecificValidation": {},
+            "beforeFieldSpecificRegex": {},
+            "beforeNormalization": {},
+            "beforeNormalizationRegex": {},
+            "beforeDeriveData": {},
+            "afterProcessing": {}
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
+    },
+    {
         "configName": "test_deriveAll_deriveValue_overwriteFalse",
         "fields": {
             "field1": {

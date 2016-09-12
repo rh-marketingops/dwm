@@ -223,8 +223,9 @@ def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={},
 
         if reVal:
             reVal.close()
-        elif fieldValNew == fieldVal and blankIfNoMatch:
-            fieldVal = ''
+            
+        if fieldValNew == fieldVal and blankIfNoMatch:
+            fieldValNew = ''
             pattern = 'no matching pattern'
             deriveUsing = {"blankIfNoMatch": "no match found"}
 
