@@ -124,6 +124,7 @@ def dwmOne(data, db, config, writeContactHistory=True, returnHistoryId=True, his
     if writeContactHistory:
         history['timestamp'] = int(time.time())
         history[histIdField['name']] = data[histIdField['value']]
+        history['configName'] = config['configName']
         historyId = db['contactHistory'].insert_one(history).inserted_id
 
     if writeContactHistory and returnHistoryId:
