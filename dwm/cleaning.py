@@ -5,16 +5,15 @@ import re
 from .helpers import _CollectHistory_, _CollectHistoryAgg_, _DataClean_
 
 def DataLookup(fieldVal, db, lookupType, fieldName, histObj={}):
-    '''
-        Lookup a value to replace the input value for a given field
+    """
+    Return new field value based on single-value lookup against MongoDB
 
-        Arguments:
-        * fieldVal -- field value against which to perform lookup
-        * db -- pymongo client db
-        * lookupType -- one of ['genericLookup', 'fieldSpecificLookup', 'normLookup']
-        * fieldName -- lookup field name
-        * histObj -- object to which field change history (if any) should be appended
-    '''
+    :param string fieldVal: input value to lookup
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param string lookupType: Type of lookup to perform/MongoDB collection name. One of 'genericLookup', 'fieldSpecificLookup', 'normLookup'
+    :param string fieldName: Field name to query against
+    :param dict histObj: History object to which changes should be appended
+    """
 
     if (lookupType=='genericLookup'):
         lookupDict = {"find": _DataClean_(fieldVal)}
@@ -43,16 +42,15 @@ def DataLookup(fieldVal, db, lookupType, fieldName, histObj={}):
 
 
 def RegexLookup(fieldVal, db, fieldName, lookupType, histObj={}):
-    '''
-        Lookup and perform a regex replace
+    """
+    Return a new field value based on match against regex queried from MongoDB
 
-        Arguments:
-        * fieldVal -- field value against which to perform regex replace
-        * db -- pymongo client db
-        * fieldName -- regex field name
-        * lookupType -- one of ['fieldSpecificRegex', 'genericRegex', 'normRegex']
-        * histObj -- object to which field change history (if any) should be appended
-    '''
+    :param string fieldVal: input value to lookup
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param string lookupType: Type of lookup to perform/MongoDB collection name. One of 'genericLookup', 'fieldSpecificLookup', 'normLookup'
+    :param string fieldName: Field name to query against
+    :param dict histObj: History object to which changes should be appended
+    """
 
     if (lookupType=='genericRegex'):
         lookupDict = {}
@@ -92,21 +90,17 @@ def RegexLookup(fieldVal, db, fieldName, lookupType, histObj={}):
     return fieldValNew, histObjUpd
 
 def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', histObj={}, blankIfNoMatch=False):
-    '''
-        Derive a data value given a single derivation rule
+    """
+    Return new field value based on single or multi-value lookup against MongoDB
 
-        Arguments:
-        * fieldName -- field name for which to derive a value
-        * db -- pymongo client db
-        * deriveInput -- an input dictionary with the field values to lookup
-            {
-                "lookupField1": "lookupVal1",
-                "lookupField2": "lookupVal2"
-            }
-        * overwrite -- bool; whether or not to replace value if one already exists
-        * fieldVal -- existing field value
-        * histObj -- object to which field change history (if any) should be appended
-    '''
+    :param string fieldName: Field name to query against
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param dict deriveInput: Values to perform lookup against: {"lookupField1": "lookupVal1", "lookupField2": "lookupVal2"}
+    :param bool overwrite: Should an existing field value be replaced
+    :param string fieldVal: Current field value
+    :param dict histObj: History object to which changes should be appended
+    :param bool blankIfNoMatch: Should field value be set to blank if no match is found
+    """
 
     lookupVals = deriveInput
 
@@ -141,19 +135,15 @@ def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', hi
     return fieldValNew, histObjUpd
 
 def DeriveDataCopyValue(fieldName, deriveInput, overwrite, fieldVal, histObj={}):
-    '''
-        Derive value by copying from another field
+    """
+    Return new value based on value from another field
 
-        Arguments:
-        * fieldName -- field name for which to derive a value
-        * deriveInput -- an input dictionary with the field values to lookup
-            {
-                "lookupField1": "lookupVal1"
-            }
-        * overwrite -- bool; whether or not to replace value if one already exists
-        * fieldVal -- existing field value
-        * histObj -- object to which field change history (if any) should be appended
-    '''
+    :param string fieldName: Field name to query against
+    :param dict deriveInput: Values to perform lookup against: {"copyField1": "copyVal1"}
+    :param bool overwrite: Should an existing field value be replaced
+    :param string fieldVal: Current field value
+    :param dict histObj: History object to which changes should be appended
+    """
 
     if len(deriveInput)>1:
         raise Exception("more than one field/value in deriveInput")
@@ -187,6 +177,18 @@ def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={},
         * fieldVal -- existing field value
         * histObj -- object to which field change history (if any) should be appended
     '''
+
+    """
+    Return a new field value based on match (of another field) against regex queried from MongoDB
+
+    :param string fieldName: Field name to query against
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param dict deriveInput: Values to perform lookup against: {"lookupField1": "lookupVal1"}
+    :param bool overwrite: Should an existing field value be replaced
+    :param string fieldVal: Current field value
+    :param dict histObj: History object to which changes should be appended
+    :param bool blankIfNoMatch: Should field value be set to blank if no match is found
+    """
 
     if len(deriveInput)>1:
         raise Exception("more than one value in deriveInput")
@@ -223,7 +225,7 @@ def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={},
 
         if reVal:
             reVal.close()
-            
+
         if fieldValNew == fieldVal and blankIfNoMatch:
             fieldValNew = ''
             pattern = 'no matching pattern'
