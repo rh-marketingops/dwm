@@ -108,7 +108,7 @@ This function is the highest-level wrapper for all DWM functions.
 
 ## dwmOne
 
-This function applies wrapper functions to each data record. It follows the specification above, in *Business Logic: Order*.
+This function applies wrapper functions to each data record. It follows the specification above, in _Business Logic: Order_.
 
 ![alt text](/diagrams/DWM_Arch_dwmOne.png "High-level flow of using dwmOne")
 
@@ -135,17 +135,46 @@ This function applies wrapper functions to each data record. It follows the spec
 
 ### `lookupAll`
 
+This function applies a single cleaning function+type to every field in the input record, based on the given config. Also, since this function calls lookup functions that are based on the current value of a field, for performance it skips fields that have blank values.
+
+1. Loop through each field in the record
+2. If the field value is not blank *and* the field name is in the config file, then proceed
+3. If the config value for the field contains the current `lookupType`, then pass to the appropriate function:
+  - `'genericLookup', 'fieldSpecificLookup', 'normLookup'`: `DataLookup`
+  - `'genericRegex', 'fieldSpecificRegex', 'normRegex'`: `RegexLookup`
+4. Functions in _3_ return the new field value (potentially same as the original value, if no match was found) and an updated history object
+5. Set the field value in the data record to return value from _4_
+6. Return data record and history
+
 ### `DeriveDataLookupAll`
 
 ## Cleaning functions
 
+### `DataLookup`
+
+### `RegexLookup`
+
+### `DeriveDataLookup`
+
+### `DeriveDataCopyValue`
+
+### `DeriveDataRegex`
+
 ## Helpers
+
+### `_CollectHistory_`
+
+### `_CollectHistoryAgg_`
+
+### `_DataClean_`
+
+### `_RunUserDefinedFunctions_`
 
 # Setup Process
 
 ## Hosting
 
- - Local machine: it's entirely possible to run this complete process on your individual laptop/desktop, although may not recommended due to backup and business continuity risks.
+ - Local machine: it's entirely possible to run this complete process on your individual laptop/desktop, although may not be recommended due to backup and business continuity risks.
  - PaaS: Platform-as-a-Service is the recommended route to get up-and-running quickly. This way, developers don't have to worry about the engineering concerns of making sure their services remain running. We're using Red Hat's Openshift, but there are other options (such as Heroku) available on AWS. Be warned that the PaaS may have to be internally hosted at your workplace to ensure connectivity to internal databases. You should also be aware of potential security concerns around PII, especially if you're storing record history, and may need to work with your IT team to ensure secure storage/transit for such data.
 
 ## Python
