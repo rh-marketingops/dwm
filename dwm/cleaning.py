@@ -163,21 +163,6 @@ def DeriveDataCopyValue(fieldName, deriveInput, overwrite, fieldVal, histObj={})
     return fieldValNew, histObjUpd
 
 def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={}, blankIfNoMatch=False):
-    '''
-        Derive field value by performing regex search on another field
-
-        Arguments:
-        * fieldName -- field name for which to derive a value
-        * db -- pymongo client db
-        * deriveInput -- an input dictionary with the field values to lookup
-            {
-                "lookupField1": "lookupVal1"
-            }
-        * overwrite -- bool; whether or not to replace value if one already exists
-        * fieldVal -- existing field value
-        * histObj -- object to which field change history (if any) should be appended
-    '''
-
     """
     Return a new field value based on match (of another field) against regex queried from MongoDB
 
