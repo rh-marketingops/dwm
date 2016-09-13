@@ -9,15 +9,15 @@ from .helpers import _RunUserDefinedFunctions_, _CollectHistory_, _CollectHistor
 
 ## DWM on a set of contact records
 def dwmAll(data, db, configName, udfNamespace=__name__, verbose=False):
-    '''
-        Multi-record wrapper for dwmOne
+    """
+    Return list of dictionaries after cleaning rules have been applied; optionally with a history record ID appended.
 
-        Arguments:
-        * data -- list of contact records (dictionaries)
-        * db -- PyMongo MongoClient DB instance (i.e., mongoDb = MongoClient('connectionString')['dbName'])
-        * configName -- name of configuration to use
-        * writeContactHistory -- bool; whether or not to write a before/after snapshot to contactHistory
-    '''
+    :param list data: list of dictionaries (records) to which cleaning rules should be applied
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param string configName: name of configuration to use; will be queried from 'config' collection of MongoDB
+    :param namespace udfNamespace: namespace of current working script; must be passed if using user-defined functions
+    :param bool verbose: use tqdm to display progress of cleaning records
+    """
 
     configColl = db['config']
 
@@ -55,16 +55,17 @@ def dwmAll(data, db, configName, udfNamespace=__name__, verbose=False):
 ## DWM order on a single record
 
 def dwmOne(data, db, config, writeContactHistory=True, returnHistoryId=True, histIdField={"name": "emailAddress", "value": "emailAddress"}, udfNamespace=__name__):
+    """
+    Return a single dictionary (record) after cleaning rules have been applied; optionally insert history record to collection 'contactHistory'
 
-    '''
-        Wrapper for individual DWM functions
-
-        Arguments:
-        * data -- single data record to clean; key values should map to system field names (i.e., "Job Role" is keyed as "jobRole", the internal DWM name, not "C_Job_Role11", which is the Eloqua name)
-        * db -- PyMongo MongoClient DB instance (i.e., mongoDb = MongoClient('connectionString')['dbName'])
-        * configName -- name of configuration to use
-        * writeContactHistory -- bool; whether or not to write a before/after snapshot to contactHistory
-    '''
+    :param dict data: single record (dictionary) to which cleaning rules should be applied
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param dict config: DWM configuration (see DataDictionary)
+    :param bool writeContactHistory: Write field-level change history to collection 'contactHistory'
+    :param bool returnHistoryId: If writeContactHistory, return '_id' of history record
+    :param dict histIdField: Name of identifier for history record: {"name": "emailAddress", "value": "emailAddress"}
+    :param namespace udfNamespace: namespace of current working script; must be passed if using user-defined functions
+    """
 
     # setup history collector
     history = {}

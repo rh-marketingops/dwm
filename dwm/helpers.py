@@ -3,17 +3,16 @@ import sys
 
 ## misc fcns that make everything else go smooth
 
-def _CollectHistory_(lookupType, fromVal, toVal, using='', pattern=''):
-    '''
-        Create field change history object
+def _CollectHistory_(lookupType, fromVal, toVal, using={}, pattern=''):
+    """
+    Return a dictionary detailing what, if any, change was made to a record field
 
-        Arguments:
-        * type --
-        * fromVal --
-        * toVal --
-        * using --
-        * pattern --
-    '''
+    :param string lookupType: what cleaning rule made the change; one of: genericLookup, genericRegex, fieldSpecificLookup, fieldSpecificRegex, normLookup, normRegex, deriveValue, copyValue, deriveRegex
+    :param string fromVal: previous field value
+    :param string toVal: new string value
+    :param dict using: field values used to derive new values; only applicable for deriveValue, copyValue, deriveRegex
+    :param string pattern: which regex pattern was matched to make the change; only applicable for genericRegex, fieldSpecificRegex, deriveRegex
+    """
 
     histObj = {}
 
@@ -28,14 +27,13 @@ def _CollectHistory_(lookupType, fromVal, toVal, using='', pattern=''):
     return histObj
 
 def _CollectHistoryAgg_(contactHist, fieldHistObj, fieldName):
-    '''
-        Append field change history object into contact history object
+    """
+    Return updated history dictionary with new field change
 
-        Arguments:
-        * contactHist --
-        * fieldHistObj --
-        * fieldName --
-    '''
+    :param dict contactHist: Existing contact history dictionary
+    :param dict fieldHistObj: Output of _CollectHistory_
+    :param string fieldName:
+    """
 
     if fieldHistObj!={}:
         if fieldName not in contactHist.keys():
@@ -46,12 +44,11 @@ def _CollectHistoryAgg_(contactHist, fieldHistObj, fieldName):
     return contactHist
 
 def _DataClean_(fieldVal):
-    '''
-        Apply standard cleaning to a value. Same cleaning will be applied on back-end to lookup tables
+    """
+    Return 'cleaned' value to standardize lookups (convert to uppercase, remove leading/trailing whitespace, carriage returns, line breaks, and unprintable characters)
 
-        Arguments:
-        * fieldVal -- field value to clean
-    '''
+    :param string fieldVal:
+    """
 
     fieldValNew = fieldVal
 
@@ -64,16 +61,15 @@ def _DataClean_(fieldVal):
     return fieldValNew
 
 def _RunUserDefinedFunctions_(config, data, histObj, position, namespace=__name__):
-    '''
-        Given a configuration, run a set of user-defined functions at various positions within DWM logic
+    """
+    Return a single updated data record and history object after running user-defined functions
 
-        Arguments:
-        * config -- DWM configuration object; must contain a 'userDefinedFunctions' dict with dict labels matching the 'position' argument list, and have entries keyed with 1-n function names
-        * data -- dictionary of data for a given row
-        * histObj -- object to which field change history (if any) should be appended
-        * position -- where in the DWM process to run user-defined functions: beforeGenericValidation, beforeGenericRegex, beforeFieldSpecificValidation, beforeFieldSpecificRegex,
-            beforeNormalization, beforeNormalizationRegex, beforeDeriveData, afterProcessing
-    '''
+    :param dict config: DWM configuration (see DataDictionary)
+    :param dict data: single record (dictionary) to which user-defined functions should be applied
+    :param dict histObj: running history of changes to record
+    :param string position: position name of which function set from config should be run
+    :param namespace: namespace of current working script; must be passed if using user-defined functions
+    """
 
     udfConfig = config['userDefinedFunctions']
 
