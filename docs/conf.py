@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # dwm documentation build configuration file, created by
-# sphinx-quickstart on Tue Sep 13 10:32:16 2016.
+# sphinx-quickstart on Tue Sep 13 10:38:12 2016.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.

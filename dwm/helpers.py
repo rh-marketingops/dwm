@@ -32,7 +32,7 @@ def _CollectHistoryAgg_(contactHist, fieldHistObj, fieldName):
 
     :param dict contactHist: Existing contact history dictionary
     :param dict fieldHistObj: Output of _CollectHistory_
-    :param string fieldName:
+    :param string fieldName: field name
     """
 
     if fieldHistObj!={}:
@@ -47,7 +47,7 @@ def _DataClean_(fieldVal):
     """
     Return 'cleaned' value to standardize lookups (convert to uppercase, remove leading/trailing whitespace, carriage returns, line breaks, and unprintable characters)
 
-    :param string fieldVal:
+    :param string fieldVal: field value
     """
 
     fieldValNew = fieldVal
