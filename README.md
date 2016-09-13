@@ -77,6 +77,13 @@ Also included may be third-party data enrichment. For example, if you have an AP
 
 ## Order
 
+We've found this to be the most efficient order in which to run the above cleaning types.
+
+1. Generic Validation
+2. Field-specific Validation
+3. Normalization
+4. Derive Data (aka "Fill-in-the-gaps", depending on field type)
+
 ## Audit History
 
 Record-level audit history is a record of what changes were made to which data fields. This includes what the previous value was, what the new/replacement value was, and what rule caused the change. The record is somewhat akin to a git commit, in that it only records where changes were made, and does not keep a record of anything that remained unchanged. Although it is optional in this package, it is recommended for any automation of these processes to provide both a record for troubleshooting and transparency for the business users of the database.
@@ -133,42 +140,84 @@ This function applies wrapper functions to each data record. It follows the spec
 
 ## Wrapper functions
 
+These functions are responsible for applying all the specified cleaning functions to every field in the input record, based on the given config.
+
 ### `lookupAll`
 
 This function applies a single cleaning function+type to every field in the input record, based on the given config. Also, since this function calls lookup functions that are based on the current value of a field, for performance it skips fields that have blank values.
 
 1. Loop through each field in the record
-2. If the field value is not blank *and* the field name is in the config file, then proceed
+2. If the field value is not blank *and* the field name is in the config, then proceed
 3. If the config value for the field contains the current `lookupType`, then pass to the appropriate function:
   - `'genericLookup', 'fieldSpecificLookup', 'normLookup'`: `DataLookup`
   - `'genericRegex', 'fieldSpecificRegex', 'normRegex'`: `RegexLookup`
 4. Functions in _3_ return the new field value (potentially same as the original value, if no match was found) and an updated history object
 5. Set the field value in the data record to return value from _4_
-6. Return data record and history
+6. Return data record and history object
 
 ### `DeriveDataLookupAll`
 
+This function applies all defined derive rules to every field in the input record, based on the given config.
+
+1. Loop through each field in the record
+2. If the field name is in the config, then proceed
+3. Loop through the derive configs for the current field (this is an OrderedDict which was sorted by dwmAll)
+4. If all the specified fields for a derive rule are present in the record, then proceed
+5. Apply the following based on the type specified in the config:
+  - `DeriveDataLookup`
+  - `DeriveDataCopyValue`
+  - `DeriveDataRegex`
+6. Functions in _5_ return the new field value (potentially same as the original value, if no match was found) and an updated history object
+7. If the field value has changed, then update the field in the record and stop the loop
+8. Return data record and history object
+
 ## Cleaning functions
+
+These functions are responsible for determining what the new value of a field should be, in most cases based on a lookup against MongoDB.
 
 ### `DataLookup`
 
+Lookup the replacement value given a single input value from the same field.
+
 ### `RegexLookup`
+
+Query all applicable regex (generic, or match on field name) from MongoDB and look for a match.
 
 ### `DeriveDataLookup`
 
+Lookup replacement value given one or more input values from different fields.
+
 ### `DeriveDataCopyValue`
+
+Copy a value from one field to another.
 
 ### `DeriveDataRegex`
 
+Query all applicable regex (match on field name) from MongoDB and look for a match.
+
 ## Helpers
+
+These are misc functions that are used throughout but don't fit in one general category.
 
 ### `_CollectHistory_`
 
+Creates a basic dictionary of what change, if any, was applied to a record field.
+
 ### `_CollectHistoryAgg_`
+
+Updates an existing history dictionary with the result of `_CollectHistory_`, if applicable.
 
 ### `_DataClean_`
 
+Applies cleaning rules to lookup values before querying MongoDB, to ensure small differences don't screw it up.
+
+- Convert to uppercase
+- Strip leading and trailing whitespace
+- Remove line breaks, carriage returns, and non-visible characters
+
 ### `_RunUserDefinedFunctions_`
+
+Passes data and history into functions defined by configuration. 
 
 # Setup Process
 
@@ -250,7 +299,3 @@ from udf import myFunction
 dataOut = dwm.dwmAll(data=data, mongoDb=db, mongoConfig=mongoConfig, configName='myConfig', returnHistoryId=False, udfNamespace=__name__)
 
 ```
-
-# Examples
-
-__Coming Soon: Red Hat's Marketing Operations implementation via Openshift__
