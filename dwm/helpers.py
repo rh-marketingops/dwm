@@ -66,7 +66,7 @@ def _RunUserDefinedFunctions_(config, data, histObj, position, namespace=__name_
 
     :param dict config: DWM configuration (see DataDictionary)
     :param dict data: single record (dictionary) to which user-defined functions should be applied
-    :param dict histObj: running history of changes to record
+    :param dict histObj: History object to which changes should be appended
     :param string position: position name of which function set from config should be run
     :param namespace: namespace of current working script; must be passed if using user-defined functions
     """

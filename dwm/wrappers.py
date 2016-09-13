@@ -3,16 +3,15 @@ from datetime import datetime
 
 
 def lookupAll(data, configFields, lookupType, db, histObj={}):
-    '''
-        Perform one type of direct data lookup or regex lookup for all relevant fields. Multi-field wrapper for DataLookup and RegexLookup
+    """
+    Return a record after having cleaning rules of specified type applied to all fields in the config
 
-        Arguments:
-        * data -- Row of data to which lookup type should be applied
-        * configFields -- runtime configuration dict Fields
-        * lookupType -- one of ['genericLookup', 'fieldSpecificLookup', 'normLookup', 'genericRegex', 'fieldSpecificRegex', 'normRegex']
-        * db -- pymongo client db
-        * histObj -- object to which field change history (if any) should be appended
-    '''
+    :param dict data: single record (dictionary) to which cleaning rules should be applied
+    :param dict configFields: "fields" object from DWM config (see DataDictionary)
+    :param string lookupType: Type of lookup to perform/MongoDB collection name. One of 'genericLookup', 'fieldSpecificLookup', 'normLookup', 'genericRegex', 'fieldSpecificRegex', 'normRegex'
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param dict histObj: History object to which changes should be appended
+    """
 
     for field in data.keys():
 
@@ -34,15 +33,14 @@ def lookupAll(data, configFields, lookupType, db, histObj={}):
 
 
 def DeriveDataLookupAll(data, configFields, db, histObj={}):
-    '''
-        Perform one type of data derivation for all relevant fields. Wrapper for DeriveDataLookup
+    """
+    Return a record after performing derive rules for all fields, based on config
 
-        Arguments:
-        * data -- Row of data to which lookup type should be applied
-        * configFields -- runtime configuration dict Fields
-        * db -- pymongo client db
-        * histObj -- object to which field change history (if any) should be appended
-    '''
+    :param dict data: single record (dictionary) to which cleaning rules should be applied
+    :param dict configFields: "fields" object from DWM config (see DataDictionary)
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param dict histObj: History object to which changes should be appended
+    """
 
     for field in data.keys():
 

@@ -47,7 +47,7 @@ def RegexLookup(fieldVal, db, fieldName, lookupType, histObj={}):
 
     :param string fieldVal: input value to lookup
     :param MongoClient db: MongoClient instance connected to MongoDB
-    :param string lookupType: Type of lookup to perform/MongoDB collection name. One of 'genericLookup', 'fieldSpecificLookup', 'normLookup'
+    :param string lookupType: Type of lookup to perform/MongoDB collection name. One of 'genericRegex', 'fieldSpecificRegex', 'normRegex'
     :param string fieldName: Field name to query against
     :param dict histObj: History object to which changes should be appended
     """
