@@ -13,7 +13,7 @@ def dwmAll(data, db, configName, udfNamespace=__name__, verbose=False):
     Return list of dictionaries after cleaning rules have been applied; optionally with a history record ID appended.
 
     :param list data: list of dictionaries (records) to which cleaning rules should be applied
-    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param MongoClient db: MongoDB connection
     :param string configName: name of configuration to use; will be queried from 'config' collection of MongoDB
     :param namespace udfNamespace: namespace of current working script; must be passed if using user-defined functions
     :param bool verbose: use tqdm to display progress of cleaning records
