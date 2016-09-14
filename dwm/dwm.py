@@ -21,8 +21,11 @@ def dwmAll(data, db, configName='', config={}, udfNamespace=__name__, verbose=Fa
     """
 
     if config=={} and configName=='':
-        raise Exception("must specify either configName or pass a config")
-        
+        raise Exception("Please either specify configName or pass a config")
+
+    if config!={} and configName!='':
+        raise Exception("Please either specify configName or pass a config")
+
     if config=={}:
         configColl = db['config']
 

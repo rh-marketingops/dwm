@@ -548,3 +548,15 @@ def test_DeriveDataCopyValue_badType():
 def test_DeriveDataRegex_badType():
 
     testVal, histObj = cleaning.DeriveDataRegex(fieldName='test', db=db, deriveInput={"field1": "a", "field2": "b"}, overwrite=True, fieldVal='')
+
+# requires config input
+@raises(Exception)
+def test_dwmAll_requiresConfigInput():
+
+    dataOut = dwmAll(data = test_records.record_dwmAll_noConfig, db = db, udfNamespace=__name__)
+
+# doesn't allow multiple config
+@raises(Exception)
+def test_dwmAll_requiresOneConfig():
+
+    dataOut = dwmAll(data = test_records.record_dwmAll_noConfig, db = db, config={"configName": "testConfig"}, configName="testConfig", udfNamespace=__name__)

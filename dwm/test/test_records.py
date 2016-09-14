@@ -145,3 +145,5 @@ record_udf_afterProcessing = [{"emailAddress": "test@test.com", "field1": ""}]
 record_udf_sort = [{"emailAddress": "test@test.com", "field1": ""}]
 
 record_udf_afterProcessing_invalidFcn = [{"emailAddress": "test@test.com", "field1": ""}]
+
+record_dwmAll_noConfig = [{"emailAddress": "test@test.com"}]
