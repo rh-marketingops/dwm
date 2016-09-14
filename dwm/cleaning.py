@@ -27,7 +27,7 @@ def DataLookup(fieldVal, db, lookupType, fieldName, histObj={}):
 
     coll = db[lookupType]
 
-    lval = coll.find_one(lookupDict)
+    lval = coll.find_one(lookupDict, ['replace'])
 
     if lval:
         if 'replace' in lval:
@@ -65,7 +65,7 @@ def RegexLookup(fieldVal, db, fieldName, lookupType, histObj={}):
 
     coll = db[lookupType]
 
-    reVal = coll.find(lookupDict)
+    reVal = coll.find(lookupDict, ['pattern', 'replace'])
 
     for row in reVal:
 
@@ -115,7 +115,7 @@ def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', hi
 
     coll = db['deriveValue']
 
-    lval = coll.find_one(lookupDict)
+    lval = coll.find_one(lookupDict, ['value'])
 
     fieldValNew = fieldVal
 
@@ -194,7 +194,7 @@ def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={},
 
         coll = db['deriveRegex']
 
-        reVal = coll.find(lookupDict)
+        reVal = coll.find(lookupDict, ['pattern', 'replace'])
 
         for lval in reVal:
 
