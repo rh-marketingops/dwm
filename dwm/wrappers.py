@@ -58,7 +58,8 @@ def DeriveDataLookupAll(data, configFields, db, histObj={}):
 
                     deriveInput = {}
 
-                    for val in deriveSetConfig['fieldSet']:
+                    # sorting here to ensure subdocument match from query
+                    for val in sorted(deriveSetConfig['fieldSet']):
                         deriveInput[val] = data[val]
 
                     if deriveSetConfig['type']=='deriveValue':

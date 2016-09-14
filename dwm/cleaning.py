@@ -104,11 +104,6 @@ def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', hi
 
     lookupVals = deriveInput
 
-    # Using a sort on field keys b/c using this type of lookup and only needing one index is dependent on field order
-    # TODO: find a way to do this that doesn't involve sorting for every field on every record
-    for field in sorted(lookupVals.keys()):
-        lookupVals[field] = _DataClean_(lookupVals[field])
-
     lookupDict = {}
 
     lookupDict['fieldName'] = fieldName
