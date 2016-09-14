@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from datetime import datetime
 import re
+from collections import OrderedDict
 
 from .helpers import _CollectHistory_, _CollectHistoryAgg_, _DataClean_
 
@@ -102,7 +103,10 @@ def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', hi
     :param bool blankIfNoMatch: Should field value be set to blank if no match is found
     """
 
-    lookupVals = deriveInput
+    lookupVals = OrderedDict()
+
+    for val in sorted(deriveInput.keys()):
+        lookupVals[val] = _DataClean_(deriveInput[val])
 
     lookupDict = {}
 

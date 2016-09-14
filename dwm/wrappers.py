@@ -1,5 +1,6 @@
 from .cleaning import DataLookup, RegexLookup, DeriveDataLookup, DeriveDataCopyValue, DeriveDataRegex
 from datetime import datetime
+from collections import OrderedDict
 
 
 def lookupAll(data, configFields, lookupType, db, histObj={}):
@@ -59,7 +60,7 @@ def DeriveDataLookupAll(data, configFields, db, histObj={}):
                     deriveInput = {}
 
                     # sorting here to ensure subdocument match from query
-                    for val in sorted(deriveSetConfig['fieldSet']):
+                    for val in deriveSetConfig['fieldSet']:
                         deriveInput[val] = data[val]
 
                     if deriveSetConfig['type']=='deriveValue':
