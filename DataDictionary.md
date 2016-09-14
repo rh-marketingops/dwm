@@ -86,6 +86,13 @@ Also included are two parameters:
 - overwrite: if the target field already has a value, should it be overwritten?
 - blankIfNoMatch: if the derive rules do not find a match, should the field be cleared out?
 
+If the order of derivation is important in your use case, then order the fields accordingly in the JSON doc. Then, when establishing a connection to MongoDB:
+
+```python
+from collections import OrderedDict
+client = pymongo.MongoClient('connectURL', document_class=OrderedDict)
+```
+
 #### Example:
 
 ```javascript
@@ -283,7 +290,7 @@ Keeping the ```lookupVals``` in a sub-document allows for indexing on the ```der
 
 ### contactHistory
 
-Provides an audit history of records to promote transparency and allow for troubleshooting. 
+Provides an audit history of records to promote transparency and allow for troubleshooting.
 
 ```javascript
 {
