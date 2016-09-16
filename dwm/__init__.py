@@ -3,4 +3,4 @@
 
 from .dwm import dwmAll, _CollectHistory_, _CollectHistoryAgg_
 
-__version__ = '0.0.3'
+__version__ = '0.0.4'
