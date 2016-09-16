@@ -40,6 +40,8 @@ record_derive_sort = [{"emailAddress": "test@test.com", "field1": "", "field3": 
 
 record_deriveAll_deriveValue_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findthis"}]
 
+record_deriveAll_deriveValue_blankIfNoMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "youwillnotfindthis"}]
+
 record_deriveAll_deriveValue_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "dontfindthis"}]
 
 record_deriveAll_deriveValue_notChecked = [{"emailAddress": "test@test.com", "field3": "", "field2": "findthis"}]
@@ -53,6 +55,8 @@ record_deriveAll_deriveRegex_uncaught = [{"emailAddress": "test@test.com", "fiel
 record_deriveAll_deriveRegex_notChecked = [{"emailAddress": "test@test.com", "field3": "", "field2": "findthis"}]
 
 record_deriveAll_deriveRegex_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findthis"}]
+
+record_deriveAll_deriveRegex_blankIfNoMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "youwillnotfindthis"}]
 
 #
 
@@ -96,6 +100,8 @@ history_deriveValue_caught = [{"emailAddress": "test@test.com", "field1": "", "f
 
 history_deriveValue_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findthis"}]
 
+history_deriveValue_blankIfNoMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "youwillnotfindthis"}]
+
 history_deriveValue_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "dontfindthis"}]
 
 history_deriveValue_notChecked = [{"emailAddress": "test@test.com", "field3": "", "field2": "findthis"}]
@@ -110,9 +116,13 @@ history_deriveRegex_notChecked = [{"emailAddress": "test@test.com", "field3": ""
 
 history_deriveRegex_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findthis"}]
 
+history_deriveRegex_blankIfNoMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "youwillnotfindthis"}]
+
 record_returnHistoryId_False = [{"emailAddress": "test@test.com"}]
 
 record_writeContactHistory_False = [{"emailAddress": "test@test.com"}]
+
+record_writeContactHistory_writeConfig = [{"emailAddress": "test@test.com"}]
 
 record_configDoesNotExist = [{"emailAddress": "test@test.com"}]
 
@@ -135,3 +145,5 @@ record_udf_afterProcessing = [{"emailAddress": "test@test.com", "field1": ""}]
 record_udf_sort = [{"emailAddress": "test@test.com", "field1": ""}]
 
 record_udf_afterProcessing_invalidFcn = [{"emailAddress": "test@test.com", "field1": ""}]
+
+record_dwmAll_noConfig = [{"emailAddress": "test@test.com"}]

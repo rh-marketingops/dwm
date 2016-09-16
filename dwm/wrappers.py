@@ -1,18 +1,18 @@
 from .cleaning import DataLookup, RegexLookup, DeriveDataLookup, DeriveDataCopyValue, DeriveDataRegex
 from datetime import datetime
+from collections import OrderedDict
 
 
-def lookupAll(data, configFields, lookupType, coll, histObj={}):
-    '''
-        Perform one type of direct data lookup or regex lookup for all relevant fields. Multi-field wrapper for DataLookup and RegexLookup
+def lookupAll(data, configFields, lookupType, db, histObj={}):
+    """
+    Return a record after having cleaning rules of specified type applied to all fields in the config
 
-        Arguments:
-        * data -- Row of data to which lookup type should be applied
-        * configFields -- runtime configuration dict Fields
-        * lookupType -- one of ['genericLookup', 'fieldSpecificLookup', 'normLookup', 'genericRegex', 'fieldSpecificRegex', 'normRegex']
-        * coll -- pymongo client collection where lookup or regex documents are stored
-        * histObj -- object to which field change history (if any) should be appended
-    '''
+    :param dict data: single record (dictionary) to which cleaning rules should be applied
+    :param dict configFields: "fields" object from DWM config (see DataDictionary)
+    :param string lookupType: Type of lookup to perform/MongoDB collection name. One of 'genericLookup', 'fieldSpecificLookup', 'normLookup', 'genericRegex', 'fieldSpecificRegex', 'normRegex'
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param dict histObj: History object to which changes should be appended
+    """
 
     for field in data.keys():
 
@@ -22,27 +22,26 @@ def lookupAll(data, configFields, lookupType, coll, histObj={}):
 
                 if lookupType in ['genericLookup', 'fieldSpecificLookup', 'normLookup']:
 
-                    fieldValNew, histObj = DataLookup(fieldVal=data[field], coll=coll, lookupType=lookupType, fieldName=field, histObj=histObj)
+                    fieldValNew, histObj = DataLookup(fieldVal=data[field], db=db, lookupType=lookupType, fieldName=field, histObj=histObj)
 
                 elif lookupType in ['genericRegex', 'fieldSpecificRegex', 'normRegex']:
 
-                    fieldValNew, histObj = RegexLookup(fieldVal=data[field], coll=coll, fieldName=field, lookupType=lookupType, histObj=histObj)
+                    fieldValNew, histObj = RegexLookup(fieldVal=data[field], db=db, fieldName=field, lookupType=lookupType, histObj=histObj)
 
                 data[field] = fieldValNew
 
     return data, histObj
 
 
-def DeriveDataLookupAll(data, configFields, coll, histObj={}):
-    '''
-        Perform one type of data derivation for all relevant fields. Wrapper for DeriveDataLookup
+def DeriveDataLookupAll(data, configFields, db, histObj={}):
+    """
+    Return a record after performing derive rules for all fields, based on config
 
-        Arguments:
-        * data -- Row of data to which lookup type should be applied
-        * configFields -- runtime configuration dict Fields
-        * coll -- pymongo client collection where lookup documents are stored
-        * histObj -- object to which field change history (if any) should be appended
-    '''
+    :param dict data: single record (dictionary) to which cleaning rules should be applied
+    :param dict configFields: "fields" object from DWM config (see DataDictionary)
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param dict histObj: History object to which changes should be appended
+    """
 
     for field in data.keys():
 
@@ -60,19 +59,20 @@ def DeriveDataLookupAll(data, configFields, coll, histObj={}):
 
                     deriveInput = {}
 
+                    # sorting here to ensure subdocument match from query
                     for val in deriveSetConfig['fieldSet']:
                         deriveInput[val] = data[val]
 
                     if deriveSetConfig['type']=='deriveValue':
 
-                        fieldValNew, histObj = DeriveDataLookup(fieldName=field, coll=coll, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj)
+                        fieldValNew, histObj = DeriveDataLookup(fieldName=field, db=db, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj, blankIfNoMatch=deriveSetConfig['blankIfNoMatch'])
                     elif deriveSetConfig['type']=='copyValue':
 
                         fieldValNew, histObj = DeriveDataCopyValue(fieldName=field, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj)
 
                     elif deriveSetConfig['type']=='deriveRegex':
 
-                        fieldValNew, histObj = DeriveDataRegex(fieldName=field, coll=coll, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj)
+                        fieldValNew, histObj = DeriveDataRegex(fieldName=field, db=db, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj, blankIfNoMatch=deriveSetConfig['blankIfNoMatch'])
 
 
                 if fieldValNew!=fieldVal:

@@ -9,13 +9,13 @@ Database quality is a problem for many companies. Often there is a mad dash to c
  - Ill-trained data entry or office staff
  - Data purchased from outside sources that does not conform with company standards
 
-Bad data introduced through these sources can lead to significant amounts of lost time invested in manual correction, or directly to lost opportunities and revenue due to not being able to query on clean data.
+Bad data introduced through these sources can lead to significant amounts of lost time invested in manual correction, or directly to lost opportunities and revenue due to not being able to query on clean data. Obviously, one solution is to make sure that all data collection sources conform with your database standards, but if you can make that happen, then I'll just be over here flying on my unicorn.
 
-This package was originally developed for use by Marketing Operations groups to maintain quality of contact data, although the principles are sound enough to apply to many types of databases. It is built for use with MongoDB to allow easier creation of custom frontend UIs.
+This package was originally developed for use by Red Hat's Marketing Operations group to maintain quality of contact data, although the principles are sound enough to apply to many types of databases.
 
 # Business logic
 
-The following are what we have determined to be the general "best practices" for maintaining data quality.
+The following are what we have determined to be (as a best practice) the general rules available for cleaning a set of data. Theoretically, any string field can have these rules applied to them; however, when configuring DWM, one should evaluate whether or not a rule is appropriate for a given field.
 
 ## Validation
 
@@ -32,9 +32,19 @@ buy levitra cialis ## spam data
 www.buymystuff.com ## marketing database-specific example; our processes do not try to clean any website/URL related fields, so if this appears in one of the fields we are cleaning, it's probably bad data
 ```
 
+DWM uses two types of generic validation:
+
+- `genericLookup`: remove 'bad' values based on a known list of bad data (previously observed)
+- `genericRegex`: remove 'bad' values based on regular expressions; i.e., any word longer than 4 characters which is all the same character; or a string containing 'viagra'
+
 ### Field-Specific
 
 Field-Specific validation is the removal of data that is junk in one field, but good data in another. An example is a string of nine numbers: ```9493020093```. In a phone number field, this is probably good data. In the First Name field, it's junk. Conversely, ```hi, this is a string of letters``` may have a purpose in a text-based field, but it provides no reasonable data in a phone number field.
+
+DWM uses two types of field-specific validation:
+
+- `fieldSpecificLookup`: remove 'bad' values based on a known list of bad data (previously observed)
+- `fieldSpecificRegex`: remove 'bad' values based on regular expressions; i.e., for the field `firstName`, remove any value containing all numbers
 
 ## Normalization
 
@@ -42,56 +52,179 @@ Normalization is the correction of data to conform with a certain expected set o
 
 Note that normalization usually cannot be applied to fields that are expected to be free-text, such as "First Name" or "Company Name". If certain rules need to be applied to those fields, use of the __User-Defined Functions__ is recommended.
 
+DWM uses two types of normalization:
+
+- `normLookup`: replace 'almost' values based on a known list of data (previously observed); i.e., common mis-spellings
+- `normRegex`: replace 'almost' values based on regular expressions; i.e., for the field `jobRole`, replace any value that contains `programmer` but not `manager` with `Programmer/Developer`
+
 ## Derivation
 
 Derivation is the management of fields designed to help business users more easily make decisions, but are not explicitly collected. One example is a "Super Region" field. Although "Country" is a value that is likely collected, users of the database may only need to filter to a general region to do their jobs.
+
+DWM uses three types of derivation:
+
+- `deriveValue`: given input values from one or more fields, find the corresponding output value; i.e., for `jobRole='Manager'` and `department='IT'`, then set `persona='IT Decision Maker'`
+- `copyValue`: given an input value from one field, copy that value to the target field
+- `deriveRegex`: given an input value from one field, derive target field value using regular expressions
+
+Within the runtime configuration, derivation rules are ordered within a dictionary to maintain rule-hierarchy. So, if Rule 1 does not yield a result, then Rule 2 would be tried. The process will exit after one of the derivation rules produces a new value.
 
 ## User-Defined Functions
 
 The above three processes are the most common processes that need to be applied to data, but not everything can be planned for. User-Defined functionality is designed to fill this gap. For instance, US Zipcodes can have some fairly basic and consistent transformations applied to make the data easier to work with (i.e., strip off trailing hypen/number combos, left pad with 0s in case of bad spreadsheet formatting), but those rules don't fall into any of the above categories.
 
-Also included may be thrid-party data enrichment. For example, if you have an API contract with a company that provides IP address geolocation, or provides additional company info based on email domain, you can define a function to interact with that API and pull additional data into the fields of interest.
+Also included may be third-party data enrichment. For example, if you have an API contract with a company that provides IP address geolocation, or provides additional company info based on email domain, you can define a function to interact with that API and pull additional data into the fields of interest.
 
-# Architecture
+## Order
 
+We've found this to be the most efficient order in which to run the above cleaning types.
 
-
-## Cleaning Methods
-
-### Lookups
-
-Lookups utilize tables of expected values to apply to data cleaning with the above business logic. The advantage of lookups is fine-grained control over the definition of "bad data", as well as catching values that may not be consistently catchable with regular expressions. The disadvantage is that you have to manually create and update each lookup value.
-
-### Regex
-
-Regex applies consistent data cleaning rules. The advantages and disadvantages are the opposite of lookups; you can create fewer rules that require less maintenance, but you loose a lot of fine-grained control.
-
-### Derivation Rules
-
-Derivation includes both lookups and regex (with the same advantage/disadvantage split), but with the expectation of applying those to fields other than the target field.
-
-__Example:__ Our marketing database has two roles related to a contacts' specific job, "Job Title" and "Job Role". "Job Title" was an free-text field on our legacy freemium/registration forms, and is still provided as an option for our marketers to upload to. "Job Role" is the current supported job info collection field on forms, and is a picklist of expected values. Since our segmentation processes require a "Job Role" value, we sometimes have to apply a derivation rule to get that value from "Job Title". In this case, if `Job Title == "Senior Applications Programmer"`, the result would be `Job Role == "Programmer/Developer"`. In this case, we are applying a derivation rule to the "Job Title" value to get a new "Job Role" value.
-
-Within the runtime configuration, derivation rules are ordered within a dictionary to maintain rule-hierarchy. So, if Rule 1 does not yield a result, then Rule 2 would be tried. The process will exit after one of the derivation rules produces a new value.
+1. Generic Validation
+2. Field-specific Validation
+3. Normalization
+4. Derive Data (aka "Fill-in-the-gaps", depending on field type)
 
 ## Audit History
 
-Record-level audit history is a record of what changes were made to which data fields. This includes what the previous value was, what the new/replacement value was, and what rule caused the change. Although it is optional in this package, it is recommended for any automation of these processes to provide both a record for troubleshooting and transparency for the business users of the database.
+Record-level audit history is a record of what changes were made to which data fields. This includes what the previous value was, what the new/replacement value was, and what rule caused the change. The record is somewhat akin to a git commit, in that it only records where changes were made, and does not keep a record of anything that remained unchanged. Although it is optional in this package, it is recommended for any automation of these processes to provide both a record for troubleshooting and transparency for the business users of the database.
+
+# Architecture
 
 ## Data Flow
 
-### dwmAll
+![alt text](/diagrams/DWM_Arch_DataFlow.png "High-level flow of using the DWM")
 
-### dwmOne
+1. Data is gathered for cleaning by the Python script utilizing the DWM package (i.e., using an API to export contact data from a Marketing Automation Platform)
+2. Import custom functions (if applicable)
+3. Connect to MongoDB using pymongo `MongoClient`
+4. Data is passed (as a list of dictionaries), along with a `configName` and MongoDB connection, to the `dwmAll` function
+5. Script takes post-processing action (i.e., using an API to import the cleaned data back into a Marketing Automation Platform)
 
-### Wrapper functions 
+## dwmAll
+
+This function is the highest-level wrapper for all DWM functions.
+
+![alt text](/diagrams/DWM_Arch_dwmAll.png "High-level flow of using dwmAll")
+
+1. Use `configName` to retrieve config document from MongoDB
+2. Apply sorting to relevant parts of config (`derive` and `userDefinedFunctions`)
+  - Do this because you can't store a Python OrderedDict in MongoDB, and the order in which some rules are applied can be important
+3. Loop through data, passing each record to `dwmOne` along with config and MongoDB collection
+4. If configured to write history *and* return the history ID, append the `_id` to each record
+5. Return list of dictionaries with cleaned data
+
+## dwmOne
+
+This function applies wrapper functions to each data record. It follows the specification above, in _Business Logic: Order_.
+
+![alt text](/diagrams/DWM_Arch_dwmOne.png "High-level flow of using dwmOne")
+
+1. Create a history collector `{}`
+2. Run `userDefinedFunctions=beforeGenericValidation`
+3. Run `lookupAll` with `lookupType='genericLookup'`
+4. Run `userDefinedFunctions=beforeGenericRegex`
+5. Run `lookupAll` with `lookupType='genericRegex'`
+6. Run `userDefinedFunctions=beforeFieldSpecificValidation`
+7. Run `lookupAll` with `lookupType='fieldSpecificLookup'`
+8. Run `userDefinedFunctions=beforeFieldSpecificRegex`
+9. Run `lookupAll` with `lookupType='fieldSpecificRegex'`
+10. Run `userDefinedFunctions=beforeNormalization`
+11. Run `lookupAll` with `lookupType='normLookup'`
+12. Run `userDefinedFunctions=beforeNormalizationRegex`
+13. Run `lookupAll` with `lookupType='normRegex'`
+14. Run `userDefinedFunctions=beforeDeriveData`
+15. Run `DeriveDataLookupAll`
+16. Run `userDefinedFunctions=afterProcessing`
+17. If `writeContactHistory==True`, write the history collector to the `contactHistory` collection in MongoDB
+18. Return data record and history ID (if applicable, `None` otherwise)
+
+## Wrapper functions
+
+These functions are responsible for applying all the specified cleaning functions to every field in the input record, based on the given config.
+
+### `lookupAll`
+
+This function applies a single cleaning function+type to every field in the input record, based on the given config. Also, since this function calls lookup functions that are based on the current value of a field, for performance it skips fields that have blank values.
+
+1. Loop through each field in the record
+2. If the field value is not blank *and* the field name is in the config, then proceed
+3. If the config value for the field contains the current `lookupType`, then pass to the appropriate function:
+  - `'genericLookup', 'fieldSpecificLookup', 'normLookup'`: `DataLookup`
+  - `'genericRegex', 'fieldSpecificRegex', 'normRegex'`: `RegexLookup`
+4. Functions in _3_ return the new field value (potentially same as the original value, if no match was found) and an updated history object
+5. Set the field value in the data record to return value from _4_
+6. Return data record and history object
+
+### `DeriveDataLookupAll`
+
+This function applies all defined derive rules to every field in the input record, based on the given config.
+
+1. Loop through each field in the record
+2. If the field name is in the config, then proceed
+3. Loop through the derive configs for the current field (this is an OrderedDict which was sorted by dwmAll)
+4. If all the specified fields for a derive rule are present in the record, then proceed
+5. Apply the following based on the type specified in the config:
+  - `DeriveDataLookup`
+  - `DeriveDataCopyValue`
+  - `DeriveDataRegex`
+6. Functions in _5_ return the new field value (potentially same as the original value, if no match was found) and an updated history object
+7. If the field value has changed, then update the field in the record and stop the loop
+8. Return data record and history object
+
+## Cleaning functions
+
+These functions are responsible for determining what the new value of a field should be, in most cases based on a lookup against MongoDB.
+
+### `DataLookup`
+
+Lookup the replacement value given a single input value from the same field.
+
+### `RegexLookup`
+
+Query all applicable regex (generic, or match on field name) from MongoDB and look for a match.
+
+### `DeriveDataLookup`
+
+Lookup replacement value given one or more input values from different fields.
+
+### `DeriveDataCopyValue`
+
+Copy a value from one field to another.
+
+### `DeriveDataRegex`
+
+Query all applicable regex (match on field name) from MongoDB and look for a match.
+
+## Helpers
+
+These are misc functions that are used throughout but don't fit in one general category.
+
+### `_CollectHistory_`
+
+Creates a basic dictionary of what change, if any, was applied to a record field.
+
+### `_CollectHistoryAgg_`
+
+Updates an existing history dictionary with the result of `_CollectHistory_`, if applicable.
+
+### `_DataClean_`
+
+Applies cleaning rules to lookup values before querying MongoDB, to ensure small differences don't screw it up.
+
+- Convert to uppercase
+- Strip leading and trailing whitespace
+- Remove line breaks, carriage returns, and non-visible characters
+
+### `_RunUserDefinedFunctions_`
+
+Passes data and history into functions defined by configuration. 
 
 # Setup Process
 
 ## Hosting
 
- - Local machine: it's entirely possible to run this complete process on your individual laptop/desktop, although is not recommended due to backup and business continuity risks.
- - PaaS: Platform-as-a-Service is the recommended route to get up-and-running quickly. This way, developers don't have to worry about the engineering concerns of making sure their services remain running. Options are Red Hat's Openshift, Heroku, and other options available on AWS. Be warned that the PaaS may have to be internally hosted at your workplace to ensure connectivity to internal databases.
+ - Local machine: it's entirely possible to run this complete process on your individual laptop/desktop, although may not be recommended due to backup and business continuity risks.
+ - PaaS: Platform-as-a-Service is the recommended route to get up-and-running quickly. This way, developers don't have to worry about the engineering concerns of making sure their services remain running. We're using Red Hat's Openshift, but there are other options (such as Heroku) available on AWS. Be warned that the PaaS may have to be internally hosted at your workplace to ensure connectivity to internal databases. You should also be aware of potential security concerns around PII, especially if you're storing record history, and may need to work with your IT team to ensure secure storage/transit for such data.
 
 ## Python
 
@@ -99,9 +232,9 @@ Python 2.7 is the recommended minimum, although a 3.x release is advisable if un
 
 ## MongoDB
 
-MongoDB is required for persistent storage of runtime configurations, lookup tables, regex rules, and derivation rules. It also serves as an (optional, but recommended) home for record-level audit history. Also, since operational data will be stored here, you should have some sort of routine backup process in place.
+MongoDB is required for persistent storage of runtime configurations, lookup tables, regex rules, and derivation rules. It also serves as an (optional, but recommended) home for record-level audit history. Also, since operational data will be stored here, you should have some sort of routine backup process in place. Exact description of the schema is included in the DataDictionary.
 
-This package was designed to work with MongoDB 2.4 (running on Openshift), but has also been lightly tested with 3.3.0.
+This package was designed with MongoDB 3.2.x, but due to multi-key indexing requirements at least 2.5.5 is advised.
 
 ## Configuration
 
@@ -121,6 +254,7 @@ __Required Fields:__
     * `overwrite`: boolean indicating whether to write over an existing value
     * `blankIfNoMatch`: overwrite existing value with a blank value if no match found
  - `userDefinedFunctions`: document of the following sub-documents with ordered numeric names, indicating when user-defined functions should be run: `beforeGenericValidation, beforeGenericRegex, beforeFieldSpecificValidation, beforeFieldSpecificRegex, beforeNormalization, beforeNormalizationRegex, beforeDeriveData, afterProcessing`
+ - `history`: settings dictating if/how to write contact history
 
 ## Lookups, Derivation, and Regex rules
 
@@ -165,12 +299,3 @@ from udf import myFunction
 dataOut = dwm.dwmAll(data=data, mongoDb=db, mongoConfig=mongoConfig, configName='myConfig', returnHistoryId=False, udfNamespace=__name__)
 
 ```
-
-
-## Scheduled Jobs
-
-Scheduled jobs are likely the most robust option for consistent data cleaning.
-
-# Examples
-
-__Coming Soon: Red Hat's Marketing Operations implementation via Openshift__

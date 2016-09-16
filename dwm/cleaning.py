@@ -1,31 +1,33 @@
 from pymongo import MongoClient
 from datetime import datetime
 import re
+from collections import OrderedDict
 
 from .helpers import _CollectHistory_, _CollectHistoryAgg_, _DataClean_
 
-def DataLookup(fieldVal, coll, lookupType, fieldName, histObj={}):
-    '''
-        Lookup a value to replace the input value for a given field
+def DataLookup(fieldVal, db, lookupType, fieldName, histObj={}):
+    """
+    Return new field value based on single-value lookup against MongoDB
 
-        Arguments:
-        * fieldVal -- field value against which to perform lookup
-        * coll -- pymongo client collection where lookup documents are stored
-        * lookupType -- one of ['genericLookup', 'fieldSpecificLookup', 'normLookup']
-        * fieldName -- lookup field name
-        * histObj -- object to which field change history (if any) should be appended
-    '''
+    :param string fieldVal: input value to lookup
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param string lookupType: Type of lookup to perform/MongoDB collection name. One of 'genericLookup', 'fieldSpecificLookup', 'normLookup'
+    :param string fieldName: Field name to query against
+    :param dict histObj: History object to which changes should be appended
+    """
 
     if (lookupType=='genericLookup'):
-        lookupDict = {"type": lookupType, "find": _DataClean_(fieldVal)}
+        lookupDict = {"find": _DataClean_(fieldVal)}
     elif (lookupType in ['fieldSpecificLookup', 'normLookup']):
-        lookupDict = {"type": lookupType, "fieldName": fieldName, "find": _DataClean_(fieldVal)}
+        lookupDict = {"fieldName": fieldName, "find": _DataClean_(fieldVal)}
     else:
-        raise ValueError("Invalid type")
+        raise ValueError("Invalid lookupType")
 
     fieldValNew = fieldVal
 
-    lval = coll.find_one(lookupDict)
+    coll = db[lookupType]
+
+    lval = coll.find_one(lookupDict, ['replace'])
 
     if lval:
         if 'replace' in lval:
@@ -40,29 +42,30 @@ def DataLookup(fieldVal, coll, lookupType, fieldName, histObj={}):
     return fieldValNew, histObjUpd
 
 
-def RegexLookup(fieldVal, coll, fieldName, lookupType, histObj={}):
-    '''
-        Lookup and perform a regex replace
+def RegexLookup(fieldVal, db, fieldName, lookupType, histObj={}):
+    """
+    Return a new field value based on match against regex queried from MongoDB
 
-        Arguments:
-        * fieldVal -- field value against which to perform regex replace
-        * coll -- pymongo client collection where regex documents are stored
-        * fieldName -- regex field name
-        * lookupType -- one of ['fieldSpecificRegex', 'genericRegex', 'normRegex']
-        * histObj -- object to which field change history (if any) should be appended
-    '''
+    :param string fieldVal: input value to lookup
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param string lookupType: Type of lookup to perform/MongoDB collection name. One of 'genericRegex', 'fieldSpecificRegex', 'normRegex'
+    :param string fieldName: Field name to query against
+    :param dict histObj: History object to which changes should be appended
+    """
 
     if (lookupType=='genericRegex'):
-        lookupDict = {"type": lookupType}
+        lookupDict = {}
     elif (lookupType in ['fieldSpecificRegex', 'normRegex']):
-        lookupDict = {"type": lookupType, "fieldName": fieldName}
+        lookupDict = {"fieldName": fieldName}
     else:
         raise ValueError("Invalid type")
 
     fieldValNew = fieldVal
     pattern = ''
 
-    reVal = coll.find(lookupDict)
+    coll = db[lookupType]
+
+    reVal = coll.find(lookupDict, ['pattern', 'replace'])
 
     for row in reVal:
 
@@ -78,69 +81,68 @@ def RegexLookup(fieldVal, coll, fieldName, lookupType, histObj={}):
             pattern = row['pattern']
             break
 
+    if reVal:
+        reVal.close()
+
     change = _CollectHistory_(lookupType=lookupType, fromVal=fieldVal, toVal=fieldValNew, pattern=pattern)
 
     histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
 
     return fieldValNew, histObjUpd
 
-def DeriveDataLookup(fieldName, coll, deriveInput, overwrite=True, fieldVal='', histObj={}):
-    '''
-        Derive a data value given a single derivation rule
+def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', histObj={}, blankIfNoMatch=False):
+    """
+    Return new field value based on single or multi-value lookup against MongoDB
 
-        Arguments:
-        * fieldName -- field name for which to derive a value
-        * coll -- pymongo client collection where derivation lookup documents are stored
-        * deriveInput -- an input dictionary with the field values to lookup
-            {
-                "lookupField1": "lookupVal1",
-                "lookupField2": "lookupVal2"
-            }
-        * overwrite -- bool; whether or not to replace value if one already exists
-        * fieldVal -- existing field value
-        * histObj -- object to which field change history (if any) should be appended
-    '''
-    # test 1
+    :param string fieldName: Field name to query against
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param dict deriveInput: Values to perform lookup against: {"lookupField1": "lookupVal1", "lookupField2": "lookupVal2"}
+    :param bool overwrite: Should an existing field value be replaced
+    :param string fieldVal: Current field value
+    :param dict histObj: History object to which changes should be appended
+    :param bool blankIfNoMatch: Should field value be set to blank if no match is found
+    """
 
-    lookupVals = deriveInput
+    lookupVals = OrderedDict()
 
-    for field in lookupVals:
-        lookupVals[field] = _DataClean_(lookupVals[field])
+    for val in sorted(deriveInput.keys()):
+        lookupVals[val] = _DataClean_(deriveInput[val])
 
     lookupDict = {}
 
     lookupDict['fieldName'] = fieldName
-    lookupDict['type'] = 'deriveValue'
     lookupDict['lookupVals'] = lookupVals
 
-    # test 2
-    lval = coll.find_one(lookupDict)
+    coll = db['deriveValue']
+
+    lval = coll.find_one(lookupDict, ['value'])
 
     fieldValNew = fieldVal
-    # test 3
+
+    deriveUsing = deriveInput
+
     if lval and (overwrite or (fieldVal=='')):
         fieldValNew = lval['value']
-    # test 4
-    change = _CollectHistory_(lookupType='deriveValue', fromVal=fieldVal, toVal=fieldValNew, using=deriveInput)
+    elif blankIfNoMatch and not lval:
+        fieldValNew = ''
+        deriveUsing = {'blankIfNoMatch': 'no match found'}
+
+    change = _CollectHistory_(lookupType='deriveValue', fromVal=fieldVal, toVal=fieldValNew, using=deriveUsing)
 
     histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
 
     return fieldValNew, histObjUpd
 
 def DeriveDataCopyValue(fieldName, deriveInput, overwrite, fieldVal, histObj={}):
-    '''
-        Derive value by copying from another field
+    """
+    Return new value based on value from another field
 
-        Arguments:
-        * fieldName -- field name for which to derive a value
-        * deriveInput -- an input dictionary with the field values to lookup
-            {
-                "lookupField1": "lookupVal1"
-            }
-        * overwrite -- bool; whether or not to replace value if one already exists
-        * fieldVal -- existing field value
-        * histObj -- object to which field change history (if any) should be appended
-    '''
+    :param string fieldName: Field name to query against
+    :param dict deriveInput: Values to perform lookup against: {"copyField1": "copyVal1"}
+    :param bool overwrite: Should an existing field value be replaced
+    :param string fieldVal: Current field value
+    :param dict histObj: History object to which changes should be appended
+    """
 
     if len(deriveInput)>1:
         raise Exception("more than one field/value in deriveInput")
@@ -159,26 +161,25 @@ def DeriveDataCopyValue(fieldName, deriveInput, overwrite, fieldVal, histObj={})
 
     return fieldValNew, histObjUpd
 
-def DeriveDataRegex(fieldName, coll, deriveInput, overwrite, fieldVal, histObj={}):
-    '''
-        Derive field value by performing regex search on another field
+def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={}, blankIfNoMatch=False):
+    """
+    Return a new field value based on match (of another field) against regex queried from MongoDB
 
-        Arguments:
-        * fieldName -- field name for which to derive a value
-        * coll -- pymongo client collection where derivation regex documents are stored
-        * deriveInput -- an input dictionary with the field values to lookup
-            {
-                "lookupField1": "lookupVal1"
-            }
-        * overwrite -- bool; whether or not to replace value if one already exists
-        * fieldVal -- existing field value
-        * histObj -- object to which field change history (if any) should be appended
-    '''
+    :param string fieldName: Field name to query against
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param dict deriveInput: Values to perform lookup against: {"lookupField1": "lookupVal1"}
+    :param bool overwrite: Should an existing field value be replaced
+    :param string fieldVal: Current field value
+    :param dict histObj: History object to which changes should be appended
+    :param bool blankIfNoMatch: Should field value be set to blank if no match is found
+    """
 
     if len(deriveInput)>1:
         raise Exception("more than one value in deriveInput")
 
     fieldValNew = fieldVal
+
+    deriveUsing = deriveInput
 
     row = list(deriveInput.keys())[0]
 
@@ -188,11 +189,12 @@ def DeriveDataRegex(fieldName, coll, deriveInput, overwrite, fieldVal, histObj={
 
         lookupDict = {}
 
-        lookupDict['type'] = 'deriveRegex'
         lookupDict['deriveFieldName'] = row
         lookupDict['fieldName'] = fieldName
 
-        reVal = coll.find(lookupDict)
+        coll = db['deriveRegex']
+
+        reVal = coll.find(lookupDict, ['pattern', 'replace'])
 
         for lval in reVal:
 
@@ -204,6 +206,14 @@ def DeriveDataRegex(fieldName, coll, deriveInput, overwrite, fieldVal, histObj={
 
                 pattern = lval['pattern']
                 break
+
+        if reVal:
+            reVal.close()
+
+        if fieldValNew == fieldVal and blankIfNoMatch:
+            fieldValNew = ''
+            pattern = 'no matching pattern'
+            deriveUsing = {"blankIfNoMatch": "no match found"}
 
     change = _CollectHistory_(lookupType='deriveRegex', fromVal=fieldVal, toVal=fieldValNew, using=deriveInput, pattern=pattern)
 
