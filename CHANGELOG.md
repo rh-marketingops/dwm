@@ -1,3 +1,6 @@
+## 2016-09-20 v0.0.5 (hotfix)
+- Switched loop/conditional for DeriveDataLookupAll; before was looping by order of keys in `data`, now looping by order of fields in `config`
+
 ## 2016-09-16 v0.0.4
 - Split expected MongoDB schema into collections based on the former `type` field:
   - genericLookup, genericRegex, fieldSpecificLookup, fieldSpecificRegex, normLookup, normRegex, deriveValue
