@@ -43,9 +43,9 @@ def DeriveDataLookupAll(data, configFields, db, histObj={}):
     :param dict histObj: History object to which changes should be appended
     """
 
-    for field in data.keys():
+    for field in configFields.keys():
 
-        if field in configFields.keys():
+        if field in data.keys():
 
             fieldVal = data[field]
 
