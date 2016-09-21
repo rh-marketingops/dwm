@@ -10,6 +10,8 @@ from .test_genericRegex import genericRegex
 from .test_fieldSpecificRegex import fieldSpecificRegex
 from .test_normRegex import normRegex
 
+from .test_normIncludes import normIncludes
+
 from .test_deriveValue import deriveValue
 from .test_deriveRegex import deriveRegex
 
@@ -47,6 +49,10 @@ for row in fieldSpecificRegex:
 for row in normRegex:
 
     db.normRegex.insert_one(row)
+
+for row in normIncludes:
+
+    db.normIncludes.insert_one(row)
 
 for row in deriveValue:
 
