@@ -64,10 +64,7 @@ def NormIncludesLookup(fieldVal, db, fieldName, histObj={}):
 
     for row in incVal:
 
-        row['includes'] = _DataClean_(row['includes'])
-        row['excludes'] = _DataClean_(row['excludes'])
-
-        if all((a in fieldValClean) for a in row['includes'].split(",")) and all((b not in fieldValClean) for b in row['excludes'].split(",")):
+        if all((a in fieldValClean) for a in _DataClean_(row['includes']).split(",")) and all((b not in fieldValClean) for b in _DataClean_(row['excludes']).split(",")):
             fieldValNew = row['replace']
             using['includes'] = row['includes']
             using['excludes'] = row['excludes']
