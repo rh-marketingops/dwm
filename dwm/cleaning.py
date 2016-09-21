@@ -66,7 +66,7 @@ def NormIncludesLookup(fieldVal, db, fieldName, histObj={}):
 
         if all((a in fieldValClean) for a in row['includes'].split(",")):
 
-            if all((b not in fieldValClean) for b in row['excludes'].split(",")):
+            if all((b not in fieldValClean) for b in row['excludes'].split(",")) or row['excludes']=='':
 
                 if fieldValClean.startswith(row['begins']):
 
