@@ -121,6 +121,12 @@ def dwmOne(data, db, config, writeContactHistory=True, returnHistoryId=True, his
     data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='normRegex', db=db, histObj=history)
 
     ## Run user-defined functions
+    data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeNormalizationIncludes", namespace=udfNamespace)
+
+    # Run normalization includes
+    data, history = lookupAll(data=data, configFields=fieldConfig, lookupType='normIncludes', db=db, histObj=history)
+
+    ## Run user-defined functions
     data, history = _RunUserDefinedFunctions_(config=config, data=data, histObj=history, position="beforeDeriveData", namespace=udfNamespace)
 
     # Fill gaps / refresh derived data
