@@ -76,6 +76,31 @@ configs = [
         }
     },
     {
+        "configName": "test_normIncludes",
+        "fields": {
+            "field1": {
+                "lookup": ["normIncludes"],
+                "derive": {}
+            }
+        },
+        "userDefinedFunctions": {
+            "beforeGenericValidation": {},
+            "beforeGenericRegex": {},
+            "beforeFieldSpecificValidation": {},
+            "beforeFieldSpecificRegex": {},
+            "beforeNormalization": {},
+            "beforeNormalizationRegex": {},
+            "beforeDeriveData": {},
+            "afterProcessing": {}
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
+    },
+    {
         "configName": "test_regexAll_genericRegex",
         "fields": {
             "field1": {
