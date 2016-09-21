@@ -1,4 +1,4 @@
-from .cleaning import DataLookup, RegexLookup, DeriveDataLookup, DeriveDataCopyValue, DeriveDataRegex
+from .cleaning import DataLookup, NormIncludesLookup, RegexLookup, DeriveDataLookup, DeriveDataCopyValue, DeriveDataRegex
 from datetime import datetime
 from collections import OrderedDict
 
@@ -9,7 +9,7 @@ def lookupAll(data, configFields, lookupType, db, histObj={}):
 
     :param dict data: single record (dictionary) to which cleaning rules should be applied
     :param dict configFields: "fields" object from DWM config (see DataDictionary)
-    :param string lookupType: Type of lookup to perform/MongoDB collection name. One of 'genericLookup', 'fieldSpecificLookup', 'normLookup', 'genericRegex', 'fieldSpecificRegex', 'normRegex'
+    :param string lookupType: Type of lookup to perform/MongoDB collection name. One of 'genericLookup', 'fieldSpecificLookup', 'normLookup', 'genericRegex', 'fieldSpecificRegex', 'normRegex', 'normIncludes'
     :param MongoClient db: MongoClient instance connected to MongoDB
     :param dict histObj: History object to which changes should be appended
     """
@@ -27,6 +27,10 @@ def lookupAll(data, configFields, lookupType, db, histObj={}):
                 elif lookupType in ['genericRegex', 'fieldSpecificRegex', 'normRegex']:
 
                     fieldValNew, histObj = RegexLookup(fieldVal=data[field], db=db, fieldName=field, lookupType=lookupType, histObj=histObj)
+
+                elif lookupType=='normIncludes':
+
+                    fieldValNew, histObj = NormIncludesLookup(fieldVal=data[field], db=db, fieldName=field, histObj=histObj)
 
                 data[field] = fieldValNew
 
