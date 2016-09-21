@@ -186,12 +186,12 @@ def test_normIncludes_included_caught():
 def test_normIncludes_included_uncaught():
 
     dataOut = dwmAll(data = test_records.record_normIncludes_included_uncaught, db = db, configName='test_normIncludes')
-    assert dataOut[0]['field1'] == 'goodvalue'
+    assert dataOut[0]['field1'] != 'goodvalue'
 
 def test_normIncludes_excluded_caught():
 
     dataOut = dwmAll(data = test_records.record_normIncludes_excluded_caught, db = db, configName='test_normIncludes')
-    assert dataOut[0]['field1'] == 'goodvalue'
+    assert dataOut[0]['field1'] != 'goodvalue'
 
 def test_normIncludes_excluded_uncaught():
 
@@ -201,7 +201,7 @@ def test_normIncludes_excluded_uncaught():
 def test_normIncludes_notChecked():
 
     dataOut = dwmAll(data = test_records.record_normIncludes_notChecked, db = db, configName='test_normIncludes')
-    assert dataOut[0]['field1'] == 'goodvalue'
+    assert dataOut[0]['field2'] != 'goodvalue'
 
 
 ###################################

@@ -34,6 +34,16 @@ record_regexAll_normRegex_uncaught = [{"emailAddress": "test@test.com", "field1"
 
 record_regexAll_normRegex_notChecked = [{"emailAddress": "test@test.com", "field2": "badvalue"}]
 
+record_normIncludes_included_caught = [{"emailAddress": "test@test.com", "field1": "findgoodinvaluejunk"}]
+
+record_normIncludes_included_uncaught = [{"emailAddress": "test@test.com", "field1": "nothere"}]
+
+record_normIncludes_excluded_caught = [{"emailAddress": "test@test.com", "field1": "findgoodinvaluejunk butnobad"}]
+
+record_normIncludes_excluded_uncaught = [{"emailAddress": "test@test.com", "field1": "findgoodinvaluejunk uncaught"}]
+
+record_normIncludes_notChecked = [{"emailAddress": "test@test.com", "field2": "doesnotmatter"}]
+
 record_deriveAll_deriveValue_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findthis"}]
 
 record_derive_sort = [{"emailAddress": "test@test.com", "field1": "", "field3": "findthis", "field4": "nofindthis"}]
