@@ -41,6 +41,43 @@ def DataLookup(fieldVal, db, lookupType, fieldName, histObj={}):
 
     return fieldValNew, histObjUpd
 
+def NormIncludesLookup(fieldVal, db, fieldName, histObj={}):
+    """
+    Return new field value based on whether or not original value includes AND excludes all words in a comma-delimited list queried from MongoDB
+
+    :param string fieldVal: input value to lookup
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param string fieldName: Field name to query against
+    :param dict histObj: History object to which changes should be appended
+    """
+
+    lookupDict = {}
+    lookupDict['fieldName'] = fieldName
+
+    fieldValNew = fieldVal
+    fieldValClean = _DataClean_(fieldVal)
+    using = {}
+
+    coll = db['normIncludes']
+
+    incVal = coll.find(lookupDict, ['includes', 'excludes', 'replace'])
+
+    for row in incVal:
+
+        if all((a in fieldValClean) for a in row['includes']) and all((b not in fieldValClean) for b in row['excludes']):
+            fieldValNew = row['replace']
+            using['includes'] = row['includes']
+            using['excludes'] = row['excludes']
+            break
+
+    if incVal:
+        incVal.close()
+
+    change = _CollectHistory_(lookupType='normIncludes', fromVal=fieldVal, toVal=fieldValNew, pattern=pattern)
+
+    histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
+
+    return fieldValNew, histObjUpd
 
 def RegexLookup(fieldVal, db, fieldName, lookupType, histObj={}):
     """
