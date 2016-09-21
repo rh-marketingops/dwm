@@ -73,7 +73,7 @@ def NormIncludesLookup(fieldVal, db, fieldName, histObj={}):
     if incVal:
         incVal.close()
 
-    change = _CollectHistory_(lookupType='normIncludes', fromVal=fieldVal, toVal=fieldValNew, pattern=pattern)
+    change = _CollectHistory_(lookupType='normIncludes', fromVal=fieldVal, toVal=fieldValNew, using=using)
 
     histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
 
