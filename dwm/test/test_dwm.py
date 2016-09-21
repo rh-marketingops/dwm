@@ -537,6 +537,11 @@ def test_udf_beforeNormalizationRegex():
     dataOut = dwmAll(data = test_records.record_udf_beforeNormalizationRegex, db = db, configName='test_udf_beforeNormalizationRegex', udfNamespace=__name__)
     assert dataOut[0]['field1'] == 'goodvalue'
 
+def test_udf_beforeNormalizationIncludes():
+
+    dataOut = dwmAll(data = test_records.record_udf_beforeNormalizationIncludes, db = db, configName='test_udf_beforeNormalizationIncludes', udfNamespace=__name__)
+    assert dataOut[0]['field1'] == 'goodvalue'
+
 def test_udf_beforeDeriveData():
 
     dataOut = dwmAll(data = test_records.record_udf_beforeDeriveData, db = db, configName='test_udf_beforeDeriveData', udfNamespace=__name__)
