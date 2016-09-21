@@ -38,7 +38,7 @@ record_normIncludes_included_caught = [{"emailAddress": "test@test.com", "field1
 
 record_normIncludes_included_uncaught = [{"emailAddress": "test@test.com", "field1": "nothere"}]
 
-record_normIncludes_excluded_caught = [{"emailAddress": "test@test.com", "field1": "findgoodinvaluejunk butnobad"}]
+record_normIncludes_excluded_caught = [{"emailAddress": "test@test.com", "field1": "findgoodinvaluejunk butstuffnobad"}]
 
 record_normIncludes_excluded_uncaught = [{"emailAddress": "test@test.com", "field1": "findgoodinvaluejunk uncaught"}]
 
