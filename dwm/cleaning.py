@@ -60,15 +60,20 @@ def NormIncludesLookup(fieldVal, db, fieldName, histObj={}):
 
     coll = db['normIncludes']
 
-    incVal = coll.find(lookupDict, ['includes', 'excludes', 'replace'])
+    incVal = coll.find(lookupDict, ['includes', 'excludes', 'begins', 'ends', 'replace'])
 
     for row in incVal:
 
-        if all((a in fieldValClean) for a in _DataClean_(row['includes']).split(",")) and all((b not in fieldValClean) for b in _DataClean_(row['excludes']).split(",")):
-            fieldValNew = row['replace']
-            using['includes'] = row['includes']
-            using['excludes'] = row['excludes']
-            break
+        if all((a in fieldValClean) for a in row['includes'].split(",")):
+            if all((b not in fieldValClean) for b in row['excludes'].split(",")):
+                if fieldValClean.startswith(row['begins']):
+                    if fieldValClean.endswith(row['ends']):
+                        fieldValNew = row['replace']
+                        using['includes'] = row['includes']
+                        using['excludes'] = row['excludes']
+                        using['begins'] = row['begins']
+                        using['ends'] = row['ends']
+                        break
 
     if incVal:
         incVal.close()
