@@ -15,6 +15,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -40,6 +41,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -65,6 +67,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -90,6 +93,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -115,6 +119,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -140,6 +145,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -165,6 +171,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -197,6 +204,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -229,6 +237,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -267,6 +276,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -298,6 +308,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -330,6 +341,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -362,6 +374,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -394,6 +407,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -426,6 +440,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -446,6 +461,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -486,6 +502,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -508,6 +525,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -530,6 +548,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -552,6 +571,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -574,6 +594,7 @@ configs = [
             },
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -596,6 +617,7 @@ configs = [
                 "1": "ex_udf"
             },
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -618,6 +640,30 @@ configs = [
             "beforeNormalizationRegex": {
                 "1": "ex_udf"
             },
+            "beforeNormalizationIncludes": {},
+            "beforeDeriveData": {},
+            "afterProcessing": {}
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
+    },
+    {
+        "configName": "test_udf_beforeNormalizationIncludes",
+        "fields": {},
+        "userDefinedFunctions": {
+            "beforeGenericValidation": {},
+            "beforeGenericRegex": {},
+            "beforeFieldSpecificValidation": {},
+            "beforeFieldSpecificRegex": {},
+            "beforeNormalization": {},
+            "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {
+                "1": "ex_udf"
+            },
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -638,6 +684,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {
                 "1": "ex_udf"
             },
@@ -660,6 +707,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {
                 "1": "ex_udf"
@@ -686,6 +734,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {}
       },
@@ -706,6 +755,7 @@ configs = [
             "beforeFieldSpecificRegex": {},
             "beforeNormalization": {},
             "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
             "beforeDeriveData": {},
             "afterProcessing": {
                 "1": "bad_udf"
