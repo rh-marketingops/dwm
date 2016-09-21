@@ -148,6 +148,8 @@ record_udf_beforeNormalization = [{"emailAddress": "test@test.com", "field1": ""
 
 record_udf_beforeNormalizationRegex = [{"emailAddress": "test@test.com", "field1": ""}]
 
+record_udf_beforeNormalizationIncludes = [{"emailAddress": "test@test.com", "field1": ""}]
+
 record_udf_beforeDeriveData = [{"emailAddress": "test@test.com", "field1": ""}]
 
 record_udf_afterProcessing = [{"emailAddress": "test@test.com", "field1": ""}]
