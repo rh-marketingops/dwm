@@ -176,6 +176,34 @@ def test_regexAll_normRegex_notChecked():
     dataOut = dwmAll(data = test_records.record_regexAll_normRegex_notChecked, db = db, configName='test_regexAll_normRegex')
     assert dataOut[0]['field2'] != 'goodvalue'
 
+# normIncludes
+
+def test_normIncludes_included_caught():
+
+    dataOut = dwmAll(data = test_records.record_normIncludes_included_caught, db = db, configName='test_normIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_normIncludes_included_uncaught():
+
+    dataOut = dwmAll(data = test_records.record_normIncludes_included_uncaught, db = db, configName='test_normIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_normIncludes_excluded_caught():
+
+    dataOut = dwmAll(data = test_records.record_normIncludes_excluded_caught, db = db, configName='test_normIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_normIncludes_excluded_uncaught():
+
+    dataOut = dwmAll(data = test_records.record_normIncludes_excluded_uncaught, db = db, configName='test_normIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_normIncludes_notChecked():
+
+    dataOut = dwmAll(data = test_records.record_normIncludes_notChecked, db = db, configName='test_normIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+
 ###################################
 ## Test derive
 # deriveValue
