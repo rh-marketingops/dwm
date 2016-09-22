@@ -224,7 +224,8 @@ client = pymongo.MongoClient('connectURL', document_class=OrderedDict)
   "includes": "val,stuff,things",
   "excludes": "others,not",
   "begins": "startval",
-  "ends": "endval"
+  "ends": "endval",
+  "replace": "goodvalue"
 }
 ```
 
@@ -262,14 +263,15 @@ Keeping the ```lookupVals``` in a sub-document allows for indexing on the ```der
 
 ```javascript
 
-// normalization includes
+// derive includes
 {
   "fieldName": "field1",
   "deriveFieldName": "field2"
   "includes": "val,stuff,things",
   "excludes": "others,not",
   "begins": "startval",
-  "ends": "endval"
+  "ends": "endval",
+  "replace": "goodvalue"
 }
 ```
 
