@@ -70,6 +70,7 @@ def DeriveDataLookupAll(data, configFields, db, histObj={}):
                     if deriveSetConfig['type']=='deriveValue':
 
                         fieldValNew, histObj = DeriveDataLookup(fieldName=field, db=db, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj, blankIfNoMatch=deriveSetConfig['blankIfNoMatch'])
+
                     elif deriveSetConfig['type']=='copyValue':
 
                         fieldValNew, histObj = DeriveDataCopyValue(fieldName=field, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj)
@@ -78,6 +79,9 @@ def DeriveDataLookupAll(data, configFields, db, histObj={}):
 
                         fieldValNew, histObj = DeriveDataRegex(fieldName=field, db=db, deriveInput=deriveInput, overwrite=deriveSetConfig['overwrite'], fieldVal=fieldVal, histObj=histObj, blankIfNoMatch=deriveSetConfig['blankIfNoMatch'])
 
+                    elif deriveSetConfig['type']=='deriveIncludes':
+
+                        fieldValNew, histObj = IncludesLookup(fieldVal=data[field], lookupType='deriveIncludes', deriveFieldName=deriveSetConfig['fieldSet'][0], deriveInput=deriveInput,  db=db, fieldName=field, histObj=histObj)
 
                 if fieldValNew!=fieldVal:
 

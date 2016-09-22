@@ -41,7 +41,7 @@ def DataLookup(fieldVal, db, lookupType, fieldName, histObj={}):
 
     return fieldValNew, histObjUpd
 
-def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deriveInput='', histObj={}):
+def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deriveInput='', histObj={}, overwrite=False, blankIfNoMatch=False):
     """
     Return new field value based on whether or not original value includes AND excludes all words in a comma-delimited list queried from MongoDB
 
@@ -72,28 +72,30 @@ def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deri
 
     incVal = coll.find(lookupDict, ['includes', 'excludes', 'begins', 'ends', 'replace'])
 
-    for row in incVal:
+    if incVal and (lookupType=='normIncludes' or (lookupType=='deriveIncludes' and (overwrite or fieldVal==''))):
 
-        if all((a in fieldValClean) for a in row['includes'].split(",")):
+        for row in incVal:
 
-            if all((b not in fieldValClean) for b in row['excludes'].split(",")) or row['excludes']=='':
+            if all((a in fieldValClean) for a in row['includes'].split(",")):
 
-                if fieldValClean.startswith(row['begins']):
+                if all((b not in fieldValClean) for b in row['excludes'].split(",")) or row['excludes']=='':
 
-                    if fieldValClean.endswith(row['ends']):
+                    if fieldValClean.startswith(row['begins']):
 
-                        fieldValNew = row['replace']
+                        if fieldValClean.endswith(row['ends']):
 
-                        if lookupType=='deriveIncludes':
-                            using[deriveFieldName] = deriveInput
-                        using['includes'] = row['includes']
-                        using['excludes'] = row['excludes']
-                        using['begins'] = row['begins']
-                        using['ends'] = row['ends']
-                        break
+                            fieldValNew = row['replace']
 
-    if incVal:
-        incVal.close()
+                            if lookupType=='deriveIncludes':
+                                using[deriveFieldName] = deriveInput
+                            using['includes'] = row['includes']
+                            using['excludes'] = row['excludes']
+                            using['begins'] = row['begins']
+                            using['ends'] = row['ends']
+                            break
+
+        if incVal:
+            incVal.close()
 
     change = _CollectHistory_(lookupType='normIncludes', fromVal=fieldVal, toVal=fieldValNew, using=using)
 
