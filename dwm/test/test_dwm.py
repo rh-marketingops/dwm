@@ -364,6 +364,27 @@ def test_history_normLookup_notChecked():
     hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
     assert 'field2' not in hist.keys()
 
+# normIncludes
+
+def test_history_normIncludes_caught():
+
+    # do stuff for testing
+    dataOut = dwmAll(data = test_records.history_normIncludes_included_caught, db = db, configName='test_normIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['field1']['normIncludes']['from'] == 'findgoodinvaluejunk'
+
+def test_history_normIncludes_uncaught():
+
+    dataOut = dwmAll(data = test_records.history_normIncludes_included_uncaught, db = db, configName='test_normIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field1' not in hist.keys()
+
+def test_history_normIncludes_notChecked():
+
+    dataOut = dwmAll(data = test_records.history_normIncludes_notChecked, db = db, configName='test_normIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field2' not in hist.keys()
+
 # genericRegex
 
 def test_history_genericRegex_caught():

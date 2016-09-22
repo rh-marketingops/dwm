@@ -114,6 +114,12 @@ history_normRegex_uncaught = [{"emailAddress": "test@test.com", "field1": "badva
 
 history_normRegex_notChecked = [{"emailAddress": "test@test.com", "field2": "badvalue"}]
 
+history_normIncludes_included_caught = [{"emailAddress": "test@test.com", "field1": "findgoodinvaluejunk"}]
+
+history_normIncludes_included_uncaught = [{"emailAddress": "test@test.com", "field1": "nothere"}]
+
+history_normIncludes_notChecked = [{"emailAddress": "test@test.com", "field2": "doesnotmatter"}]
+
 history_deriveValue_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findthis"}]
 
 history_deriveValue_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findthis"}]
