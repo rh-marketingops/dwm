@@ -97,7 +97,11 @@ def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deri
         if incVal:
             incVal.close()
 
-    change = _CollectHistory_(lookupType='normIncludes', fromVal=fieldVal, toVal=fieldValNew, using=using)
+    if fieldValNew==fieldVal and blankIfNoMatch and lookupType=='deriveIncludes':
+        fieldValNew = ''
+        using['blankIfNoMatch'] = 'no match found'
+
+    change = _CollectHistory_(lookupType=lookupType, fromVal=fieldVal, toVal=fieldValNew, using=using)
 
     histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
 
