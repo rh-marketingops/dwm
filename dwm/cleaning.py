@@ -146,17 +146,22 @@ def RegexLookup(fieldVal, db, fieldName, lookupType, histObj={}):
 
     for row in reVal:
 
-        match = re.match(row['pattern'], _DataClean_(fieldValNew), flags=re.IGNORECASE)
+        try:
 
-        if match:
+            match = re.match(row['pattern'], _DataClean_(fieldValNew), flags=re.IGNORECASE)
 
-            if 'replace' in row:
-                fieldValNew = re.sub(row['pattern'], row['replace'], _DataClean_(fieldValNew), flags=re.IGNORECASE)
-            else:
-                fieldValNew = re.sub(row['pattern'], '', _DataClean_(fieldValNew), flags=re.IGNORECASE)
+            if match:
 
-            pattern = row['pattern']
-            break
+                if 'replace' in row:
+                    fieldValNew = re.sub(row['pattern'], row['replace'], _DataClean_(fieldValNew), flags=re.IGNORECASE)
+                else:
+                    fieldValNew = re.sub(row['pattern'], '', _DataClean_(fieldValNew), flags=re.IGNORECASE)
+
+                pattern = row['pattern']
+                break
+
+        except KeyError as e:
+            warnings.warn('schema error', e)
 
     if reVal:
         reVal.close()
