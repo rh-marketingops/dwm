@@ -41,7 +41,7 @@ def DataLookup(fieldVal, db, lookupType, fieldName, histObj={}):
 
     return fieldValNew, histObjUpd
 
-def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deriveInput='', histObj={}, overwrite=False, blankIfNoMatch=False):
+def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deriveInput={}, histObj={}, overwrite=False, blankIfNoMatch=False):
     """
     Return new field value based on whether or not original value includes AND excludes all words in a comma-delimited list queried from MongoDB
 
@@ -58,10 +58,10 @@ def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deri
     if (lookupType=='normIncludes'):
         fieldValClean = _DataClean_(fieldVal)
     elif (lookupType=='deriveIncludes'):
-        lookupDict['deriveFieldName'] = deriveFieldName
-        fieldValClean = _DataClean_(deriveInput)
-        if deriveFieldName=='' or deriveInput=='':
+        if deriveFieldName=='' or deriveInput=={}:
             raise ValueError("for 'deriveIncludes' must specify both 'deriveFieldName' and 'deriveInput'")
+        lookupDict['deriveFieldName'] = deriveFieldName
+        fieldValClean = _DataClean_(deriveInput[list(deriveInput.keys())[0]])
     else:
         raise ValueError("Invalid lookupType")
 
