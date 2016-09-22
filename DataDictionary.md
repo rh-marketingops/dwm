@@ -77,7 +77,7 @@ To be cleaned, a field must be present in the config document *and* in the data 
 
 #### Special cases for ```derive``` configurations
 
-Similarly, for ```deriveValue```, ```deriveRegex```, and ```copyValue```, derivation rules will only be applied when the specified field *and all* of the fields listed in ```fieldSet``` are present in the record passed to DWM:
+Similarly, for ```deriveValue```, ```deriveRegex```, ```deriveIncludes```, and ```copyValue```, derivation rules will only be applied when the specified field *and all* of the fields listed in ```fieldSet``` are present in the record passed to DWM:
 - If the config includes a ```deriveValue``` rule for ```persona``` which requires ```jobRole``` and ```department```, and the record passed includes all three, then DWM will attempt to derive ```persona```
 - If the config includes a ```deriveValue``` rule for ```persona``` which requires ```jobRole``` and ```department```, and the record passed only includes ```jobRole``` and ```persona```, then it will not attempt to derive a value for ```persona```
 
@@ -104,7 +104,7 @@ client = pymongo.MongoClient('connectURL', document_class=OrderedDict)
   "lastModifiedDate": dateUnixtime,
   "fields": {
     "field1": {
-      "lookup": ["fieldSpecificLookup", "genericLookup", "normLookup", "fieldSpecificRegex", "genericRegex", "normRegex"],
+      "lookup": ["fieldSpecificLookup", "genericLookup", "normLookup", "fieldSpecificRegex", "genericRegex", "normRegex", "normIncludes"],
       "derive": {
         "1": {
           "type": "deriveValue",
@@ -128,7 +128,13 @@ client = pymongo.MongoClient('connectURL', document_class=OrderedDict)
           "fieldSet": ["field2", "field4"],
           "overwrite": true,
           "blankIfNoMatch": true
-          }
+        },
+        "5": {
+          "type": "deriveIncludes",
+          "fieldSet": ["field5"],
+          "overwrite": true,
+          "blankIfNoMatch": false
+        }
       }
     },
     ...
@@ -153,6 +159,9 @@ client = pymongo.MongoClient('connectURL', document_class=OrderedDict)
     "beforeNormalizationRegex": {
       "1": "okayjustonemore",
       "2": "ireallymeanitthistime"
+    },
+    "beforeNormalizationIncludes": {
+      "1": "okayanother"
     },
     "beforeDeriveData": {
       "1": "imtired"
@@ -205,6 +214,20 @@ client = pymongo.MongoClient('connectURL', document_class=OrderedDict)
 }
 ```
 
+### normIncludes
+
+```javascript
+
+// normalization includes
+{
+  "fieldName": "field1",
+  "includes": "val,stuff,things",
+  "excludes": "others,not",
+  "begins": "startval",
+  "ends": "endval"
+}
+```
+
 ### deriveValue
 
 Defines a potentially multi-field based lookup mapped to a single field (fill-gaps or derived fields; i.e. Persona is a combination of Job Role and Department).
@@ -232,6 +255,23 @@ Keeping the ```lookupVals``` in a sub-document allows for indexing on the ```der
     "department": "IT - APPLICATIONS"
   },
   "value": "IT Decision Maker"
+}
+```
+
+### deriveIncludes
+
+### normIncludes
+
+```javascript
+
+// normalization includes
+{
+  "fieldName": "field1",
+  "deriveFieldName": "field2",
+  "includes": "val,stuff,things",
+  "excludes": "others,not",
+  "begins": "startval",
+  "ends": "endval"
 }
 ```
 
@@ -330,11 +370,13 @@ To optimize performance (specifically for deriveValue lookups), the following in
 db.genericLookup.ensureIndex({"find": 1})
 db.fieldSpecificLookup.ensureIndex({"fieldName": 1, "find": 1})
 db.normLookup.ensureIndex({"fieldName": 1, "find": 1})
+db.normIncludes.ensureIndex({"fieldName": 1})
 
 db.fieldSpecificRegex.ensureIndex({"fieldName": 1})
 db.normRegex.ensureIndex({"fieldName": 1})
 
 db.deriveValue.ensureIndex({"fieldName": 1, "lookupVals": 1})
 db.deriveRegex.ensureIndex({"fieldName": 1})
+db.deriveIncludes.ensureIndex({"fieldName": 1})
 
 ```
