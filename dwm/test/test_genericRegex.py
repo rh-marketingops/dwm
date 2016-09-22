@@ -1,3 +1,3 @@
 genericRegex = [
-    {"type": "genericRegex", "pattern": r"^badvalue$"}
+    {"pattern": r"^badvalue$"}
 ]

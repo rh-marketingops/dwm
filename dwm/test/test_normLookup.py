@@ -1,3 +1,3 @@
 normLookup = [
-    {"type": "normLookup", "fieldName": "field1", "find": "BADVALUE", "replace": "goodvalue"}
+    {"fieldName": "field1", "find": "BADVALUE", "replace": "goodvalue"}
 ]

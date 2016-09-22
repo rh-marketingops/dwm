@@ -1,3 +1,3 @@
 normRegex = [
-    {"type": "normRegex", "fieldName": "field1", "pattern": r"^badvalue$", "replace": "goodvalue"}
+    {"fieldName": "field1", "pattern": r"^badvalue$", "replace": "goodvalue"}
 ]
