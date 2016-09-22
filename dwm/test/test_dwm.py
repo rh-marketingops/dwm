@@ -815,3 +815,10 @@ def test_deriveValue_warnOnBadSchema(mock_warnings):
 
     cleaning.DeriveDataLookup(fieldName="field100", db = db, deriveInput = {"field101": "abc"})
     assert(mock_warnings.called)
+
+# warns if returned document doesn't match schema
+@patch('dwm.cleaning.warnings.warn')
+def test_deriveRegex_warnOnBadSchema(mock_warnings):
+
+    cleaning.DeriveDataRegex(fieldName="field100", db = db, deriveInput = {"field101": "abc"}, overwrite=False, fieldVal='')
+    assert(mock_warnings.called)

@@ -283,14 +283,19 @@ def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={},
 
         for lval in reVal:
 
-            match = re.match(lval['pattern'], _DataClean_(deriveInput[row]), flags=re.IGNORECASE)
+            try:
 
-            if match:
+                match = re.match(lval['pattern'], _DataClean_(deriveInput[row]), flags=re.IGNORECASE)
 
-                fieldValNew = re.sub(lval['pattern'], lval['replace'], _DataClean_(deriveInput[row]), flags=re.IGNORECASE)
+                if match:
 
-                pattern = lval['pattern']
-                break
+                    fieldValNew = re.sub(lval['pattern'], lval['replace'], _DataClean_(deriveInput[row]), flags=re.IGNORECASE)
+
+                    pattern = lval['pattern']
+                    break
+
+            except KeyError as e:
+                warnings.warn('schema error', e)
 
         if reVal:
             reVal.close()
