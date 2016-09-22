@@ -81,7 +81,7 @@ def DeriveDataLookupAll(data, configFields, db, histObj={}):
 
                     elif deriveSetConfig['type']=='deriveIncludes':
 
-                        fieldValNew, histObj = IncludesLookup(fieldVal=data[field], lookupType='deriveIncludes', deriveFieldName=deriveSetConfig['fieldSet'][0], deriveInput=deriveInput,  db=db, fieldName=field, histObj=histObj)
+                        fieldValNew, histObj = IncludesLookup(fieldVal=data[field], lookupType='deriveIncludes', deriveFieldName=deriveSetConfig['fieldSet'][0], deriveInput=deriveInput,  db=db, fieldName=field, histObj=histObj, overwrite=deriveSetConfig['overwrite'], blankIfNoMatch=deriveSetConfig['blankIfNoMatch'])
 
                 if fieldValNew!=fieldVal:
 
