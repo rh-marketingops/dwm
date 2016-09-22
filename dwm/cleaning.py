@@ -76,23 +76,25 @@ def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deri
 
         for row in incVal:
 
-            if all((a in fieldValClean) for a in row['includes'].split(",")):
+            if row['includes']!='' or row['excludes']!='' or row['begins']!='' or row['ends']!='':
 
-                if all((b not in fieldValClean) for b in row['excludes'].split(",")) or row['excludes']=='':
+                if all((a in fieldValClean) for a in row['includes'].split(",")):
 
-                    if fieldValClean.startswith(row['begins']):
+                    if all((b not in fieldValClean) for b in row['excludes'].split(",")) or row['excludes']=='':
 
-                        if fieldValClean.endswith(row['ends']):
+                        if fieldValClean.startswith(row['begins']):
 
-                            fieldValNew = row['replace']
+                            if fieldValClean.endswith(row['ends']):
 
-                            if lookupType=='deriveIncludes':
-                                using[deriveFieldName] = deriveInput
-                            using['includes'] = row['includes']
-                            using['excludes'] = row['excludes']
-                            using['begins'] = row['begins']
-                            using['ends'] = row['ends']
-                            break
+                                fieldValNew = row['replace']
+
+                                if lookupType=='deriveIncludes':
+                                    using[deriveFieldName] = deriveInput
+                                using['includes'] = row['includes']
+                                using['excludes'] = row['excludes']
+                                using['begins'] = row['begins']
+                                using['ends'] = row['ends']
+                                break
 
         if incVal:
             incVal.close()
