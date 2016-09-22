@@ -386,6 +386,72 @@ configs = [
         }
     },
     {
+        "configName": "test_deriveAll_deriveIncludes_overwriteFalse",
+        "fields": {
+            "field1": {
+                "lookup": [],
+                "derive": {
+                    "1": {
+                        "type": "deriveIncludes",
+                        "fieldSet": ["field2"],
+                        "overwrite": False,
+                        "blankIfNoMatch": False
+                    }
+                }
+            }
+        },
+        "userDefinedFunctions": {
+            "beforeGenericValidation": {},
+            "beforeGenericRegex": {},
+            "beforeFieldSpecificValidation": {},
+            "beforeFieldSpecificRegex": {},
+            "beforeNormalization": {},
+            "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
+            "beforeDeriveData": {},
+            "afterProcessing": {}
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
+    },
+    {
+        "configName": "test_deriveAll_deriveIncludes_blankIfNoMatch",
+        "fields": {
+            "field1": {
+                "lookup": [],
+                "derive": {
+                    "1": {
+                        "type": "deriveIncludes",
+                        "fieldSet": ["field2"],
+                        "overwrite": True,
+                        "blankIfNoMatch": True
+                    }
+                }
+            }
+        },
+        "userDefinedFunctions": {
+            "beforeGenericValidation": {},
+            "beforeGenericRegex": {},
+            "beforeFieldSpecificValidation": {},
+            "beforeFieldSpecificRegex": {},
+            "beforeNormalization": {},
+            "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
+            "beforeDeriveData": {},
+            "afterProcessing": {}
+      },
+        "history": {
+          "writeContactHistory": True,
+          "returnHistoryId": True,
+          "returnHistoryField": "historyId",
+          "histIdField": {"name": "emailAddress", "value": "emailAddress"}
+        }
+    },
+    {
         "configName": "test_deriveAll_deriveRegex_blankIfNoMatch",
         "fields": {
             "field1": {

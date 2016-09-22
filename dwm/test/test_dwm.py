@@ -320,6 +320,40 @@ def test_deriveAll_deriveIncludes_excluded_uncaught():
     dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_excluded_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
     assert dataOut[0]['field1'] == 'goodvalue'
 
+def test_deriveAll_deriveIncludes_begins_caught():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_begins_caught, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_deriveAll_deriveIncludes_begins_uncaught():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_begins_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field1'] != 'goodvalue'
+
+def test_deriveAll_deriveIncludes_ends_caught():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_ends_caught, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_deriveAll_deriveIncludes_ends_uncaught():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_ends_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field1'] != 'goodvalue'
+
+def test_deriveAll_deriveIncludes_notChecked():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_notChecked, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field2'] != 'goodvalue'
+
+def test_deriveAll_deriveIncludes_overwriteFalse():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_overwriteFalse, db = db, configName='test_deriveAll_deriveIncludes_overwriteFalse')
+    assert dataOut[0]['field1'] == 'oldvalue'
+
+def test_deriveAll_deriveIncludes_blankIfNoMatch():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_blankIfNoMatch, db = db, configName='test_deriveAll_deriveIncludes_blankIfNoMatch')
+    assert dataOut[0]['field1'] == ''
 # ensure proper sorting on derive
 
 def test_derive_sort():
