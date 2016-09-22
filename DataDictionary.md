@@ -260,6 +260,19 @@ Keeping the ```lookupVals``` in a sub-document allows for indexing on the ```der
 
 ### deriveIncludes
 
+```javascript
+
+// normalization includes
+{
+  "fieldName": "field1",
+  "deriveFieldName": "field2"
+  "includes": "val,stuff,things",
+  "excludes": "others,not",
+  "begins": "startval",
+  "ends": "endval"
+}
+```
+
 ### normIncludes
 
 ```javascript
