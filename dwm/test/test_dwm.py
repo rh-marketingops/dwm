@@ -579,6 +579,73 @@ def test_history_deriveRegex_blankIfNoMatch():
     hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
     assert hist['field1']['deriveRegex']['pattern'] == 'no matching pattern'
 
+# deriveIncludes
+
+def test_history_deriveIncludes_included_caught():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_included_caught, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['field1']['deriveIncludes']['from'] == ''
+
+def test_history_deriveIncludes_included_uncaught():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_included_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field1' not in hist.keys()
+
+def test_history_deriveIncludes_excluded_caught():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_excluded_caught, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field1' not in hist.keys()
+
+def test_history_deriveIncludes_excluded_uncaught():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_excluded_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['field1']['deriveIncludes']['from'] == ''
+
+def test_history_deriveIncludes_begins_caught():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_begins_caught, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['field1']['deriveIncludes']['from'] == ''
+
+def test_history_deriveIncludes_begins_uncaught():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_begins_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field1' not in hist.keys()
+
+def test_history_deriveIncludes_ends_caught():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_ends_caught, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['field1']['deriveIncludes']['from'] == ''
+
+def test_history_deriveIncludes_ends_uncaught():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_ends_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field1' not in hist.keys()
+
+def test_history_deriveIncludes_notChecked():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_notChecked, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field3' not in hist.keys()
+
+def test_history_deriveIncludes_overwriteFalse():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_overwriteFalse, db = db, configName='test_deriveAll_deriveIncludes_overwriteFalse')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field1' not in hist.keys()
+
+def test_history_deriveIncludes_blankIfNoMatch():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_blankIfNoMatch, db = db, configName='test_deriveAll_deriveIncludes_blankIfNoMatch')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['field1']['deriveIncludes']['using']['blankIfNoMatch'] == 'no match found'
 #########################################
 ## Test options around history
 # returnHistoryId False

@@ -19,7 +19,7 @@ def _CollectHistory_(lookupType, fromVal, toVal, using={}, pattern=''):
     if fromVal != toVal:
         histObj[lookupType] = {"from": fromVal, "to": toVal}
 
-        if lookupType in ['deriveValue', 'deriveRegex', 'copyValue', 'normIncludes'] and using!='':
+        if lookupType in ['deriveValue', 'deriveRegex', 'copyValue', 'normIncludes', 'deriveIncludes'] and using!='':
             histObj[lookupType]["using"] = using
         if lookupType in ['genericRegex', 'fieldSpecificRegex', 'normRegex', 'deriveRegex'] and pattern!='':
             histObj[lookupType]["pattern"] = pattern
