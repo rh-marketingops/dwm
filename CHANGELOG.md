@@ -1,3 +1,14 @@
+## 2016-09-22 v0.0.6
+- Removed outdated `type` fields from test records
+- Added try/catch for KeyError in records returned from MongoDB
+- Major: Added `normIncludes` and `deriveIncludes` functionality as an alternative to regex
+  - faster in cases where looking for:
+    - a set of words in string
+    - a set of words not in string
+    - begins with a word
+    - ends with a word
+  - Initial testing saw a 2x time improvement
+
 ## 2016-09-20 v0.0.5 (hotfix)
 - Switched loop/conditional for DeriveDataLookupAll; before was looping by order of keys in `data`, now looping by order of fields in `config`
 
