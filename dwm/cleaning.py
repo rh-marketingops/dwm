@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from datetime import datetime
 import re
 from collections import OrderedDict
+import warnings
 
 from .helpers import _CollectHistory_, _CollectHistoryAgg_, _DataClean_
 
@@ -41,6 +42,82 @@ def DataLookup(fieldVal, db, lookupType, fieldName, histObj={}):
 
     return fieldValNew, histObjUpd
 
+def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deriveInput={}, histObj={}, overwrite=False, blankIfNoMatch=False):
+    """
+    Return new field value based on whether or not original value includes AND excludes all words in a comma-delimited list queried from MongoDB
+
+    :param string fieldVal: input value to lookup
+    :param string lookupType: Type of lookup to perform/MongoDB collection name. One of 'normIncludes', 'deriveIncludes'
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param string fieldName: Field name to query against
+    :param string deriveFieldName: Field name from which to derive value
+    :param dict deriveInput: Values to perform lookup against: {"deriveFieldName": "deriveVal1"}
+    :param dict histObj: History object to which changes should be appended
+    :param bool overwrite: Should an existing field value be replaced
+    :param bool blankIfNoMatch: Should field value be set to blank if no match is found
+    """
+
+    lookupDict = {}
+    lookupDict['fieldName'] = fieldName
+
+    if (lookupType=='normIncludes'):
+        fieldValClean = _DataClean_(fieldVal)
+    elif (lookupType=='deriveIncludes'):
+        if deriveFieldName=='' or deriveInput=={}:
+            raise ValueError("for 'deriveIncludes' must specify both 'deriveFieldName' and 'deriveInput'")
+        lookupDict['deriveFieldName'] = deriveFieldName
+        fieldValClean = _DataClean_(deriveInput[list(deriveInput.keys())[0]])
+    else:
+        raise ValueError("Invalid lookupType")
+
+    fieldValNew = fieldVal
+    using = {}
+
+    coll = db[lookupType]
+
+    incVal = coll.find(lookupDict, ['includes', 'excludes', 'begins', 'ends', 'replace'])
+
+    if incVal and (lookupType=='normIncludes' or (lookupType=='deriveIncludes' and (overwrite or fieldVal==''))):
+
+        for row in incVal:
+
+            try:
+
+                if row['includes']!='' or row['excludes']!='' or row['begins']!='' or row['ends']!='':
+
+                    if all((a in fieldValClean) for a in row['includes'].split(",")):
+
+                        if all((b not in fieldValClean) for b in row['excludes'].split(",")) or row['excludes']=='':
+
+                            if fieldValClean.startswith(row['begins']):
+
+                                if fieldValClean.endswith(row['ends']):
+
+                                    fieldValNew = row['replace']
+
+                                    if lookupType=='deriveIncludes':
+                                        using[deriveFieldName] = deriveInput
+                                    using['includes'] = row['includes']
+                                    using['excludes'] = row['excludes']
+                                    using['begins'] = row['begins']
+                                    using['ends'] = row['ends']
+                                    break
+
+            except KeyError as e:
+                warnings.warn('schema error', e)
+
+        if incVal:
+            incVal.close()
+
+    if fieldValNew==fieldVal and blankIfNoMatch and lookupType=='deriveIncludes':
+        fieldValNew = ''
+        using['blankIfNoMatch'] = 'no match found'
+
+    change = _CollectHistory_(lookupType=lookupType, fromVal=fieldVal, toVal=fieldValNew, using=using)
+
+    histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
+
+    return fieldValNew, histObjUpd
 
 def RegexLookup(fieldVal, db, fieldName, lookupType, histObj={}):
     """
@@ -69,17 +146,22 @@ def RegexLookup(fieldVal, db, fieldName, lookupType, histObj={}):
 
     for row in reVal:
 
-        match = re.match(row['pattern'], _DataClean_(fieldValNew), flags=re.IGNORECASE)
+        try:
 
-        if match:
+            match = re.match(row['pattern'], _DataClean_(fieldValNew), flags=re.IGNORECASE)
 
-            if 'replace' in row:
-                fieldValNew = re.sub(row['pattern'], row['replace'], _DataClean_(fieldValNew), flags=re.IGNORECASE)
-            else:
-                fieldValNew = re.sub(row['pattern'], '', _DataClean_(fieldValNew), flags=re.IGNORECASE)
+            if match:
 
-            pattern = row['pattern']
-            break
+                if 'replace' in row:
+                    fieldValNew = re.sub(row['pattern'], row['replace'], _DataClean_(fieldValNew), flags=re.IGNORECASE)
+                else:
+                    fieldValNew = re.sub(row['pattern'], '', _DataClean_(fieldValNew), flags=re.IGNORECASE)
+
+                pattern = row['pattern']
+                break
+
+        except KeyError as e:
+            warnings.warn('schema error', e)
 
     if reVal:
         reVal.close()
@@ -122,7 +204,10 @@ def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', hi
     deriveUsing = deriveInput
 
     if lval and (overwrite or (fieldVal=='')):
-        fieldValNew = lval['value']
+        try:
+            fieldValNew = lval['value']
+        except KeyError as e:
+            warnings.warn('schema error', e)
     elif blankIfNoMatch and not lval:
         fieldValNew = ''
         deriveUsing = {'blankIfNoMatch': 'no match found'}
@@ -198,14 +283,19 @@ def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={},
 
         for lval in reVal:
 
-            match = re.match(lval['pattern'], _DataClean_(deriveInput[row]), flags=re.IGNORECASE)
+            try:
 
-            if match:
+                match = re.match(lval['pattern'], _DataClean_(deriveInput[row]), flags=re.IGNORECASE)
 
-                fieldValNew = re.sub(lval['pattern'], lval['replace'], _DataClean_(deriveInput[row]), flags=re.IGNORECASE)
+                if match:
 
-                pattern = lval['pattern']
-                break
+                    fieldValNew = re.sub(lval['pattern'], lval['replace'], _DataClean_(deriveInput[row]), flags=re.IGNORECASE)
+
+                    pattern = lval['pattern']
+                    break
+
+            except KeyError as e:
+                warnings.warn('schema error', e)
 
         if reVal:
             reVal.close()

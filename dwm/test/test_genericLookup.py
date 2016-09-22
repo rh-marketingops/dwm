@@ -1,3 +1,3 @@
 genericLookup = [
-    {"type": "genericLookup", "find": "BADVALUE"}
+    {"find": "BADVALUE"}
 ]

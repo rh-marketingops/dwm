@@ -34,6 +34,24 @@ record_regexAll_normRegex_uncaught = [{"emailAddress": "test@test.com", "field1"
 
 record_regexAll_normRegex_notChecked = [{"emailAddress": "test@test.com", "field2": "badvalue"}]
 
+record_normIncludes_included_caught = [{"emailAddress": "test@test.com", "field1": "findgoodinvaluejunk"}]
+
+record_normIncludes_included_uncaught = [{"emailAddress": "test@test.com", "field1": "nothere"}]
+
+record_normIncludes_excluded_caught = [{"emailAddress": "test@test.com", "field1": "findgoodinvaluejunk butstuffnobad"}]
+
+record_normIncludes_excluded_uncaught = [{"emailAddress": "test@test.com", "field1": "findgoodinvaluejunk uncaught"}]
+
+record_normIncludes_begins_caught = [{"emailAddress": "test@test.com", "field1": "abcdefg"}]
+
+record_normIncludes_begins_uncaught = [{"emailAddress": "test@test.com", "field1": "hijklmnop"}]
+
+record_normIncludes_ends_caught = [{"emailAddress": "test@test.com", "field1": "qrstuvwxyz"}]
+
+record_normIncludes_ends_uncaught = [{"emailAddress": "test@test.com", "field1": "notalpha"}]
+
+record_normIncludes_notChecked = [{"emailAddress": "test@test.com", "field2": "doesnotmatter"}]
+
 record_deriveAll_deriveValue_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findthis"}]
 
 record_derive_sort = [{"emailAddress": "test@test.com", "field1": "", "field3": "findthis", "field4": "nofindthis"}]
@@ -58,6 +76,27 @@ record_deriveAll_deriveRegex_overwriteFalse = [{"emailAddress": "test@test.com",
 
 record_deriveAll_deriveRegex_blankIfNoMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "youwillnotfindthis"}]
 
+record_deriveAll_deriveIncludes_included_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findgoodinvaluejunk"}]
+
+record_deriveAll_deriveIncludes_included_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "nothere"}]
+
+record_deriveAll_deriveIncludes_excluded_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findgoodinvaluejunk butstuffnobad"}]
+
+record_deriveAll_deriveIncludes_excluded_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findgoodinvaluejunk uncaught"}]
+
+record_deriveAll_deriveIncludes_begins_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "abcdefg"}]
+
+record_deriveAll_deriveIncludes_begins_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "hijklmnop"}]
+
+record_deriveAll_deriveIncludes_ends_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "qrstuvwxyz"}]
+
+record_deriveAll_deriveIncludes_ends_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "notalpha"}]
+
+record_deriveAll_deriveIncludes_notChecked = [{"emailAddress": "test@test.com", "field2": "", "field3": "doesnotmatter"}]
+
+record_deriveAll_deriveIncludes_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findgoodinvaluejunk"}]
+
+record_deriveAll_deriveIncludes_blankIfNoMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "nothere"}]
 #
 
 history_genericLookup_caught = [{"emailAddress": "test@test.com", "field1": "badvalue"}]
@@ -96,6 +135,12 @@ history_normRegex_uncaught = [{"emailAddress": "test@test.com", "field1": "badva
 
 history_normRegex_notChecked = [{"emailAddress": "test@test.com", "field2": "badvalue"}]
 
+history_normIncludes_included_caught = [{"emailAddress": "test@test.com", "field1": "findgoodinvaluejunk"}]
+
+history_normIncludes_included_uncaught = [{"emailAddress": "test@test.com", "field1": "nothere"}]
+
+history_normIncludes_notChecked = [{"emailAddress": "test@test.com", "field2": "doesnotmatter"}]
+
 history_deriveValue_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findthis"}]
 
 history_deriveValue_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findthis"}]
@@ -118,6 +163,28 @@ history_deriveRegex_overwriteFalse = [{"emailAddress": "test@test.com", "field1"
 
 history_deriveRegex_blankIfNoMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "youwillnotfindthis"}]
 
+history_deriveIncludes_included_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findgoodinvaluejunk"}]
+
+history_deriveIncludes_included_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "nothere"}]
+
+history_deriveIncludes_excluded_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findgoodinvaluejunk butstuffnobad"}]
+
+history_deriveIncludes_excluded_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findgoodinvaluejunk uncaught"}]
+
+history_deriveIncludes_begins_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "abcdefg"}]
+
+history_deriveIncludes_begins_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "hijklmnop"}]
+
+history_deriveIncludes_ends_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "qrstuvwxyz"}]
+
+history_deriveIncludes_ends_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "notalpha"}]
+
+history_deriveIncludes_notChecked = [{"emailAddress": "test@test.com", "field2": "", "field3": "doesnotmatter"}]
+
+history_deriveIncludes_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findgoodinvaluejunk"}]
+
+history_deriveIncludes_blankIfNoMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "nothere"}]
+
 record_returnHistoryId_False = [{"emailAddress": "test@test.com"}]
 
 record_writeContactHistory_False = [{"emailAddress": "test@test.com"}]
@@ -137,6 +204,8 @@ record_udf_beforeFieldSpecificRegex = [{"emailAddress": "test@test.com", "field1
 record_udf_beforeNormalization = [{"emailAddress": "test@test.com", "field1": ""}]
 
 record_udf_beforeNormalizationRegex = [{"emailAddress": "test@test.com", "field1": ""}]
+
+record_udf_beforeNormalizationIncludes = [{"emailAddress": "test@test.com", "field1": ""}]
 
 record_udf_beforeDeriveData = [{"emailAddress": "test@test.com", "field1": ""}]
 
