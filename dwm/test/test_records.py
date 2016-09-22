@@ -77,6 +77,13 @@ record_deriveAll_deriveRegex_overwriteFalse = [{"emailAddress": "test@test.com",
 record_deriveAll_deriveRegex_blankIfNoMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "youwillnotfindthis"}]
 
 record_deriveAll_deriveIncludes_included_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findgoodinvaluejunk"}]
+
+record_deriveAll_deriveIncludes_included_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "nothere"}]
+
+record_deriveAll_deriveIncludes_excluded_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findgoodinvaluejunk butstuffnobad"}]
+
+record_deriveAll_deriveIncludes_excluded_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findgoodinvaluejunk uncaught"}]
+
 #
 
 history_genericLookup_caught = [{"emailAddress": "test@test.com", "field1": "badvalue"}]

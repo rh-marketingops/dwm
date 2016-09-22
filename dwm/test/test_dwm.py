@@ -305,6 +305,21 @@ def test_deriveAll_deriveIncludes_included_caught():
     dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_included_caught, db = db, configName='test_deriveAll_deriveIncludes')
     assert dataOut[0]['field1'] == 'goodvalue'
 
+def test_deriveAll_deriveIncludes_included_uncaught():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_included_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field1'] != 'goodvalue'
+
+def test_deriveAll_deriveIncludes_excluded_caught():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_excluded_caught, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field1'] != 'goodvalue'
+
+def test_deriveAll_deriveIncludes_excluded_uncaught():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_excluded_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
 # ensure proper sorting on derive
 
 def test_derive_sort():
