@@ -11,6 +11,7 @@ from .test_fieldSpecificRegex import fieldSpecificRegex
 from .test_normRegex import normRegex
 
 from .test_normIncludes import normIncludes
+from .test_deriveIncludes import deriveIncludes
 
 from .test_deriveValue import deriveValue
 from .test_deriveRegex import deriveRegex
@@ -61,6 +62,10 @@ for row in deriveValue:
 for row in deriveRegex:
 
     db.deriveRegex.insert_one(row)
+
+for row in deriveIncludes:
+
+    db.deriveIncludes.insert_one(row)
 
 for row in configs:
 
