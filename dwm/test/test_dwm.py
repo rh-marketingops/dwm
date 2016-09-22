@@ -645,3 +645,21 @@ def test_dwmAll_requiresConfigInput():
 def test_dwmAll_requiresOneConfig():
 
     dataOut = dwmAll(data = test_records.record_dwmAll_noConfig, db = db, config={"configName": "testConfig"}, configName="testConfig", udfNamespace=__name__)
+
+# doesn't allow invalid includes lookupType
+@raises(ValueError)
+def test_includesLookup_badType():
+
+    testVal, histObj = cleaning.IncludesLookup(fieldVal='', lookupType='badlookup', db = db, fieldName='')
+
+# deriveIncludes requires deriveInput
+@raises(ValueError)
+def test_includesLookup_requiresDeriveFieldName():
+
+    testVal, histObj = cleaning.IncludesLookup(fieldVal='', lookupType='deriveIncludes', deriveFieldName='test', db = db, fieldName='')
+
+# deriveIncludes requires deriveFieldName
+@raises(ValueError)
+def test_includesLookup_requiresDeriveFieldName():
+
+    testVal, histObj = cleaning.IncludesLookup(fieldVal='', lookupType='deriveIncludes', deriveInput='test', db = db, fieldName='')
