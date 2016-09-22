@@ -155,7 +155,7 @@ This function applies a single cleaning function+type to every field in the inpu
 3. If the config value for the field contains the current `lookupType`, then pass to the appropriate function:
   - `'genericLookup', 'fieldSpecificLookup', 'normLookup'`: `DataLookup`
   - `'genericRegex', 'fieldSpecificRegex', 'normRegex'`: `RegexLookup`
-  - `normIncludes`: `NormIncludesLookup`
+  - `normIncludes`: `IncludesLookup` with `lookupType='normIncludes'`
 4. Functions in _3_ return the new field value (potentially same as the original value, if no match was found) and an updated history object
 5. Set the field value in the data record to return value from _4_
 6. Return data record and history object
@@ -172,6 +172,7 @@ This function applies all defined derive rules to every field in the input recor
   - `DeriveDataLookup`
   - `DeriveDataCopyValue`
   - `DeriveDataRegex`
+  - `IncludesLookup` with `lookupType='deriveIncludes'`
 6. Functions in _5_ return the new field value (potentially same as the original value, if no match was found) and an updated history object
 7. If the field value has changed, then update the field in the record and stop the loop
 8. Return data record and history object
@@ -184,7 +185,7 @@ These functions are responsible for determining what the new value of a field sh
 
 Lookup the replacement value given a single input value from the same field.
 
-### `NormIncludesLookup`
+### `IncludesLookup`
 
 Query all applicable "includes" definitions (by field name) from MongoDB and look for a match.
 
