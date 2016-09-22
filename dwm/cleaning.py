@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from datetime import datetime
 import re
 from collections import OrderedDict
+import warnings
 
 from .helpers import _CollectHistory_, _CollectHistoryAgg_, _DataClean_
 
@@ -80,25 +81,30 @@ def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deri
 
         for row in incVal:
 
-            if row['includes']!='' or row['excludes']!='' or row['begins']!='' or row['ends']!='':
+            try:
 
-                if all((a in fieldValClean) for a in row['includes'].split(",")):
+                if row['includes']!='' or row['excludes']!='' or row['begins']!='' or row['ends']!='':
 
-                    if all((b not in fieldValClean) for b in row['excludes'].split(",")) or row['excludes']=='':
+                    if all((a in fieldValClean) for a in row['includes'].split(",")):
 
-                        if fieldValClean.startswith(row['begins']):
+                        if all((b not in fieldValClean) for b in row['excludes'].split(",")) or row['excludes']=='':
 
-                            if fieldValClean.endswith(row['ends']):
+                            if fieldValClean.startswith(row['begins']):
 
-                                fieldValNew = row['replace']
+                                if fieldValClean.endswith(row['ends']):
 
-                                if lookupType=='deriveIncludes':
-                                    using[deriveFieldName] = deriveInput
-                                using['includes'] = row['includes']
-                                using['excludes'] = row['excludes']
-                                using['begins'] = row['begins']
-                                using['ends'] = row['ends']
-                                break
+                                    fieldValNew = row['replace']
+
+                                    if lookupType=='deriveIncludes':
+                                        using[deriveFieldName] = deriveInput
+                                    using['includes'] = row['includes']
+                                    using['excludes'] = row['excludes']
+                                    using['begins'] = row['begins']
+                                    using['ends'] = row['ends']
+                                    break
+
+            except KeyError as e:
+                warnings.warn('schema error', e)
 
         if incVal:
             incVal.close()
@@ -140,17 +146,22 @@ def RegexLookup(fieldVal, db, fieldName, lookupType, histObj={}):
 
     for row in reVal:
 
-        match = re.match(row['pattern'], _DataClean_(fieldValNew), flags=re.IGNORECASE)
+        try:
 
-        if match:
+            match = re.match(row['pattern'], _DataClean_(fieldValNew), flags=re.IGNORECASE)
 
-            if 'replace' in row:
-                fieldValNew = re.sub(row['pattern'], row['replace'], _DataClean_(fieldValNew), flags=re.IGNORECASE)
-            else:
-                fieldValNew = re.sub(row['pattern'], '', _DataClean_(fieldValNew), flags=re.IGNORECASE)
+            if match:
 
-            pattern = row['pattern']
-            break
+                if 'replace' in row:
+                    fieldValNew = re.sub(row['pattern'], row['replace'], _DataClean_(fieldValNew), flags=re.IGNORECASE)
+                else:
+                    fieldValNew = re.sub(row['pattern'], '', _DataClean_(fieldValNew), flags=re.IGNORECASE)
+
+                pattern = row['pattern']
+                break
+
+        except KeyError as e:
+            warnings.warn('schema error', e)
 
     if reVal:
         reVal.close()
@@ -193,7 +204,10 @@ def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', hi
     deriveUsing = deriveInput
 
     if lval and (overwrite or (fieldVal=='')):
-        fieldValNew = lval['value']
+        try:
+            fieldValNew = lval['value']
+        except KeyError as e:
+            warnings.warn('schema error', e)
     elif blankIfNoMatch and not lval:
         fieldValNew = ''
         deriveUsing = {'blankIfNoMatch': 'no match found'}
@@ -269,14 +283,19 @@ def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={},
 
         for lval in reVal:
 
-            match = re.match(lval['pattern'], _DataClean_(deriveInput[row]), flags=re.IGNORECASE)
+            try:
 
-            if match:
+                match = re.match(lval['pattern'], _DataClean_(deriveInput[row]), flags=re.IGNORECASE)
 
-                fieldValNew = re.sub(lval['pattern'], lval['replace'], _DataClean_(deriveInput[row]), flags=re.IGNORECASE)
+                if match:
 
-                pattern = lval['pattern']
-                break
+                    fieldValNew = re.sub(lval['pattern'], lval['replace'], _DataClean_(deriveInput[row]), flags=re.IGNORECASE)
+
+                    pattern = lval['pattern']
+                    break
+
+            except KeyError as e:
+                warnings.warn('schema error', e)
 
         if reVal:
             reVal.close()
