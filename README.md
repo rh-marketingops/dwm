@@ -56,6 +56,7 @@ DWM uses two types of normalization:
 
 - `normLookup`: replace 'almost' values based on a known list of data (previously observed); i.e., common mis-spellings
 - `normRegex`: replace 'almost' values based on regular expressions; i.e., for the field `jobRole`, replace any value that contains `programmer` but not `manager` with `Programmer/Developer`
+- `normIncludes`: replace 'almost' values based on at least one of the following: includes strings, excludes strings, starts with string, ends with string
 
 ## Derivation
 
@@ -66,6 +67,7 @@ DWM uses three types of derivation:
 - `deriveValue`: given input values from one or more fields, find the corresponding output value; i.e., for `jobRole='Manager'` and `department='IT'`, then set `persona='IT Decision Maker'`
 - `copyValue`: given an input value from one field, copy that value to the target field
 - `deriveRegex`: given an input value from one field, derive target field value using regular expressions
+- `deriveIncludes`: given an input value from one field, derive target field based on at least one of the following: includes strings, excludes strings, starts with string, ends with string
 
 Within the runtime configuration, derivation rules are ordered within a dictionary to maintain rule-hierarchy. So, if Rule 1 does not yield a result, then Rule 2 would be tried. The process will exit after one of the derivation rules produces a new value.
 
@@ -132,11 +134,13 @@ This function applies wrapper functions to each data record. It follows the spec
 11. Run `lookupAll` with `lookupType='normLookup'`
 12. Run `userDefinedFunctions=beforeNormalizationRegex`
 13. Run `lookupAll` with `lookupType='normRegex'`
-14. Run `userDefinedFunctions=beforeDeriveData`
-15. Run `DeriveDataLookupAll`
-16. Run `userDefinedFunctions=afterProcessing`
-17. If `writeContactHistory==True`, write the history collector to the `contactHistory` collection in MongoDB
-18. Return data record and history ID (if applicable, `None` otherwise)
+14. Run `userDefinedFunctions=beforeNormalizationIncludes`
+15. Run `lookupAll` with `lookupType=normIncludes`
+16. Run `userDefinedFunctions=beforeDeriveData`
+17. Run `DeriveDataLookupAll`
+18. Run `userDefinedFunctions=afterProcessing`
+19. If `writeContactHistory==True`, write the history collector to the `contactHistory` collection in MongoDB
+20. Return data record and history ID (if applicable, `None` otherwise)
 
 ## Wrapper functions
 
@@ -151,6 +155,7 @@ This function applies a single cleaning function+type to every field in the inpu
 3. If the config value for the field contains the current `lookupType`, then pass to the appropriate function:
   - `'genericLookup', 'fieldSpecificLookup', 'normLookup'`: `DataLookup`
   - `'genericRegex', 'fieldSpecificRegex', 'normRegex'`: `RegexLookup`
+  - `normIncludes`: `IncludesLookup` with `lookupType='normIncludes'`
 4. Functions in _3_ return the new field value (potentially same as the original value, if no match was found) and an updated history object
 5. Set the field value in the data record to return value from _4_
 6. Return data record and history object
@@ -167,6 +172,7 @@ This function applies all defined derive rules to every field in the input recor
   - `DeriveDataLookup`
   - `DeriveDataCopyValue`
   - `DeriveDataRegex`
+  - `IncludesLookup` with `lookupType='deriveIncludes'`
 6. Functions in _5_ return the new field value (potentially same as the original value, if no match was found) and an updated history object
 7. If the field value has changed, then update the field in the record and stop the loop
 8. Return data record and history object
@@ -178,6 +184,10 @@ These functions are responsible for determining what the new value of a field sh
 ### `DataLookup`
 
 Lookup the replacement value given a single input value from the same field.
+
+### `IncludesLookup`
+
+Query all applicable "includes" definitions (by field name) from MongoDB and look for a match.
 
 ### `RegexLookup`
 
@@ -217,7 +227,7 @@ Applies cleaning rules to lookup values before querying MongoDB, to ensure small
 
 ### `_RunUserDefinedFunctions_`
 
-Passes data and history into functions defined by configuration. 
+Passes data and history into functions defined by configuration.
 
 # Setup Process
 
@@ -247,13 +257,13 @@ __Required Fields:__
 
  - `configName`: Must be a unique string
  - `fields`: Includes a document for each field to be cleaned; each should include the following:
-  * `lookup`: an array of which validation rules should be applied: `genericLookup, genericRegex, fieldSpecificLookup, fieldSpecificRegex, normLookup, normRegex`
+  * `lookup`: an array of which validation rules should be applied: `genericLookup, genericRegex, fieldSpecificLookup, fieldSpecificRegex, normLookup, normRegex, normIncludes`
   * `derive`: a document of documents, each named in order of execution (1,2,...) and containing the following sub-fields:
-    * `type`: string indicating what type of derivation should be applied: `deriveValue, copyValue, deriveRegex`
-    * `fieldSet`: array of field names to be used in derive process. Must contain only one value if `type==copyValue OR deriveRegex`.
+    * `type`: string indicating what type of derivation should be applied: `deriveValue, copyValue, deriveRegex`, `deriveIncludes`
+    * `fieldSet`: array of field names to be used in derive process. Must contain only one value if `type==copyValue OR deriveRegex OR deriveIncludes`.
     * `overwrite`: boolean indicating whether to write over an existing value
     * `blankIfNoMatch`: overwrite existing value with a blank value if no match found
- - `userDefinedFunctions`: document of the following sub-documents with ordered numeric names, indicating when user-defined functions should be run: `beforeGenericValidation, beforeGenericRegex, beforeFieldSpecificValidation, beforeFieldSpecificRegex, beforeNormalization, beforeNormalizationRegex, beforeDeriveData, afterProcessing`
+ - `userDefinedFunctions`: document of the following sub-documents with ordered numeric names, indicating when user-defined functions should be run: `beforeGenericValidation, beforeGenericRegex, beforeFieldSpecificValidation, beforeFieldSpecificRegex, beforeNormalization, beforeNormalizationRegex, beforeNormalizationIncludes, beforeDeriveData, afterProcessing`
  - `history`: settings dictating if/how to write contact history
 
 ## Lookups, Derivation, and Regex rules

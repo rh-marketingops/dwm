@@ -10,6 +10,9 @@ from .test_genericRegex import genericRegex
 from .test_fieldSpecificRegex import fieldSpecificRegex
 from .test_normRegex import normRegex
 
+from .test_normIncludes import normIncludes
+from .test_deriveIncludes import deriveIncludes
+
 from .test_deriveValue import deriveValue
 from .test_deriveRegex import deriveRegex
 
@@ -48,6 +51,10 @@ for row in normRegex:
 
     db.normRegex.insert_one(row)
 
+for row in normIncludes:
+
+    db.normIncludes.insert_one(row)
+
 for row in deriveValue:
 
     db.deriveValue.insert_one(row)
@@ -55,6 +62,10 @@ for row in deriveValue:
 for row in deriveRegex:
 
     db.deriveRegex.insert_one(row)
+
+for row in deriveIncludes:
+
+    db.deriveIncludes.insert_one(row)
 
 for row in configs:
 
@@ -176,6 +187,54 @@ def test_regexAll_normRegex_notChecked():
     dataOut = dwmAll(data = test_records.record_regexAll_normRegex_notChecked, db = db, configName='test_regexAll_normRegex')
     assert dataOut[0]['field2'] != 'goodvalue'
 
+# normIncludes
+
+def test_normIncludes_included_caught():
+
+    dataOut = dwmAll(data = test_records.record_normIncludes_included_caught, db = db, configName='test_normIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_normIncludes_included_uncaught():
+
+    dataOut = dwmAll(data = test_records.record_normIncludes_included_uncaught, db = db, configName='test_normIncludes')
+    assert dataOut[0]['field1'] != 'goodvalue'
+
+def test_normIncludes_excluded_caught():
+
+    dataOut = dwmAll(data = test_records.record_normIncludes_excluded_caught, db = db, configName='test_normIncludes')
+    assert dataOut[0]['field1'] != 'goodvalue'
+
+def test_normIncludes_excluded_uncaught():
+
+    dataOut = dwmAll(data = test_records.record_normIncludes_excluded_uncaught, db = db, configName='test_normIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_normIncludes_begins_caught():
+
+    dataOut = dwmAll(data = test_records.record_normIncludes_begins_caught, db = db, configName='test_normIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_normIncludes_begins_uncaught():
+
+    dataOut = dwmAll(data = test_records.record_normIncludes_begins_uncaught, db = db, configName='test_normIncludes')
+    assert dataOut[0]['field1'] != 'goodvalue'
+
+def test_normIncludes_ends_caught():
+
+    dataOut = dwmAll(data = test_records.record_normIncludes_ends_caught, db = db, configName='test_normIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_normIncludes_ends_uncaught():
+
+    dataOut = dwmAll(data = test_records.record_normIncludes_ends_uncaught, db = db, configName='test_normIncludes')
+    assert dataOut[0]['field1'] != 'goodvalue'
+
+def test_normIncludes_notChecked():
+
+    dataOut = dwmAll(data = test_records.record_normIncludes_notChecked, db = db, configName='test_normIncludes')
+    assert dataOut[0]['field2'] != 'goodvalue'
+
+
 ###################################
 ## Test derive
 # deriveValue
@@ -239,6 +298,62 @@ def test_deriveAll_deriveRegex_blankIfNoMatch():
     dataOut = dwmAll(data = test_records.record_deriveAll_deriveRegex_blankIfNoMatch, db = db, configName='test_deriveAll_deriveRegex_blankIfNoMatch')
     assert dataOut[0]['field1'] == ''
 
+# deriveIncludes
+
+def test_deriveAll_deriveIncludes_included_caught():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_included_caught, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_deriveAll_deriveIncludes_included_uncaught():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_included_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field1'] != 'goodvalue'
+
+def test_deriveAll_deriveIncludes_excluded_caught():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_excluded_caught, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field1'] != 'goodvalue'
+
+def test_deriveAll_deriveIncludes_excluded_uncaught():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_excluded_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_deriveAll_deriveIncludes_begins_caught():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_begins_caught, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_deriveAll_deriveIncludes_begins_uncaught():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_begins_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field1'] != 'goodvalue'
+
+def test_deriveAll_deriveIncludes_ends_caught():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_ends_caught, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
+def test_deriveAll_deriveIncludes_ends_uncaught():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_ends_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field1'] != 'goodvalue'
+
+def test_deriveAll_deriveIncludes_notChecked():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_notChecked, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field2'] != 'goodvalue'
+
+def test_deriveAll_deriveIncludes_overwriteFalse():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_overwriteFalse, db = db, configName='test_deriveAll_deriveIncludes_overwriteFalse')
+    assert dataOut[0]['field1'] == 'oldvalue'
+
+def test_deriveAll_deriveIncludes_blankIfNoMatch():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_blankIfNoMatch, db = db, configName='test_deriveAll_deriveIncludes_blankIfNoMatch')
+    assert dataOut[0]['field1'] == ''
 # ensure proper sorting on derive
 
 def test_derive_sort():
@@ -307,6 +422,27 @@ def test_history_normLookup_uncaught():
 def test_history_normLookup_notChecked():
 
     dataOut = dwmAll(data = test_records.history_normLookup_notChecked, db = db, configName='test_lookupAll_normLookup')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field2' not in hist.keys()
+
+# normIncludes
+
+def test_history_normIncludes_caught():
+
+    # do stuff for testing
+    dataOut = dwmAll(data = test_records.history_normIncludes_included_caught, db = db, configName='test_normIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['field1']['normIncludes']['from'] == 'findgoodinvaluejunk'
+
+def test_history_normIncludes_uncaught():
+
+    dataOut = dwmAll(data = test_records.history_normIncludes_included_uncaught, db = db, configName='test_normIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field1' not in hist.keys()
+
+def test_history_normIncludes_notChecked():
+
+    dataOut = dwmAll(data = test_records.history_normIncludes_notChecked, db = db, configName='test_normIncludes')
     hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
     assert 'field2' not in hist.keys()
 
@@ -443,6 +579,73 @@ def test_history_deriveRegex_blankIfNoMatch():
     hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
     assert hist['field1']['deriveRegex']['pattern'] == 'no matching pattern'
 
+# deriveIncludes
+
+def test_history_deriveIncludes_included_caught():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_included_caught, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['field1']['deriveIncludes']['from'] == ''
+
+def test_history_deriveIncludes_included_uncaught():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_included_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field1' not in hist.keys()
+
+def test_history_deriveIncludes_excluded_caught():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_excluded_caught, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field1' not in hist.keys()
+
+def test_history_deriveIncludes_excluded_uncaught():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_excluded_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['field1']['deriveIncludes']['from'] == ''
+
+def test_history_deriveIncludes_begins_caught():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_begins_caught, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['field1']['deriveIncludes']['from'] == ''
+
+def test_history_deriveIncludes_begins_uncaught():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_begins_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field1' not in hist.keys()
+
+def test_history_deriveIncludes_ends_caught():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_ends_caught, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['field1']['deriveIncludes']['from'] == ''
+
+def test_history_deriveIncludes_ends_uncaught():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_ends_uncaught, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field1' not in hist.keys()
+
+def test_history_deriveIncludes_notChecked():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_notChecked, db = db, configName='test_deriveAll_deriveIncludes')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field3' not in hist.keys()
+
+def test_history_deriveIncludes_overwriteFalse():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_overwriteFalse, db = db, configName='test_deriveAll_deriveIncludes_overwriteFalse')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert 'field1' not in hist.keys()
+
+def test_history_deriveIncludes_blankIfNoMatch():
+
+    dataOut = dwmAll(data = test_records.history_deriveIncludes_blankIfNoMatch, db = db, configName='test_deriveAll_deriveIncludes_blankIfNoMatch')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['field1']['deriveIncludes']['using']['blankIfNoMatch'] == 'no match found'
 #########################################
 ## Test options around history
 # returnHistoryId False
@@ -503,6 +706,11 @@ def test_udf_beforeNormalizationRegex():
     dataOut = dwmAll(data = test_records.record_udf_beforeNormalizationRegex, db = db, configName='test_udf_beforeNormalizationRegex', udfNamespace=__name__)
     assert dataOut[0]['field1'] == 'goodvalue'
 
+def test_udf_beforeNormalizationIncludes():
+
+    dataOut = dwmAll(data = test_records.record_udf_beforeNormalizationIncludes, db = db, configName='test_udf_beforeNormalizationIncludes', udfNamespace=__name__)
+    assert dataOut[0]['field1'] == 'goodvalue'
+
 def test_udf_beforeDeriveData():
 
     dataOut = dwmAll(data = test_records.record_udf_beforeDeriveData, db = db, configName='test_udf_beforeDeriveData', udfNamespace=__name__)
@@ -560,3 +768,21 @@ def test_dwmAll_requiresConfigInput():
 def test_dwmAll_requiresOneConfig():
 
     dataOut = dwmAll(data = test_records.record_dwmAll_noConfig, db = db, config={"configName": "testConfig"}, configName="testConfig", udfNamespace=__name__)
+
+# doesn't allow invalid includes lookupType
+@raises(ValueError)
+def test_includesLookup_badType():
+
+    testVal, histObj = cleaning.IncludesLookup(fieldVal='', lookupType='badlookup', db = db, fieldName='')
+
+# deriveIncludes requires deriveInput
+@raises(ValueError)
+def test_includesLookup_requiresDeriveFieldName():
+
+    testVal, histObj = cleaning.IncludesLookup(fieldVal='', lookupType='deriveIncludes', deriveFieldName='test', db = db, fieldName='')
+
+# deriveIncludes requires deriveFieldName
+@raises(ValueError)
+def test_includesLookup_requiresDeriveFieldName():
+
+    testVal, histObj = cleaning.IncludesLookup(fieldVal='', lookupType='deriveIncludes', deriveInput='test', db = db, fieldName='')

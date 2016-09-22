@@ -41,6 +41,77 @@ def DataLookup(fieldVal, db, lookupType, fieldName, histObj={}):
 
     return fieldValNew, histObjUpd
 
+def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deriveInput={}, histObj={}, overwrite=False, blankIfNoMatch=False):
+    """
+    Return new field value based on whether or not original value includes AND excludes all words in a comma-delimited list queried from MongoDB
+
+    :param string fieldVal: input value to lookup
+    :param string lookupType: Type of lookup to perform/MongoDB collection name. One of 'normIncludes', 'deriveIncludes'
+    :param MongoClient db: MongoClient instance connected to MongoDB
+    :param string fieldName: Field name to query against
+    :param string deriveFieldName: Field name from which to derive value
+    :param dict deriveInput: Values to perform lookup against: {"deriveFieldName": "deriveVal1"}
+    :param dict histObj: History object to which changes should be appended
+    :param bool overwrite: Should an existing field value be replaced
+    :param bool blankIfNoMatch: Should field value be set to blank if no match is found
+    """
+
+    lookupDict = {}
+    lookupDict['fieldName'] = fieldName
+
+    if (lookupType=='normIncludes'):
+        fieldValClean = _DataClean_(fieldVal)
+    elif (lookupType=='deriveIncludes'):
+        if deriveFieldName=='' or deriveInput=={}:
+            raise ValueError("for 'deriveIncludes' must specify both 'deriveFieldName' and 'deriveInput'")
+        lookupDict['deriveFieldName'] = deriveFieldName
+        fieldValClean = _DataClean_(deriveInput[list(deriveInput.keys())[0]])
+    else:
+        raise ValueError("Invalid lookupType")
+
+    fieldValNew = fieldVal
+    using = {}
+
+    coll = db[lookupType]
+
+    incVal = coll.find(lookupDict, ['includes', 'excludes', 'begins', 'ends', 'replace'])
+
+    if incVal and (lookupType=='normIncludes' or (lookupType=='deriveIncludes' and (overwrite or fieldVal==''))):
+
+        for row in incVal:
+
+            if row['includes']!='' or row['excludes']!='' or row['begins']!='' or row['ends']!='':
+
+                if all((a in fieldValClean) for a in row['includes'].split(",")):
+
+                    if all((b not in fieldValClean) for b in row['excludes'].split(",")) or row['excludes']=='':
+
+                        if fieldValClean.startswith(row['begins']):
+
+                            if fieldValClean.endswith(row['ends']):
+
+                                fieldValNew = row['replace']
+
+                                if lookupType=='deriveIncludes':
+                                    using[deriveFieldName] = deriveInput
+                                using['includes'] = row['includes']
+                                using['excludes'] = row['excludes']
+                                using['begins'] = row['begins']
+                                using['ends'] = row['ends']
+                                break
+
+        if incVal:
+            incVal.close()
+
+    if fieldValNew==fieldVal and blankIfNoMatch and lookupType=='deriveIncludes':
+        fieldValNew = ''
+        using['blankIfNoMatch'] = 'no match found'
+
+    change = _CollectHistory_(lookupType=lookupType, fromVal=fieldVal, toVal=fieldValNew, using=using)
+
+    histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
+
+    return fieldValNew, histObjUpd
 
 def RegexLookup(fieldVal, db, fieldName, lookupType, histObj={}):
     """
