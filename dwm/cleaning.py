@@ -41,11 +41,12 @@ def DataLookup(fieldVal, db, lookupType, fieldName, histObj={}):
 
     return fieldValNew, histObjUpd
 
-def NormIncludesLookup(fieldVal, db, fieldName, histObj={}):
+def NormIncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deriveInput='', histObj={}):
     """
     Return new field value based on whether or not original value includes AND excludes all words in a comma-delimited list queried from MongoDB
 
     :param string fieldVal: input value to lookup
+    :param string lookupType: Type of lookup to perform/MongoDB collection name. One of 'normIncludes', 'deriveIncludes'
     :param MongoClient db: MongoClient instance connected to MongoDB
     :param string fieldName: Field name to query against
     :param dict histObj: History object to which changes should be appended
@@ -54,11 +55,20 @@ def NormIncludesLookup(fieldVal, db, fieldName, histObj={}):
     lookupDict = {}
     lookupDict['fieldName'] = fieldName
 
+    if (lookupType=='normIncludes'):
+        fieldValClean = _DataClean_(fieldVal)
+    elif (lookupType=='deriveIncludes'):
+        lookupDict['deriveFieldName'] = deriveFieldName
+        fieldValClean = _DataClean_(deriveInput)
+        if deriveFieldName=='' or deriveInput=='':
+            raise ValueError("for 'deriveIncludes' must specify both 'deriveFieldName' and 'deriveInput'")
+    else:
+        raise ValueError("Invalid lookupType")
+
     fieldValNew = fieldVal
-    fieldValClean = _DataClean_(fieldVal)
     using = {}
 
-    coll = db['normIncludes']
+    coll = db[lookupType]
 
     incVal = coll.find(lookupDict, ['includes', 'excludes', 'begins', 'ends', 'replace'])
 
@@ -74,6 +84,8 @@ def NormIncludesLookup(fieldVal, db, fieldName, histObj={}):
 
                         fieldValNew = row['replace']
 
+                        if lookupType=='deriveIncludes':
+                            using[deriveFieldName] = deriveInput
                         using['includes'] = row['includes']
                         using['excludes'] = row['excludes']
                         using['begins'] = row['begins']
