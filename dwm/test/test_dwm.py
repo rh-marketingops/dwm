@@ -298,6 +298,13 @@ def test_deriveAll_deriveRegex_blankIfNoMatch():
     dataOut = dwmAll(data = test_records.record_deriveAll_deriveRegex_blankIfNoMatch, db = db, configName='test_deriveAll_deriveRegex_blankIfNoMatch')
     assert dataOut[0]['field1'] == ''
 
+# deriveIncludes
+
+def test_deriveAll_deriveIncludes_included_caught():
+
+    dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_included_caught, db = db, configName='test_deriveAll_deriveIncludes')
+    assert dataOut[0]['field1'] == 'goodvalue'
+
 # ensure proper sorting on derive
 
 def test_derive_sort():
