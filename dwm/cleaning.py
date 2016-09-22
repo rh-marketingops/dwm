@@ -204,7 +204,10 @@ def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', hi
     deriveUsing = deriveInput
 
     if lval and (overwrite or (fieldVal=='')):
-        fieldValNew = lval['value']
+        try:
+            fieldValNew = lval['value']
+        except KeyError as e:
+            warnings.warn('schema error', e)
     elif blankIfNoMatch and not lval:
         fieldValNew = ''
         deriveUsing = {'blankIfNoMatch': 'no match found'}

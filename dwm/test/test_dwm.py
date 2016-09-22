@@ -808,3 +808,10 @@ def test_regexLookup_warnOnBadSchema(mock_warnings):
 
     cleaning.RegexLookup(fieldVal='', db = db, fieldName="field100", lookupType="fieldSpecificRegex")
     assert(mock_warnings.called)
+
+# warns if returned document doesn't match schema
+@patch('dwm.cleaning.warnings.warn')
+def test_deriveValue_warnOnBadSchema(mock_warnings):
+
+    cleaning.DeriveDataLookup(fieldName="field100", db = db, deriveInput = {"field101": "abc"})
+    assert(mock_warnings.called)
