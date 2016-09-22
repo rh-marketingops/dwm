@@ -49,7 +49,11 @@ def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deri
     :param string lookupType: Type of lookup to perform/MongoDB collection name. One of 'normIncludes', 'deriveIncludes'
     :param MongoClient db: MongoClient instance connected to MongoDB
     :param string fieldName: Field name to query against
+    :param string deriveFieldName: Field name from which to derive value
+    :param dict deriveInput: Values to perform lookup against: {"deriveFieldName": "deriveVal1"}
     :param dict histObj: History object to which changes should be appended
+    :param bool overwrite: Should an existing field value be replaced
+    :param bool blankIfNoMatch: Should field value be set to blank if no match is found
     """
 
     lookupDict = {}
