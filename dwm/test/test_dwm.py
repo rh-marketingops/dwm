@@ -1,5 +1,6 @@
 import mongomock
 from nose.tools import *
+from mock import patch
 from dwm import dwmAll
 
 from .test_genericLookup import genericLookup
@@ -786,3 +787,17 @@ def test_includesLookup_requiresDeriveFieldName():
 def test_includesLookup_requiresDeriveFieldName():
 
     testVal, histObj = cleaning.IncludesLookup(fieldVal='', lookupType='deriveIncludes', deriveInput='test', db = db, fieldName='')
+
+# warns if returned document doesn't match schema
+@patch('dwm.cleaning.warnings.warn')
+def test_includesLookup_normIncludes_warnOnBadSchema(mock_warnings):
+
+    cleaning.IncludesLookup(fieldVal='1234', lookupType='normIncludes', db = db, fieldName='field100')
+    assert(mock_warnings.called)
+
+# warns if returned document doesn't match schema
+@patch('dwm.cleaning.warnings.warn')
+def test_includesLookup_deriveIncludes_warnOnBadSchema(mock_warnings):
+
+    cleaning.IncludesLookup(fieldVal='', lookupType='deriveIncludes', db = db, fieldName='field100', deriveFieldName='field101', deriveInput={"field101": "abcd"})
+    assert(mock_warnings.called)

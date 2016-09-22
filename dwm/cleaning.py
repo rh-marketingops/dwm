@@ -104,7 +104,7 @@ def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deri
                                     break
 
             except KeyError as e:
-                warnings.warn(e)
+                warnings.warn('schema error', e)
 
         if incVal:
             incVal.close()
