@@ -1,4 +1,4 @@
-from .cleaning import DataLookup, NormIncludesLookup, RegexLookup, DeriveDataLookup, DeriveDataCopyValue, DeriveDataRegex
+from .cleaning import DataLookup, IncludesLookup, RegexLookup, DeriveDataLookup, DeriveDataCopyValue, DeriveDataRegex
 from datetime import datetime
 from collections import OrderedDict
 
@@ -30,7 +30,7 @@ def lookupAll(data, configFields, lookupType, db, histObj={}):
 
                 elif lookupType=='normIncludes':
 
-                    fieldValNew, histObj = NormIncludesLookup(fieldVal=data[field], db=db, fieldName=field, histObj=histObj)
+                    fieldValNew, histObj = IncludesLookup(fieldVal=data[field], lookupType='normIncludes', db=db, fieldName=field, histObj=histObj)
 
                 data[field] = fieldValNew
 

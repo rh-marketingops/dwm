@@ -41,7 +41,7 @@ def DataLookup(fieldVal, db, lookupType, fieldName, histObj={}):
 
     return fieldValNew, histObjUpd
 
-def includesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deriveInput='', histObj={}):
+def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deriveInput='', histObj={}):
     """
     Return new field value based on whether or not original value includes AND excludes all words in a comma-delimited list queried from MongoDB
 
