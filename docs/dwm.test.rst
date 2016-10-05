@@ -12,6 +12,14 @@ dwm.test.test_configs module
     :undoc-members:
     :show-inheritance:
 
+dwm.test.test_deriveIncludes module
+-----------------------------------
+
+.. automodule:: dwm.test.test_deriveIncludes
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 dwm.test.test_deriveRegex module
 --------------------------------
 
@@ -64,6 +72,14 @@ dwm.test.test_genericRegex module
 ---------------------------------
 
 .. automodule:: dwm.test.test_genericRegex
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+dwm.test.test_normIncludes module
+---------------------------------
+
+.. automodule:: dwm.test.test_normIncludes
     :members:
     :undoc-members:
     :show-inheritance:
