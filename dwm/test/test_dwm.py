@@ -405,8 +405,28 @@ def test_history_fieldSpecificLookup_notChecked():
     hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
     assert 'field2' not in hist.keys()
 
-# normLookup
 
+# # CurrentFieldLookup
+def test_writeContactHistory_currentField():
+
+    dataOut = dwmAll(data = test_records.record_writeContactHistory_writeConfig, db = db, configName='test_writeContactHistory_writeConfig')
+    hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+    assert hist['_current'] == 0
+
+def test_writeContactHistory_currentFieldInc():
+    # Drop contactHistory before new UT
+    db.contactHistory.drop()
+    # Create ContactHistory with _currentField
+    dataOutOldRec = dwmAll(data=test_records.record_writeContactHistory_writeConfig, db=db, configName='test_writeContactHistory_writeConfig')
+
+    # Create new ContactHistory with _currentField and increment old record.
+    dataOutNextRec = dwmAll(data=test_records.history_normIncludes_included_caught, db=db, configName='test_writeContactHistory_writeConfig')
+
+    # Get old rec with incremented _current
+    hist = db.contactHistory.find_one({"_id": dataOutOldRec[0]['historyId']})
+    assert hist['_current'] == 1
+
+# normLookup
 def test_history_normLookup_caught():
 
     # do stuff for testing

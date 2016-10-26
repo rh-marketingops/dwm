@@ -140,6 +140,14 @@ def dwmOne(data, db, config, writeContactHistory=True, returnHistoryId=True, his
         history['timestamp'] = int(time.time())
         history[histIdField['name']] = data[histIdField['value']]
         history['configName'] = config['configName']
+
+        # Set _current value for most recent contact
+        history['_current'] = 0
+       
+        # Increment all _current
+        db['contactHistory'].update({histIdField['name']: data[histIdField['value']]}, {'$inc': {'_current': 1}}, multi=True)
+
+        # Insert into DB
         historyId = db['contactHistory'].insert_one(history).inserted_id
 
     if writeContactHistory and returnHistoryId:
