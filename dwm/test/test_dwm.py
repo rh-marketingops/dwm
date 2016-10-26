@@ -417,10 +417,10 @@ def test_writeContactHistory_currentFieldInc():
     # Drop contactHistory before new UT
     db.contactHistory.drop()
     # Create ContactHistory with _currentField
-    dataOutOldRec = dwmAll(data=test_records.record_writeContactHistory_writeConfig, db=db, configName='test_writeContactHistory_writeConfig')
+    dataOutOldRec = dwmAll(data=test_records.record_writeContactHistory_historyCurrent1, db=db, configName='test_writeContactHistory_writeConfig')
 
     # Create new ContactHistory with _currentField and increment old record.
-    dataOutNextRec = dwmAll(data=test_records.history_normIncludes_included_caught, db=db, configName='test_writeContactHistory_writeConfig')
+    dataOutNextRec = dwmAll(data=test_records.record_writeContactHistory_historyCurrent2, db=db, configName='test_writeContactHistory_writeConfig')
 
     # Get old rec with incremented _current
     hist = db.contactHistory.find_one({"_id": dataOutOldRec[0]['historyId']})
