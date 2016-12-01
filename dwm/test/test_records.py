@@ -191,6 +191,10 @@ record_writeContactHistory_False = [{"emailAddress": "test@test.com"}]
 
 record_writeContactHistory_writeConfig = [{"emailAddress": "test@test.com"}]
 
+record_writeContactHistory_historyCurrent1 = [{"emailAddress": "test@test.com"}]
+
+record_writeContactHistory_historyCurrent2 = [{"emailAddress": "test@test.com"}]
+
 record_configDoesNotExist = [{"emailAddress": "test@test.com"}]
 
 record_udf_beforeGenericValidation = [{"emailAddress": "test@test.com", "field1": ""}]

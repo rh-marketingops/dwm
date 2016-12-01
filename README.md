@@ -309,3 +309,9 @@ from udf import myFunction
 dataOut = dwm.dwmAll(data=data, mongoDb=db, mongoConfig=mongoConfig, configName='myConfig', returnHistoryId=False, udfNamespace=__name__)
 
 ```
+
+# Application
+
+`dwm` is just a Python package which applies business logic. It still requires scripting and configuration to actually apply it to data. Here is our implementation using Openshift:
+
+https://github.com/rh-marketingops/dwmops
