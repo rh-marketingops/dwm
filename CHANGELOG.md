@@ -1,3 +1,7 @@
+## 2016-12-01 v0.0.7
+- Update diagrams to show `normIncludes`
+- Add `_current` field to recorded history; most recent record is `0`, all other records increment in ascending order
+
 ## 2016-09-22 v0.0.6
 - Removed outdated `type` fields from test records
 - Added try/catch for KeyError in records returned from MongoDB
