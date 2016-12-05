@@ -2,6 +2,7 @@ alabaster==0.7.9
 Babel==2.3.4
 coverage==4.2
 docutils==0.12
+-e git+git@github.com:rh-marketingops/dwm.git@3887dea3dd69d023b68e5c30c36c501661e8376b#egg=dwm
 imagesize==0.7.1
 Jinja2==2.8
 MarkupSafe==0.23
