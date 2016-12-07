@@ -191,8 +191,7 @@ configs = [
                     "1": {
                         "type": "deriveValue",
                         "fieldSet": ["field2"],
-                        "overwrite": True,
-                        "blankIfNoMatch": False
+                        "options": ["overwrite"]
                     }
                 }
             }
@@ -224,8 +223,7 @@ configs = [
                     "1": {
                         "type": "deriveValue",
                         "fieldSet": ["field2"],
-                        "overwrite": True,
-                        "blankIfNoMatch": True
+                        "options": ["overwrite", "blankIfNoMatch"]
                     }
                 }
             }
@@ -257,14 +255,12 @@ configs = [
                     "2": {
                         "type": "deriveValue",
                         "fieldSet": ["field4"],
-                        "overwrite": True,
-                        "blankIfNoMatch": False
+                        "options": ["overwrite"]
                     },
                     "1": {
                         "type": "deriveValue",
                         "fieldSet": ["field3"],
-                        "overwrite": True,
-                        "blankIfNoMatch": False
+                        "options": ["overwrite"]
                     }
                 }
             }
@@ -296,7 +292,7 @@ configs = [
                     "1": {
                         "type": "copyValue",
                         "fieldSet": ["field2"],
-                        "overwrite": True
+                        "options": ["overwrite"]
                     }
                 }
             }
@@ -328,8 +324,7 @@ configs = [
                     "1": {
                         "type": "deriveRegex",
                         "fieldSet": ["field2"],
-                        "overwrite": True,
-                        "blankIfNoMatch": False
+                        "options": ["overwrite"]
                     }
                 }
             }
@@ -361,8 +356,7 @@ configs = [
                     "1": {
                         "type": "deriveIncludes",
                         "fieldSet": ["field2"],
-                        "overwrite": True,
-                        "blankIfNoMatch": False
+                        "options": ["overwrite"]
                     }
                 }
             }
@@ -394,8 +388,7 @@ configs = [
                     "1": {
                         "type": "deriveIncludes",
                         "fieldSet": ["field2"],
-                        "overwrite": False,
-                        "blankIfNoMatch": False
+                        "options": []
                     }
                 }
             }
@@ -427,8 +420,7 @@ configs = [
                     "1": {
                         "type": "deriveIncludes",
                         "fieldSet": ["field2"],
-                        "overwrite": True,
-                        "blankIfNoMatch": True
+                        "options": ["overwrite", "blankIfNoMatch"]
                     }
                 }
             }
@@ -460,8 +452,7 @@ configs = [
                     "1": {
                         "type": "deriveRegex",
                         "fieldSet": ["field2"],
-                        "overwrite": True,
-                        "blankIfNoMatch": True
+                        "options": ["overwrite", "blankIfNoMatch"]
                     }
                 }
             }
@@ -493,8 +484,7 @@ configs = [
                     "1": {
                         "type": "deriveValue",
                         "fieldSet": ["field2"],
-                        "overwrite": False,
-                        "blankIfNoMatch": False
+                        "options": []
                     }
                 }
             }
@@ -526,8 +516,7 @@ configs = [
                     "1": {
                         "type": "deriveRegex",
                         "fieldSet": ["field2"],
-                        "overwrite": False,
-                        "blankIfNoMatch": False
+                        "options": []
                     }
                 }
             }
