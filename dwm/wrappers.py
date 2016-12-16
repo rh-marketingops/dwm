@@ -30,7 +30,7 @@ def lookupAll(data, configFields, lookupType, db, histObj={}):
 
                 elif lookupType=='normIncludes':
 
-                    fieldValNew, histObj = IncludesLookup(fieldVal=data[field], lookupType='normIncludes', db=db, fieldName=field, histObj=histObj)
+                    fieldValNew, histObj, checkMatch = IncludesLookup(fieldVal=data[field], lookupType='normIncludes', db=db, fieldName=field, histObj=histObj)
 
                 data[field] = fieldValNew
 
@@ -69,6 +69,7 @@ def DeriveDataLookupAll(data, configFields, db, histObj={}):
 
                 deriveSetConfig = configFields[field]['derive'][deriveSet]
 
+                checkMatch = False
                 if set.issubset(set(deriveSetConfig['fieldSet']), data.keys()):
 
                     deriveInput = {}
@@ -79,21 +80,21 @@ def DeriveDataLookupAll(data, configFields, db, histObj={}):
 
                     if deriveSetConfig['type']=='deriveValue':
 
-                        fieldValNew, histObj = DeriveDataLookup(fieldName=field, db=db, deriveInput=deriveInput, overwrite=checkDeriveOptions('overwrite', deriveSetConfig["options"]), fieldVal=fieldVal, histObj=histObj, blankIfNoMatch=checkDeriveOptions('blankIfNoMatch', deriveSetConfig["options"]))
+                        fieldValNew, histObj, checkMatch = DeriveDataLookup(fieldName=field, db=db, deriveInput=deriveInput, overwrite=checkDeriveOptions('overwrite', deriveSetConfig["options"]), fieldVal=fieldVal, histObj=histObj, blankIfNoMatch=checkDeriveOptions('blankIfNoMatch', deriveSetConfig["options"]))
 
                     elif deriveSetConfig['type']=='copyValue':
 
-                        fieldValNew, histObj = DeriveDataCopyValue(fieldName=field, deriveInput=deriveInput, overwrite=checkDeriveOptions('overwrite', deriveSetConfig["options"]), fieldVal=fieldVal, histObj=histObj)
+                        fieldValNew, histObj, checkMatch = DeriveDataCopyValue(fieldName=field, deriveInput=deriveInput, overwrite=checkDeriveOptions('overwrite', deriveSetConfig["options"]), fieldVal=fieldVal, histObj=histObj)
 
                     elif deriveSetConfig['type']=='deriveRegex':
 
-                        fieldValNew, histObj = DeriveDataRegex(fieldName=field, db=db, deriveInput=deriveInput, overwrite=checkDeriveOptions('overwrite', deriveSetConfig["options"]), fieldVal=fieldVal, histObj=histObj, blankIfNoMatch=checkDeriveOptions('blankIfNoMatch', deriveSetConfig["options"]))
+                        fieldValNew, histObj, checkMatch = DeriveDataRegex(fieldName=field, db=db, deriveInput=deriveInput, overwrite=checkDeriveOptions('overwrite', deriveSetConfig["options"]), fieldVal=fieldVal, histObj=histObj, blankIfNoMatch=checkDeriveOptions('blankIfNoMatch', deriveSetConfig["options"]))
 
                     elif deriveSetConfig['type']=='deriveIncludes':
 
-                        fieldValNew, histObj = IncludesLookup(fieldVal=data[field], lookupType='deriveIncludes', deriveFieldName=deriveSetConfig['fieldSet'][0], deriveInput=deriveInput,  db=db, fieldName=field, histObj=histObj, overwrite=checkDeriveOptions('overwrite', deriveSetConfig["options"]), blankIfNoMatch=checkDeriveOptions('blankIfNoMatch', deriveSetConfig["options"]))
+                        fieldValNew, histObj, checkMatch = IncludesLookup(fieldVal=data[field], lookupType='deriveIncludes', deriveFieldName=deriveSetConfig['fieldSet'][0], deriveInput=deriveInput,  db=db, fieldName=field, histObj=histObj, overwrite=checkDeriveOptions('overwrite', deriveSetConfig["options"]), blankIfNoMatch=checkDeriveOptions('blankIfNoMatch', deriveSetConfig["options"]))
 
-                if fieldValNew!=fieldVal:
+                if checkMatch:
 
                     data[field] = fieldValNew
 
