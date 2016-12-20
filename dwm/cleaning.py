@@ -322,4 +322,3 @@ def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={},
     histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
 
     return fieldValNew, histObjUpd, checkMatch
-

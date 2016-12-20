@@ -94,7 +94,7 @@ def DeriveDataLookupAll(data, configFields, db, histObj={}):
 
                         fieldValNew, histObj, checkMatch = IncludesLookup(fieldVal=data[field], lookupType='deriveIncludes', deriveFieldName=deriveSetConfig['fieldSet'][0], deriveInput=deriveInput,  db=db, fieldName=field, histObj=histObj, overwrite=checkDeriveOptions('overwrite', deriveSetConfig["options"]), blankIfNoMatch=checkDeriveOptions('blankIfNoMatch', deriveSetConfig["options"]))
 
-                if checkMatch:
+                if checkMatch or fieldValNew!=fieldVal:
 
                     data[field] = fieldValNew
 
