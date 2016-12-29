@@ -1,3 +1,9 @@
+## 2016-12-29 v0.0.8
+- Change hardcoded dict config values for `derive` to a list.
+- Create Travis initial file for CI.
+- Add requirements for travis CI.
+- Update to use nosetests ( update travis yml file to run nosetests )
+
 ## 2016-12-01 v0.0.7
 - Update diagrams to show `normIncludes`
 - Add `_current` field to recorded history; most recent record is `0`, all other records increment in ascending order
