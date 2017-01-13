@@ -380,6 +380,38 @@ configs = [
         }
     },
     {
+        "configName": "test_deriveAll_deriveIncludes_deriveCheckMatch",
+        "fields": {
+            "field1": {
+                "lookup": [],
+                "derive": {
+                    "1": {
+                        "type": "deriveIncludes",
+                        "fieldSet": ["field1"],
+                        "options": []
+                    }
+                }
+            }
+        },
+        "userDefinedFunctions": {
+            "beforeGenericValidation": {},
+            "beforeGenericRegex": {},
+            "beforeFieldSpecificValidation": {},
+            "beforeFieldSpecificRegex": {},
+            "beforeNormalization": {},
+            "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
+            "beforeDeriveData": {},
+            "afterProcessing": {}
+        },
+        "history": {
+            "writeContactHistory": True,
+            "returnHistoryId": True,
+            "returnHistoryField": "historyId",
+            "histIdField": {"name": "field1", "value": "field1"}
+        }
+    },
+    {
         "configName": "test_deriveAll_deriveIncludes_overwriteFalse",
         "fields": {
             "field1": {

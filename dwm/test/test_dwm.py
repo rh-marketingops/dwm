@@ -667,6 +667,25 @@ def test_history_deriveIncludes_blankIfNoMatch():
     dataOut = dwmAll(data = test_records.history_deriveIncludes_blankIfNoMatch, db = db, configName='test_deriveAll_deriveIncludes_blankIfNoMatch')
     hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
     assert hist['field1']['deriveIncludes']['using']['blankIfNoMatch'] == 'no match found'
+
+def test_history_deriveIncludes_deriveCheckMatch():
+
+    dataOut_1 = dwmAll(data=test_records.history_deriveIncludes_deriveCheckMatch, db=db, configName='test_deriveAll_deriveIncludes_deriveCheckMatch')
+
+    hist_1 = db.contactHistory.find_one({"_id": dataOut_1[0]['historyId']})
+
+    dataOut_2 = dwmAll(data = test_records.history_deriveIncludes_deriveCheckMatch, db = db, configName='test_deriveAll_deriveIncludes_deriveCheckMatch')
+
+    hist_2 = db.contactHistory.find_one({"_id": dataOut_2[0]['historyId']})
+
+    print hist_1
+    print hist_2
+
+    print hist_1['field1']
+    print hist_2['field1']
+
+    assert hist_1['field1'] != hist_2['field1']
+
 #########################################
 ## Test options around history
 # returnHistoryId False
@@ -684,7 +703,9 @@ def test_writeContactHistory_False():
 def test_writeContactHistory_writeConfig():
 
     dataOut = dwmAll(data = test_records.record_writeContactHistory_writeConfig, db = db, configName='test_writeContactHistory_writeConfig')
+
     hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
+
     assert hist['configName'] == 'test_writeContactHistory_writeConfig'
 
 #########################################

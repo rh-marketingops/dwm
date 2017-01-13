@@ -98,12 +98,14 @@ def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deri
 
                                     if lookupType=='deriveIncludes':
                                         using[deriveFieldName] = deriveInput
+
                                     using['includes'] = row['includes']
                                     using['excludes'] = row['excludes']
                                     using['begins'] = row['begins']
                                     using['ends'] = row['ends']
 
                                     checkMatch = True
+
                                     break
 
             except KeyError as e:

@@ -70,6 +70,7 @@ def DeriveDataLookupAll(data, configFields, db, histObj={}):
                 deriveSetConfig = configFields[field]['derive'][deriveSet]
 
                 checkMatch = False
+
                 if set.issubset(set(deriveSetConfig['fieldSet']), data.keys()):
 
                     deriveInput = {}
@@ -94,8 +95,14 @@ def DeriveDataLookupAll(data, configFields, db, histObj={}):
 
                         fieldValNew, histObj, checkMatch = IncludesLookup(fieldVal=data[field], lookupType='deriveIncludes', deriveFieldName=deriveSetConfig['fieldSet'][0], deriveInput=deriveInput,  db=db, fieldName=field, histObj=histObj, overwrite=checkDeriveOptions('overwrite', deriveSetConfig["options"]), blankIfNoMatch=checkDeriveOptions('blankIfNoMatch', deriveSetConfig["options"]))
 
-                if checkMatch or fieldValNew!=fieldVal:
 
+                print(checkMatch)
+                print(fieldValNew)
+                print(fieldVal)
+                print('=======')
+
+                if checkMatch or fieldValNew!=fieldVal:
+                    print('I am here')
                     data[field] = fieldValNew
 
                     break
