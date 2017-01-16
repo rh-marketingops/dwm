@@ -162,8 +162,7 @@ history_deriveRegex_notChecked = [{"emailAddress": "test@test.com", "field3": ""
 history_deriveRegex_overwriteFalse = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "findthis"}]
 
 history_deriveRegex_blankIfNoMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "youwillnotfindthis"}]
-'''
-Start'''
+
 history_deriveIncludes_included_caught = [{"emailAddress": "test@test.com", "field1": "", "field2": "findgoodinvaluejunk"}]
 
 history_deriveIncludes_included_uncaught = [{"emailAddress": "test@test.com", "field1": "", "field2": "nothere"}]
@@ -186,10 +185,7 @@ history_deriveIncludes_overwriteFalse = [{"emailAddress": "test@test.com", "fiel
 
 history_deriveIncludes_blankIfNoMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "nothere"}]
 
-history_deriveIncludes_deriveCheckMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "newvalue"}]
-
-'''
-End'''
+history_deriveIncludes_deriveCheckMatch = [{"emailAddress": "test@test.com", "field1": "", "field2": "findgoodinvaluejunk", "field3":"notright"}]
 
 record_returnHistoryId_False = [{"emailAddress": "test@test.com"}]
 

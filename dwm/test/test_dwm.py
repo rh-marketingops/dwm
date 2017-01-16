@@ -355,12 +355,18 @@ def test_deriveAll_deriveIncludes_blankIfNoMatch():
 
     dataOut = dwmAll(data = test_records.record_deriveAll_deriveIncludes_blankIfNoMatch, db = db, configName='test_deriveAll_deriveIncludes_blankIfNoMatch')
     assert dataOut[0]['field1'] == ''
-# ensure proper sorting on derive
 
+# ensure proper sorting on derive
 def test_derive_sort():
 
     dataOut = dwmAll(data = test_records.record_derive_sort, db = db, configName='test_derive_sort')
     assert dataOut[0]['field1'] == 'correctvalue'
+
+# ensure derive check match
+def test_deriveIncludes_deriveCheckMatch():
+    dataOut_FirstExecution = dwmAll(data=test_records.history_deriveIncludes_deriveCheckMatch, db=db, configName='test_deriveAll_deriveIncludes_deriveCheckMatch')
+    dataOut_SecondExecution = dwmAll(data = dataOut_FirstExecution, db = db, configName='test_deriveAll_deriveIncludes_deriveCheckMatch')
+    assert dataOut_FirstExecution[0]['field1'] == dataOut_SecondExecution[0]['field1']
 
 ######################################
 ## test contact history
@@ -667,24 +673,6 @@ def test_history_deriveIncludes_blankIfNoMatch():
     dataOut = dwmAll(data = test_records.history_deriveIncludes_blankIfNoMatch, db = db, configName='test_deriveAll_deriveIncludes_blankIfNoMatch')
     hist = db.contactHistory.find_one({"_id": dataOut[0]['historyId']})
     assert hist['field1']['deriveIncludes']['using']['blankIfNoMatch'] == 'no match found'
-
-def test_history_deriveIncludes_deriveCheckMatch():
-
-    dataOut_1 = dwmAll(data=test_records.history_deriveIncludes_deriveCheckMatch, db=db, configName='test_deriveAll_deriveIncludes_deriveCheckMatch')
-
-    hist_1 = db.contactHistory.find_one({"_id": dataOut_1[0]['historyId']})
-
-    dataOut_2 = dwmAll(data = test_records.history_deriveIncludes_deriveCheckMatch, db = db, configName='test_deriveAll_deriveIncludes_deriveCheckMatch')
-
-    hist_2 = db.contactHistory.find_one({"_id": dataOut_2[0]['historyId']})
-
-    print hist_1
-    print hist_2
-
-    print hist_1['field1']
-    print hist_2['field1']
-
-    assert hist_1['field1'] != hist_2['field1']
 
 #########################################
 ## Test options around history

@@ -387,8 +387,13 @@ configs = [
                 "derive": {
                     "1": {
                         "type": "deriveIncludes",
-                        "fieldSet": ["field1"],
-                        "options": []
+                        "fieldSet": ["field2"],
+                        "options": ["overwrite"]
+                    },
+                    "2": {
+                        "type": "copyValue",
+                        "fieldSet": ["field3"],
+                        "options": ["overwrite"]
                     }
                 }
             }
