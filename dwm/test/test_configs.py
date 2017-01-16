@@ -191,8 +191,7 @@ configs = [
                     "1": {
                         "type": "deriveValue",
                         "fieldSet": ["field2"],
-                        "overwrite": True,
-                        "blankIfNoMatch": False
+                        "options": ["overwrite"]
                     }
                 }
             }
@@ -224,8 +223,7 @@ configs = [
                     "1": {
                         "type": "deriveValue",
                         "fieldSet": ["field2"],
-                        "overwrite": True,
-                        "blankIfNoMatch": True
+                        "options": ["overwrite", "blankIfNoMatch"]
                     }
                 }
             }
@@ -257,14 +255,12 @@ configs = [
                     "2": {
                         "type": "deriveValue",
                         "fieldSet": ["field4"],
-                        "overwrite": True,
-                        "blankIfNoMatch": False
+                        "options": ["overwrite"]
                     },
                     "1": {
                         "type": "deriveValue",
                         "fieldSet": ["field3"],
-                        "overwrite": True,
-                        "blankIfNoMatch": False
+                        "options": ["overwrite"]
                     }
                 }
             }
@@ -296,7 +292,7 @@ configs = [
                     "1": {
                         "type": "copyValue",
                         "fieldSet": ["field2"],
-                        "overwrite": True
+                        "options": ["overwrite"]
                     }
                 }
             }
@@ -328,8 +324,7 @@ configs = [
                     "1": {
                         "type": "deriveRegex",
                         "fieldSet": ["field2"],
-                        "overwrite": True,
-                        "blankIfNoMatch": False
+                        "options": ["overwrite"]
                     }
                 }
             }
@@ -361,8 +356,7 @@ configs = [
                     "1": {
                         "type": "deriveIncludes",
                         "fieldSet": ["field2"],
-                        "overwrite": True,
-                        "blankIfNoMatch": False
+                        "options": ["overwrite"]
                     }
                 }
             }
@@ -386,6 +380,43 @@ configs = [
         }
     },
     {
+        "configName": "test_deriveAll_deriveIncludes_deriveCheckMatch",
+        "fields": {
+            "field1": {
+                "lookup": [],
+                "derive": {
+                    "1": {
+                        "type": "deriveIncludes",
+                        "fieldSet": ["field2"],
+                        "options": ["overwrite"]
+                    },
+                    "2": {
+                        "type": "copyValue",
+                        "fieldSet": ["field3"],
+                        "options": ["overwrite"]
+                    }
+                }
+            }
+        },
+        "userDefinedFunctions": {
+            "beforeGenericValidation": {},
+            "beforeGenericRegex": {},
+            "beforeFieldSpecificValidation": {},
+            "beforeFieldSpecificRegex": {},
+            "beforeNormalization": {},
+            "beforeNormalizationRegex": {},
+            "beforeNormalizationIncludes": {},
+            "beforeDeriveData": {},
+            "afterProcessing": {}
+        },
+        "history": {
+            "writeContactHistory": True,
+            "returnHistoryId": True,
+            "returnHistoryField": "historyId",
+            "histIdField": {"name": "field1", "value": "field1"}
+        }
+    },
+    {
         "configName": "test_deriveAll_deriveIncludes_overwriteFalse",
         "fields": {
             "field1": {
@@ -394,8 +425,7 @@ configs = [
                     "1": {
                         "type": "deriveIncludes",
                         "fieldSet": ["field2"],
-                        "overwrite": False,
-                        "blankIfNoMatch": False
+                        "options": []
                     }
                 }
             }
@@ -427,8 +457,7 @@ configs = [
                     "1": {
                         "type": "deriveIncludes",
                         "fieldSet": ["field2"],
-                        "overwrite": True,
-                        "blankIfNoMatch": True
+                        "options": ["overwrite", "blankIfNoMatch"]
                     }
                 }
             }
@@ -460,8 +489,7 @@ configs = [
                     "1": {
                         "type": "deriveRegex",
                         "fieldSet": ["field2"],
-                        "overwrite": True,
-                        "blankIfNoMatch": True
+                        "options": ["overwrite", "blankIfNoMatch"]
                     }
                 }
             }
@@ -493,8 +521,7 @@ configs = [
                     "1": {
                         "type": "deriveValue",
                         "fieldSet": ["field2"],
-                        "overwrite": False,
-                        "blankIfNoMatch": False
+                        "options": []
                     }
                 }
             }
@@ -526,8 +553,7 @@ configs = [
                     "1": {
                         "type": "deriveRegex",
                         "fieldSet": ["field2"],
-                        "overwrite": False,
-                        "blankIfNoMatch": False
+                        "options": []
                     }
                 }
             }
