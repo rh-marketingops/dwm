@@ -1,4 +1,5 @@
-## 2016-12-29 v0.0.8
+## 2017-01-16 v0.0.8
+- Feature Change - Field `derivations` check. Add an additional boolean flag indicater if the function found a match.      
 - Change hardcoded dict config values for `derive` to a list.
 - Create Travis initial file for CI.
 - Add requirements for travis CI.
