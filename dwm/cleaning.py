@@ -71,6 +71,7 @@ def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deri
         raise ValueError("Invalid lookupType")
 
     fieldValNew = fieldVal
+    checkMatch = False
     using = {}
 
     coll = db[lookupType]
@@ -97,10 +98,14 @@ def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deri
 
                                     if lookupType=='deriveIncludes':
                                         using[deriveFieldName] = deriveInput
+
                                     using['includes'] = row['includes']
                                     using['excludes'] = row['excludes']
                                     using['begins'] = row['begins']
                                     using['ends'] = row['ends']
+
+                                    checkMatch = True
+
                                     break
 
             except KeyError as e:
@@ -117,7 +122,7 @@ def IncludesLookup(fieldVal, lookupType, db, fieldName, deriveFieldName='', deri
 
     histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
 
-    return fieldValNew, histObjUpd
+    return fieldValNew, histObjUpd, checkMatch
 
 def RegexLookup(fieldVal, db, fieldName, lookupType, histObj={}):
     """
@@ -203,6 +208,9 @@ def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', hi
 
     deriveUsing = deriveInput
 
+    # If match found return True else False
+    checkMatch = True if lval else False
+
     if lval and (overwrite or (fieldVal=='')):
         try:
             fieldValNew = lval['value']
@@ -216,7 +224,7 @@ def DeriveDataLookup(fieldName, db, deriveInput, overwrite=True, fieldVal='', hi
 
     histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
 
-    return fieldValNew, histObjUpd
+    return fieldValNew, histObjUpd, checkMatch
 
 def DeriveDataCopyValue(fieldName, deriveInput, overwrite, fieldVal, histObj={}):
     """
@@ -239,12 +247,15 @@ def DeriveDataCopyValue(fieldName, deriveInput, overwrite, fieldVal, histObj={})
     if (deriveInput[row] != '' and (overwrite or (fieldVal==''))):
 
         fieldValNew = deriveInput[row]
+        checkMatch= True
+    else:
+        checkMatch = False
 
     change = _CollectHistory_(lookupType='copyValue', fromVal=fieldVal, toVal=fieldValNew, using=deriveInput)
 
     histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
 
-    return fieldValNew, histObjUpd
+    return fieldValNew, histObjUpd, checkMatch
 
 def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={}, blankIfNoMatch=False):
     """
@@ -263,6 +274,7 @@ def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={},
         raise Exception("more than one value in deriveInput")
 
     fieldValNew = fieldVal
+    checkMatch = False
 
     deriveUsing = deriveInput
 
@@ -292,6 +304,8 @@ def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={},
                     fieldValNew = re.sub(lval['pattern'], lval['replace'], _DataClean_(deriveInput[row]), flags=re.IGNORECASE)
 
                     pattern = lval['pattern']
+
+                    checkMatch = True
                     break
 
             except KeyError as e:
@@ -309,4 +323,4 @@ def DeriveDataRegex(fieldName, db, deriveInput, overwrite, fieldVal, histObj={},
 
     histObjUpd = _CollectHistoryAgg_(contactHist=histObj, fieldHistObj=change, fieldName=fieldName)
 
-    return fieldValNew, histObjUpd
+    return fieldValNew, histObjUpd, checkMatch
