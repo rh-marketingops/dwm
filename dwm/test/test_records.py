@@ -185,6 +185,8 @@ history_deriveIncludes_overwriteFalse = [{"emailAddress": "test@test.com", "fiel
 
 history_deriveIncludes_blankIfNoMatch = [{"emailAddress": "test@test.com", "field1": "oldvalue", "field2": "nothere"}]
 
+history_deriveIncludes_deriveCheckMatch = [{"emailAddress": "test@test.com", "field1": "", "field2": "findgoodinvaluejunk", "field3":"notright"}]
+
 record_returnHistoryId_False = [{"emailAddress": "test@test.com"}]
 
 record_writeContactHistory_False = [{"emailAddress": "test@test.com"}]
