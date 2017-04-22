@@ -122,3 +122,39 @@ def test_dwm_init_fields_badopt():
     }
 
     dwm = Dwm(name='test', mongo=DB, fields=fields)
+
+
+# Initialize with User-Defined Functions
+
+def udf_example_good(data, hist):
+    """ example UDF function for testing; has expected parameters """
+    return data, hist
+
+
+def test_dwm_init_udf():
+    """ test Dwm class initializes with defined UDFs """
+    udf_set = {
+        'beforeGenericValLookup': udf_example_good,
+        'beforeGenericValRegex': udf_example_good,
+        'beforeFieldSpecificLookup': udf_example_good,
+        'beforeFieldSpecificRegex': udf_example_good,
+        'beforeNormLookup': udf_example_good,
+        'beforeNormRegex': udf_example_good,
+        'beforeNormIncludes': udf_example_good,
+        'beforeDerive': udf_example_good,
+        'afterAll': udf_example_good
+    }
+
+    dwm = Dwm(name='test', mongo=DB, udfs=udf_set)
+    assert dwm.udfs = udf_set
+
+
+@raises(ValueError)
+def test_dwm_init_udf_badpos():
+    """ test Dwm class raises error with invalid position """
+
+    udf_set = {
+        'badposition': udf_example_good
+    }
+
+    dwm = Dwm(name='test', mongo=DB, udfs=udf_set)
