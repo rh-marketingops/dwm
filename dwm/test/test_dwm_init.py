@@ -1,7 +1,8 @@
 """ test_dwm_init """
 
 import mongomock
-from mock import patch, raises
+from mock import patch
+from nose.tools import raises
 
 from dwm import Dwm
 
@@ -39,7 +40,7 @@ def test_dwm_init_default_fields():
 def test_dwm_init_default_udf():
     """ test Dwm class initializes with default fields empty """
     dwm = Dwm(name='test', mongo=DB)
-    assert dwm.udfs == []
+    assert dwm.udfs == {}
 
 # Initialize with field settings
 
@@ -146,7 +147,7 @@ def test_dwm_init_udf():
     }
 
     dwm = Dwm(name='test', mongo=DB, udfs=udf_set)
-    assert dwm.udfs = udf_set
+    assert dwm.udfs == udf_set
 
 
 @raises(ValueError)

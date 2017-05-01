@@ -3,4 +3,6 @@
 
 from .dwm import dwmAll, _CollectHistory_, _CollectHistoryAgg_
 
+from .dwmmain import Dwm
+
 __version__ = '0.0.8'
