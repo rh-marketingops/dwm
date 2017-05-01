@@ -1,5 +1,7 @@
 """ Main class for DWM """
 
+from .cleaning import DataLookup
+
 ##########################################################################
 # Constants
 ##########################################################################
@@ -65,3 +67,32 @@ class Dwm(object):
         self.mongo = mongo
         self.fields = fields
         self.udfs = udfs
+
+
+    def _val_g_lookup(self, record, hist=None):
+        """
+        Perform generic validation lookup
+
+        :param dict record: dictionary of values to validate
+        :param dict hist: existing input of history values
+        """
+        if hist is None:
+            hist = {}
+
+        for field in record:
+
+            if record[field] != '' and record[field] is not None:
+
+                if field in self.fields:
+
+                    if 'genericLookup' in self.fields[field]['lookup']:
+
+                        field_val_new, hist = DataLookup(fieldVal=record[field],
+                                                         db=self.mongo,
+                                                         lookupType='genericLookup',
+                                                         fieldName=field,
+                                                         histObj=hist)
+
+                        record[field] = field_val_new
+
+        return record, hist
