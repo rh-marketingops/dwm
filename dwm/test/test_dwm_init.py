@@ -1,7 +1,6 @@
 """ test_dwm_init """
 
 import mongomock
-from mock import patch
 from nose.tools import raises
 
 from dwm import Dwm
@@ -15,32 +14,27 @@ DB = mongomock.MongoClient().db
 
 def test_dwm_initialize():
     """ Test that Dwm class initializes with proper object type """
-    dwm = Dwm(name='test', mongo=DB)
-    assert isinstance(dwm, Dwm)
+    assert isinstance(Dwm(name='test', mongo=DB), Dwm)
 
 
 def test_dwm_init_name():
     """ test Dwm class sets name variable """
-    dwm = Dwm(name='test', mongo=DB)
-    assert dwm.name == 'test'
+    assert Dwm(name='test', mongo=DB).name == 'test'
 
 
 def test_dwm_init_mongo():
     """ test Dwm class sets MongoDB client """
-    dwm = Dwm(name='test', mongo=DB)
-    assert dwm.mongo == DB
+    assert Dwm(name='test', mongo=DB).mongo == DB
 
 
 def test_dwm_init_default_fields():
     """ test Dwm class initializes with default fields empty """
-    dwm = Dwm(name='test', mongo=DB)
-    assert dwm.fields == []
+    assert Dwm(name='test', mongo=DB).fields == []
 
 
 def test_dwm_init_default_udf():
     """ test Dwm class initializes with default fields empty """
-    dwm = Dwm(name='test', mongo=DB)
-    assert dwm.udfs == {}
+    assert Dwm(name='test', mongo=DB).udfs == {}
 
 # Initialize with field settings
 
@@ -61,8 +55,7 @@ def test_dwm_init_fields():
         }
     }
 
-    dwm = Dwm(name='test', mongo=DB, fields=fields)
-    assert dwm.fields == fields
+    assert Dwm(name='test', mongo=DB, fields=fields).fields == fields
 
 
 @raises(ValueError)
@@ -82,7 +75,7 @@ def test_dwm_init_fields_badlookup():
         }
     }
 
-    dwm = Dwm(name='test', mongo=DB, fields=fields)
+    Dwm(name='test', mongo=DB, fields=fields)
 
 
 @raises(ValueError)
@@ -102,7 +95,7 @@ def test_dwm_init_fields_badderive():
         }
     }
 
-    dwm = Dwm(name='test', mongo=DB, fields=fields)
+    Dwm(name='test', mongo=DB, fields=fields)
 
 
 @raises(ValueError)
@@ -122,7 +115,7 @@ def test_dwm_init_fields_badopt():
         }
     }
 
-    dwm = Dwm(name='test', mongo=DB, fields=fields)
+    Dwm(name='test', mongo=DB, fields=fields)
 
 
 # Initialize with User-Defined Functions
@@ -146,8 +139,7 @@ def test_dwm_init_udf():
         'afterAll': udf_example_good
     }
 
-    dwm = Dwm(name='test', mongo=DB, udfs=udf_set)
-    assert dwm.udfs == udf_set
+    assert Dwm(name='test', mongo=DB, udfs=udf_set).udfs == udf_set
 
 
 @raises(ValueError)
@@ -158,4 +150,4 @@ def test_dwm_init_udf_badpos():
         'badposition': udf_example_good
     }
 
-    dwm = Dwm(name='test', mongo=DB, udfs=udf_set)
+    Dwm(name='test', mongo=DB, udfs=udf_set)
