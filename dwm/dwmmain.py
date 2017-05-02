@@ -1,6 +1,6 @@
 """ Main class for DWM """
 
-from .cleaning import DataLookup
+from .cleaning import DataLookup, RegexLookup
 
 ##########################################################################
 # Constants
@@ -62,12 +62,10 @@ class Dwm(object):
             if udf not in UDF_POSITIONS:
                 raise ValueError('Invalid UDF position %s' % udf)
 
-
         self.name = name
         self.mongo = mongo
         self.fields = fields
         self.udfs = udfs
-
 
     def _val_g_lookup(self, record, hist=None):
         """
@@ -92,6 +90,34 @@ class Dwm(object):
                                                          lookupType='genericLookup',
                                                          fieldName=field,
                                                          histObj=hist)
+
+                        record[field] = field_val_new
+
+        return record, hist
+
+    def _val_g_regex(self, record, hist=None):
+        """
+        Perform generic validation regex
+
+        :param dict record: dictionary of values to validate
+        :param dict hist: existing input of history values
+        """
+        if hist is None:
+            hist = {}
+
+        for field in record:
+
+            if record[field] != '' and record[field] is not None:
+
+                if field in self.fields:
+
+                    if 'genericRegex' in self.fields[field]['lookup']:
+
+                        field_val_new, hist = RegexLookup(fieldVal=record[field],
+                                                          db=self.mongo,
+                                                          fieldName=field,
+                                                          lookupType='genericRegex',
+                                                          histObj=hist)
 
                         record[field] = field_val_new
 
