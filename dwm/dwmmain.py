@@ -122,3 +122,32 @@ class Dwm(object):
                         record[field] = field_val_new
 
         return record, hist
+
+
+    def _val_fs_lookup(self, record, hist=None):
+        """
+        Perform field-specific validation lookup
+
+        :param dict record: dictionary of values to validate
+        :param dict hist: existing input of history values
+        """
+        if hist is None:
+            hist = {}
+
+        for field in record:
+
+            if record[field] != '' and record[field] is not None:
+
+                if field in self.fields:
+
+                    if 'fieldSpecificLookup' in self.fields[field]['lookup']:
+
+                        field_val_new, hist = DataLookup(fieldVal=record[field],
+                                                         db=self.mongo,
+                                                         lookupType='fieldSpecificLookup',
+                                                         fieldName=field,
+                                                         histObj=hist)
+
+                        record[field] = field_val_new
+
+        return record, hist
