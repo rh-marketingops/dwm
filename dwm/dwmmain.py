@@ -52,8 +52,8 @@ class Dwm(object):
             # derive types and options
             for derive in fields[field]['derive']:
                 if derive['type'] not in DERIVE_TYPES:
-                    raise ValueError('Invalid derive type %s' %
-                                     derive['type'])
+                    raise ValueError('Invalid derive type %s' % derive['type'])
+
                 for opt in derive['options']:
                     if opt not in DERIVE_OPTIONS:
                         raise ValueError('Invalid derive option %s' % opt)
@@ -123,7 +123,6 @@ class Dwm(object):
 
         return record, hist
 
-
     def _val_fs_lookup(self, record, hist=None):
         """
         Perform field-specific validation lookup
@@ -148,6 +147,36 @@ class Dwm(object):
                                                          fieldName=field,
                                                          histObj=hist)
 
+                        record[field] = field_val_new
+
+        return record, hist
+
+    def _val_fs_regex(self, record, hist=None):
+        """
+        Perform field-specific validation regex
+
+        :param dict record: dictionary of values to validate
+        :param dict hist: existing input of history values
+        """
+
+        if hist is None:
+            hist = {}
+
+        for field in record:
+
+            if record[field] != '' and record[field] is not None:
+
+                if field in self.fields:
+
+                    if 'fieldSpecificRegex' in self.fields[field]['lookup']:
+
+                        field_val_new, hist = RegexLookup(fieldVal=record[field],
+                                                          db=self.mongo,
+                                                          fieldName=field,
+                                                          lookupType='fieldSpecificRegex',
+                                                          histObj=hist)
+                        print(field_val_new)
+                        print(hist)
                         record[field] = field_val_new
 
         return record, hist
