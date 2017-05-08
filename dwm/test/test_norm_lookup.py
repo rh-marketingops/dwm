@@ -10,8 +10,8 @@ from dwm import Dwm
 
 DB = mongomock.MongoClient().db
 
-DB.normLookup.insert({"fieldName": "field1", "find": "BADVALUE"})
-DB.normLookup.insert({"fieldName": "field2", "find": "BADVALUE"})
+DB.normLookup.insert({"fieldName": "field1", "find": "BADVALUE", "replace": "goodvalue"})
+DB.normLookup.insert({"fieldName": "field2", "find": "BADVALUE", "replace": "goodvalue"})
 
 # Setup Dwm instance
 
@@ -35,7 +35,7 @@ def test_dwm_vnorm_lup_bad():
     """ Ensure field-specific lookup occurs """
     rec = {'field1': 'BADVALUE'}
     rec_out, _ = DWM._norm_lookup(rec, {}) #pylint: disable=W0212
-    assert rec_out == {'field1': ''}
+    assert rec_out == {'field1': 'goodvalue'}
 
 
 def test_dwm_vnorm_lup_good():
@@ -49,18 +49,18 @@ def test_dwm_vnorm_lup_badcln():
     """ Ensure basic fs lookup occurs and cleans value before """
     rec = {'field1': '  badvalue\r\n  '}
     rec_out, _ = DWM._norm_lookup(rec, {}) #pylint: disable=W0212
-    assert rec_out == {'field1': ''}
+    assert rec_out == {'field1': 'goodvalue'}
 
 
 def test_dwm_vnorm_lup_badmulti():
     """ Ensure fs lookup occurs on every field in config """
     rec = {'field1': 'BADVALUE', 'field2': 'BADVALUE'}
     rec_out, _ = DWM._norm_lookup(rec, {}) #pylint: disable=W0212
-    assert rec_out == {'field1': '', 'field2': ''}
+    assert rec_out == {'field1': 'goodvalue', 'field2': 'goodvalue'}
 
 
 def test_dwm_vnorm_lup_leave():
     """ Ensure fs lookup does not occur on field not in config """
     rec = {'field1': 'BADVALUE', 'field3': 'BADVALUE'}
     rec_out, _ = DWM._norm_lookup(rec, {}) #pylint: disable=W0212
-    assert rec_out == {'field1': '', 'field3': 'BADVALUE'}
+    assert rec_out == {'field1': 'goodvalue', 'field3': 'BADVALUE'}
