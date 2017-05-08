@@ -7,7 +7,8 @@ from .cleaning import DataLookup, RegexLookup
 ##########################################################################
 
 LOOKUP_TYPES = ['genericLookup', 'genericRegex', 'fieldSpecificRegex',
-                'fieldSpecificLookup', 'normLookup', 'normIncludes']
+                'fieldSpecificLookup', 'normLookup', 'normRegex',
+                'normIncludes']
 
 DERIVE_TYPES = ['deriveValue', 'copyValue', 'deriveRegex', 'deriveIncludes']
 
@@ -177,6 +178,60 @@ class Dwm(object):
                                                           histObj=hist)
                         print(field_val_new)
                         print(hist)
+                        record[field] = field_val_new
+
+        return record, hist
+
+    def _norm_lookup(self, record, hist=None):
+        """
+        Perform generic validation lookup
+
+        :param dict record: dictionary of values to validate
+        :param dict hist: existing input of history values
+        """
+        if hist is None:
+            hist = {}
+
+        for field in record:
+
+            if record[field] != '' and record[field] is not None:
+
+                if field in self.fields:
+
+                    if 'normLookup' in self.fields[field]['lookup']:
+                        field_val_new, hist = DataLookup(fieldVal=record[field],
+                                                         db=self.mongo,
+                                                         lookupType='normLookup',
+                                                         fieldName=field,
+                                                         histObj=hist)
+
+                        record[field] = field_val_new
+
+        return record, hist
+
+    def _norm_regex(self, record, hist=None):
+        """
+        Perform generic validation regex
+
+        :param dict record: dictionary of values to validate
+        :param dict hist: existing input of history values
+        """
+        if hist is None:
+            hist = {}
+
+        for field in record:
+
+            if record[field] != '' and record[field] is not None:
+
+                if field in self.fields:
+
+                    if 'normRegex' in self.fields[field]['lookup']:
+                        field_val_new, hist = RegexLookup(fieldVal=record[field],
+                                                          db=self.mongo,
+                                                          fieldName=field,
+                                                          lookupType='normRegex',
+                                                          histObj=hist)
+
                         record[field] = field_val_new
 
         return record, hist
