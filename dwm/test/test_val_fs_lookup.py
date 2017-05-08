@@ -30,11 +30,13 @@ DWM = Dwm(name='test', mongo=DB, fields=FIELDS)
 
 # Let the testing begin
 
+
 def test_dwm_vfs_lup_bad():
     """ Ensure field-specific lookup occurs """
     rec = {'field1': 'BADVALUE'}
     rec_out, _ = DWM._val_fs_lookup(rec, {}) #pylint: disable=W0212
     assert rec_out == {'field1': ''}
+
 
 def test_dwm_vfs_lup_good():
     """ Ensure good value not cleared by fs """
@@ -42,17 +44,20 @@ def test_dwm_vfs_lup_good():
     rec_out, _ = DWM._val_fs_lookup(rec, {}) #pylint: disable=W0212
     assert rec_out == rec
 
+
 def test_dwm_vfs_lup_badcln():
     """ Ensure basic fs lookup occurs and cleans value before """
     rec = {'field1': '  badvalue\r\n  '}
     rec_out, _ = DWM._val_fs_lookup(rec, {}) #pylint: disable=W0212
     assert rec_out == {'field1': ''}
 
+
 def test_dwm_vfs_lup_badmulti():
     """ Ensure fs lookup occurs on every field in config """
     rec = {'field1': 'BADVALUE', 'field2': 'BADVALUE'}
     rec_out, _ = DWM._val_fs_lookup(rec, {}) #pylint: disable=W0212
     assert rec_out == {'field1': '', 'field2': ''}
+
 
 def test_dwm_vfs_lup_leave():
     """ Ensure fs lookup does not occur on field not in config """

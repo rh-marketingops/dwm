@@ -33,7 +33,6 @@ def test_dwm_vg_reg_bad():
     """ Ensure generic regex occurs """
     rec = {'field1': 'BADVALUE'}
     rec_out, _ = DWM._val_g_regex(rec, {}) #pylint: disable=W0212
-    print(rec_out)
     assert rec_out == {'field1': ''}
 
 def test_dwm_vg_reg_good():
