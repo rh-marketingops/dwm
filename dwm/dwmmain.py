@@ -1,6 +1,11 @@
 """ Main class for DWM """
 
-from .cleaning import DataLookup, RegexLookup
+from .cleaning import DataLookup
+from .cleaning import RegexLookup
+from .cleaning import IncludesLookup
+
+from .wrappers import DeriveDataLookupAll
+
 
 ##########################################################################
 # Constants
@@ -68,13 +73,18 @@ class Dwm(object):
         self.fields = fields
         self.udfs = udfs
 
-    def _val_g_lookup(self, record, hist=None):
+    @staticmethod
+    def data_lookup_method(fields_list, mongo_db_obj, hist, record,
+                           lookup_type):
         """
-        Perform generic validation lookup
 
-        :param dict record: dictionary of values to validate
-        :param dict hist: existing input of history values
+        :param fields_list:
+        :param mongo_db_obj:
+        :param hist:
+        :param record:
+        :param lookup_type:
         """
+
         if hist is None:
             hist = {}
 
@@ -82,18 +92,67 @@ class Dwm(object):
 
             if record[field] != '' and record[field] is not None:
 
-                if field in self.fields:
+                if field in fields_list:
 
-                    if 'genericLookup' in self.fields[field]['lookup']:
+                    if lookup_type in fields_list[field]['lookup']:
 
-                        field_val_new, hist = DataLookup(fieldVal=record[field],
-                                                         db=self.mongo,
-                                                         lookupType='genericLookup',
-                                                         fieldName=field,
-                                                         histObj=hist)
+                        field_val_new, hist = DataLookup(
+                            fieldVal=record[field],
+                            db=mongo_db_obj,
+                            lookupType=lookup_type,
+                            fieldName=field,
+                            histObj=hist)
 
                         record[field] = field_val_new
 
+        return record, hist
+
+    @staticmethod
+    def data_regex_method(fields_list, mongo_db_obj, hist, record, lookup_type):
+        """
+
+        :param fields_list:
+        :param mongo_db_obj:
+        :param hist:
+        :param record:
+        :param lookup_type:
+        """
+
+        if hist is None:
+            hist = {}
+
+        for field in record:
+
+            if record[field] != '' and record[field] is not None:
+
+                if field in fields_list:
+
+                    if lookup_type in fields_list[field]['lookup']:
+
+                        field_val_new, hist = RegexLookup(
+                            fieldVal=record[field],
+                            db=mongo_db_obj,
+                            fieldName=field,
+                            lookupType=lookup_type,
+                            histObj=hist)
+
+                        record[field] = field_val_new
+
+        return record, hist
+
+    def _val_g_lookup(self, record, hist=None):
+        """
+        Perform generic validation lookup
+
+        :param dict record: dictionary of values to validate
+        :param dict hist: existing input of history values
+        """
+
+        record, hist = self.data_lookup_method(fields_list=self.fields,
+                                               mongo_db_obj=self.mongo,
+                                               hist=hist,
+                                               record=record,
+                                               lookup_type='genericLookup')
         return record, hist
 
     def _val_g_regex(self, record, hist=None):
@@ -103,25 +162,12 @@ class Dwm(object):
         :param dict record: dictionary of values to validate
         :param dict hist: existing input of history values
         """
-        if hist is None:
-            hist = {}
 
-        for field in record:
-
-            if record[field] != '' and record[field] is not None:
-
-                if field in self.fields:
-
-                    if 'genericRegex' in self.fields[field]['lookup']:
-
-                        field_val_new, hist = RegexLookup(fieldVal=record[field],
-                                                          db=self.mongo,
-                                                          fieldName=field,
-                                                          lookupType='genericRegex',
-                                                          histObj=hist)
-
-                        record[field] = field_val_new
-
+        record, hist = self.data_regex_method(fields_list=self.fields,
+                                              mongo_db_obj=self.mongo,
+                                              hist=hist,
+                                              record=record,
+                                              lookup_type='genericRegex')
         return record, hist
 
     def _val_fs_lookup(self, record, hist=None):
@@ -131,24 +177,13 @@ class Dwm(object):
         :param dict record: dictionary of values to validate
         :param dict hist: existing input of history values
         """
-        if hist is None:
-            hist = {}
 
-        for field in record:
-
-            if record[field] != '' and record[field] is not None:
-
-                if field in self.fields:
-
-                    if 'fieldSpecificLookup' in self.fields[field]['lookup']:
-
-                        field_val_new, hist = DataLookup(fieldVal=record[field],
-                                                         db=self.mongo,
-                                                         lookupType='fieldSpecificLookup',
-                                                         fieldName=field,
-                                                         histObj=hist)
-
-                        record[field] = field_val_new
+        record, hist = self.data_lookup_method(fields_list=self.fields,
+                                               mongo_db_obj=self.mongo,
+                                               hist=hist,
+                                               record=record,
+                                               lookup_type=
+                                               'fieldSpecificLookup')
 
         return record, hist
 
@@ -160,26 +195,11 @@ class Dwm(object):
         :param dict hist: existing input of history values
         """
 
-        if hist is None:
-            hist = {}
-
-        for field in record:
-
-            if record[field] != '' and record[field] is not None:
-
-                if field in self.fields:
-
-                    if 'fieldSpecificRegex' in self.fields[field]['lookup']:
-
-                        field_val_new, hist = RegexLookup(fieldVal=record[field],
-                                                          db=self.mongo,
-                                                          fieldName=field,
-                                                          lookupType='fieldSpecificRegex',
-                                                          histObj=hist)
-                        print(field_val_new)
-                        print(hist)
-                        record[field] = field_val_new
-
+        record, hist = self.data_regex_method(fields_list=self.fields,
+                                              mongo_db_obj=self.mongo,
+                                              hist=hist,
+                                              record=record,
+                                              lookup_type='fieldSpecificRegex')
         return record, hist
 
     def _norm_lookup(self, record, hist=None):
@@ -189,49 +209,10 @@ class Dwm(object):
         :param dict record: dictionary of values to validate
         :param dict hist: existing input of history values
         """
-        if hist is None:
-            hist = {}
 
-        for field in record:
-
-            if record[field] != '' and record[field] is not None:
-
-                if field in self.fields:
-
-                    if 'normLookup' in self.fields[field]['lookup']:
-                        field_val_new, hist = DataLookup(fieldVal=record[field],
-                                                         db=self.mongo,
-                                                         lookupType='normLookup',
-                                                         fieldName=field,
-                                                         histObj=hist)
-
-                        record[field] = field_val_new
-
-        return record, hist
-
-    def _norm_regex(self, record, hist=None):
-        """
-        Perform generic validation regex
-
-        :param dict record: dictionary of values to validate
-        :param dict hist: existing input of history values
-        """
-        if hist is None:
-            hist = {}
-
-        for field in record:
-
-            if record[field] != '' and record[field] is not None:
-
-                if field in self.fields:
-
-                    if 'normRegex' in self.fields[field]['lookup']:
-                        field_val_new, hist = RegexLookup(fieldVal=record[field],
-                                                          db=self.mongo,
-                                                          fieldName=field,
-                                                          lookupType='normRegex',
-                                                          histObj=hist)
-
-                        record[field] = field_val_new
-
+        record, hist = self.data_lookup_method(fields_list=self.fields,
+                                               mongo_db_obj=self.mongo,
+                                               hist=hist,
+                                               record=record,
+                                               lookup_type='normLookup')
         return record, hist
