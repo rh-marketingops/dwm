@@ -293,3 +293,32 @@ class Dwm(object):
                     record[field] = field_val_new
 
         return record, hist_obj_upd
+
+    def _apply_udfs(self, record, hist, udf_type):
+        """
+
+        :param record:
+        :param hist:
+        :return:
+        """
+
+        def function_executor(func, *args):
+            """
+
+            :param func:
+            :param args:
+            :return:
+            """
+
+            result, result_hist = func(*args)
+
+            return result, result_hist
+
+        if udf_type in self.udfs:
+
+            cust_function_list_obj = self.udfs[udf_type]
+
+            for cust_function in cust_function_list_obj:
+                record, hist = function_executor(cust_function, record, hist)
+
+        return record, hist
