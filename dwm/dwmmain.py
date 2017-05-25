@@ -266,3 +266,30 @@ class Dwm(object):
                         record[field] = field_val_new
 
         return record, hist, check_match
+
+    def _derive(self, record, hist=None):
+        """
+
+        :param record:
+        :param hist:
+        :return:
+        """
+
+        if hist is None:
+            hist = {}
+
+        for field in record:
+
+            if record[field] != '' and record[field] is not None:
+
+                if field in self.fields:
+                    field_val_new, hist_obj_upd = DeriveDataLookupAll(
+                        data=field,
+                        configFields=record[field],
+                        db=self.mongo,
+                        histObj=hist
+                    )
+
+                    record[field] = field_val_new
+
+        return record, hist_obj_upd
