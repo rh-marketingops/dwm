@@ -216,3 +216,53 @@ class Dwm(object):
                                                record=record,
                                                lookup_type='normLookup')
         return record, hist
+
+    def _norm_regex(self, record, hist=None):
+        """
+        Perform generic validation regex
+
+        :param dict record: dictionary of values to validate
+        :param dict hist: existing input of history values
+        """
+
+        record, hist = self.data_regex_method(fields_list=self.fields,
+                                              mongo_db_obj=self.mongo,
+                                              hist=hist,
+                                              record=record,
+                                              lookup_type='normRegex')
+        return record, hist
+
+    def _norm_include(self, record, hist=None):
+        """
+        Normalization 'normIncludes' replace 'almost' values based on at least
+        one of the following: includes strings, excludes strings, starts with
+        string, ends with string
+
+        :param record:
+        :param hist:
+        :return:
+        """
+
+        check_match = False
+
+        if hist is None:
+            hist = {}
+
+        for field in record:
+
+            if record[field] != '' and record[field] is not None:
+
+                if field in self.fields:
+
+                    if 'normIncludes' in self.fields[field]['lookup']:
+
+                        field_val_new, hist, check_match = IncludesLookup(
+                            fieldVal=record[field],
+                            lookupType='normIncludes',
+                            db=self.mongo,
+                            fieldName=field,
+                            histObj=hist)
+
+                        record[field] = field_val_new
+
+        return record, hist, check_match
