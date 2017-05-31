@@ -2,10 +2,13 @@
 
 from .cleaning import DataLookup
 from .cleaning import RegexLookup
+
+
+from .cleaning import DeriveDataLookup
+from .cleaning import DeriveDataCopyValue
+from .cleaning import DeriveDataRegex
+
 from .cleaning import IncludesLookup
-
-from .wrappers import DeriveDataLookupAll
-
 
 ##########################################################################
 # Constants
@@ -38,7 +41,7 @@ class Dwm(object):
 
         :param str name: Name of configuration; for logging
         :param MongoClient mongo: MongoDB connection
-        :param list fields: list of field configurations (dict)
+        :param dict fields: dict of field configurations (dict)
         :param dict udfs: dict of udfs to run
         """
 
@@ -287,26 +290,130 @@ class Dwm(object):
         :return:
         """
 
-        hist_obj_upd = {}
+        def checkDeriveOptions(option, derive_set_config):
+            """
+            Check derive option is exist into options list and return relevant flag.
+            :param option: drive options value
+            :param derive_set_config: options list
+            :return: boolean True or False based on option exist into options list
+            """
+
+            return option in derive_set_config
 
         if hist is None:
             hist = {}
 
         for field in record:
 
-            if record[field] != '' and record[field] is not None:
+            field_val = record[field]
 
-                if field in self.fields:
-                    field_val_new, hist_obj_upd = DeriveDataLookupAll(
-                        data=field,
-                        configFields=record[field],
-                        db=self.mongo,
-                        histObj=hist
-                    )
+            field_val_new = field_val
 
-                    record[field] = field_val_new
+            if field in self.fields:
 
-        return record, hist_obj_upd
+                # vertical
+
+                for derive_set in self.fields[field]['derive']:
+
+                    #'type', 'fieldSet', 'options'
+
+                    check_match = False
+
+                    derive_set_config = derive_set
+
+                    if set.issubset(set(derive_set_config['fieldSet']),
+                                    record.keys()):
+
+                        derive_input = {}
+
+                        # sorting here to ensure subdocument match from
+                        # query
+
+                        for val in derive_set_config['fieldSet']:
+                            derive_input[val] = record[val]
+
+                        if derive_set_config['type'] == 'deriveValue':
+
+                            overwrite_flag = checkDeriveOptions(
+                                'overwrite',
+                                derive_set_config["options"])
+
+                            blank_if_no_match_flag = checkDeriveOptions(
+                                'blankIfNoMatch',
+                                derive_set_config["options"])
+
+                            field_val_new, hist_obj, check_match = \
+                                DeriveDataLookup(
+                                    fieldName=field,
+                                    db=self.mongo,
+                                    deriveInput=derive_input,
+                                    overwrite=overwrite_flag,
+                                    fieldVal=record[field],
+                                    histObj=hist,
+                                    blankIfNoMatch=blank_if_no_match_flag)
+
+                        elif derive_set_config['type'] == 'copyValue':
+
+                            overwrite_flag = checkDeriveOptions(
+                                'overwrite',
+                                derive_set_config["options"])
+
+                            field_val_new, hist_obj, check_match = \
+                                DeriveDataCopyValue(
+                                    fieldName=field,
+                                    deriveInput=derive_input,
+                                    overwrite=overwrite_flag,
+                                    fieldVal=record[field],
+                                    histObj=hist)
+
+                        elif derive_set_config['type'] == 'deriveRegex':
+
+                            overwrite_flag = checkDeriveOptions(
+                                'overwrite',
+                                derive_set_config["options"])
+
+                            blank_if_no_match_flag = checkDeriveOptions(
+                                'blankIfNoMatch',
+                                derive_set_config["options"])
+
+                            field_val_new, hist_obj, check_match = \
+                                DeriveDataRegex(
+                                    fieldName=field,
+                                    db=self.mongo,
+                                    deriveInput=derive_input,
+                                    overwrite=overwrite_flag,
+                                    fieldVal=record[field],
+                                    histObj=hist,
+                                    blankIfNoMatch=blank_if_no_match_flag)
+
+                        elif derive_set_config['type'] == 'deriveIncludes':
+
+                            overwrite_flag = checkDeriveOptions(
+                                'overwrite',
+                                derive_set_config["options"])
+
+                            blank_if_no_match_flag = checkDeriveOptions(
+                                'blankIfNoMatch',
+                                derive_set_config["options"])
+
+                            field_val_new, hist_obj, check_match = \
+                                IncludesLookup(
+                                    fieldVal=record[field],
+                                    lookupType='deriveIncludes',
+                                    deriveFieldName= \
+                                        derive_set_config['fieldSet'][0],
+                                    deriveInput=derive_input,
+                                    db=self.mongo,
+                                    fieldName=field,
+                                    histObj=hist,
+                                    overwrite=overwrite_flag,
+                                    blankIfNoMatch=blank_if_no_match_flag)
+
+                    if check_match or field_val_new != field_val:
+                        record[field] = field_val_new
+                        break
+
+        return record, hist
 
     def _apply_udfs(self, record, hist, udf_type):
         """
