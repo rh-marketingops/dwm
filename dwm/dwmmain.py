@@ -43,7 +43,7 @@ class Dwm(object):
         """
 
         if fields is None:
-            fields = []
+            fields = {}
 
         if udfs is None:
             udfs = {}
@@ -274,6 +274,8 @@ class Dwm(object):
         :param hist:
         :return:
         """
+
+        hist_obj_upd = {}
 
         if hist is None:
             hist = {}
