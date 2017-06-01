@@ -76,6 +76,18 @@ class Dwm(object):
         self.fields = fields
         self.udfs = udfs
 
+
+    def get_field_list(self):
+        """
+        Retrieve list of all fields currently configured
+        """
+
+        list_out = []
+        for field in self.fields:
+            list_out.append(field)
+
+        return list_out
+
     @staticmethod
     def data_lookup_method(fields_list, mongo_db_obj, hist, record,
                            lookup_type):
