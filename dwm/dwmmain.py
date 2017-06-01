@@ -268,7 +268,7 @@ class Dwm(object):
 
                         record[field] = field_val_new
 
-        return record, hist, check_match
+        return record, hist
 
     def _derive(self, record, hist=None):
         """
@@ -278,7 +278,7 @@ class Dwm(object):
         :return:
         """
 
-        def checkDeriveOptions(option, derive_set_config):
+        def check_derive_options(option, derive_set_config):
             """
             Check derive option is exist into options list and return relevant flag.
             :param option: drive options value
@@ -299,11 +299,7 @@ class Dwm(object):
 
             if field in self.fields:
 
-                # vertical
-
                 for derive_set in self.fields[field]['derive']:
-
-                    #'type', 'fieldSet', 'options'
 
                     check_match = False
 
@@ -312,21 +308,19 @@ class Dwm(object):
                     if set.issubset(set(derive_set_config['fieldSet']),
                                     record.keys()):
 
-                        derive_input = {}
-
-                        # sorting here to ensure subdocument match from
+                        # sorting here to ensure sub document match from
                         # query
 
-                        for val in derive_set_config['fieldSet']:
-                            derive_input[val] = record[val]
+                        derive_input = {val: record[val] for val in
+                                        derive_set_config['fieldSet']}
 
                         if derive_set_config['type'] == 'deriveValue':
 
-                            overwrite_flag = checkDeriveOptions(
+                            overwrite_flag = check_derive_options(
                                 'overwrite',
                                 derive_set_config["options"])
 
-                            blank_if_no_match_flag = checkDeriveOptions(
+                            blank_if_no_match_flag = check_derive_options(
                                 'blankIfNoMatch',
                                 derive_set_config["options"])
 
@@ -342,7 +336,7 @@ class Dwm(object):
 
                         elif derive_set_config['type'] == 'copyValue':
 
-                            overwrite_flag = checkDeriveOptions(
+                            overwrite_flag = check_derive_options(
                                 'overwrite',
                                 derive_set_config["options"])
 
@@ -356,11 +350,11 @@ class Dwm(object):
 
                         elif derive_set_config['type'] == 'deriveRegex':
 
-                            overwrite_flag = checkDeriveOptions(
+                            overwrite_flag = check_derive_options(
                                 'overwrite',
                                 derive_set_config["options"])
 
-                            blank_if_no_match_flag = checkDeriveOptions(
+                            blank_if_no_match_flag = check_derive_options(
                                 'blankIfNoMatch',
                                 derive_set_config["options"])
 
@@ -376,11 +370,11 @@ class Dwm(object):
 
                         elif derive_set_config['type'] == 'deriveIncludes':
 
-                            overwrite_flag = checkDeriveOptions(
+                            overwrite_flag = check_derive_options(
                                 'overwrite',
                                 derive_set_config["options"])
 
-                            blank_if_no_match_flag = checkDeriveOptions(
+                            blank_if_no_match_flag = check_derive_options(
                                 'blankIfNoMatch',
                                 derive_set_config["options"])
 
@@ -401,7 +395,7 @@ class Dwm(object):
                         record[field] = field_val_new
                         break
 
-        return record, hist
+        return record, hist_obj
 
     def _apply_udfs(self, record, hist, udf_type):
         """
@@ -498,8 +492,7 @@ class Dwm(object):
                                             udf_type='beforeNormIncludes')
 
             # Run normalization includes
-            record, hist, check_match = self._norm_include(record=record,
-                                                           hist=hist)
+            record, hist = self._norm_include(record=record, hist=hist)
 
             # Run user-defined functions for beforeNormIncludes
             record, hist = self._apply_udfs(record=record,
