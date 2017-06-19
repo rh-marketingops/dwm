@@ -92,12 +92,14 @@ class Dwm(object):
     def data_lookup_method(fields_list, mongo_db_obj, hist, record,
                            lookup_type):
         """
+        Method to lookup the replacement value given a single input value from
+        the same field.
 
-        :param fields_list:
-        :param mongo_db_obj:
-        :param hist:
-        :param record:
-        :param lookup_type:
+        :param dict fields_list: Fields configurations
+        :param MongoClient mongo_db_obj: MongoDB collection object
+        :param dict hist: existing input of history values object
+        :param dict record: values to validate
+        :param str lookup_type: Type of lookup
         """
 
         if hist is None:
@@ -125,12 +127,13 @@ class Dwm(object):
     @staticmethod
     def data_regex_method(fields_list, mongo_db_obj, hist, record, lookup_type):
         """
+        Method to lookup the replacement value based on regular expressions.
 
-        :param fields_list:
-        :param mongo_db_obj:
-        :param hist:
-        :param record:
-        :param lookup_type:
+        :param dict fields_list: Fields configurations
+        :param MongoClient mongo_db_obj: MongoDB collection object
+        :param dict hist: existing input of history values object
+        :param dict record: values to validate
+        :param str lookup_type: Type of lookup
         """
 
         if hist is None:
@@ -253,12 +256,9 @@ class Dwm(object):
         one of the following: includes strings, excludes strings, starts with
         string, ends with string
 
-        :param record:
-        :param hist:
-        :return:
+        :param dict record: dictionary of values to validate
+        :param dict hist: existing input of history values
         """
-
-        check_match = False
 
         if hist is None:
             hist = {}
@@ -271,7 +271,7 @@ class Dwm(object):
 
                     if 'normIncludes' in self.fields[field]['lookup']:
 
-                        field_val_new, hist, check_match = IncludesLookup(
+                        field_val_new, hist, _ = IncludesLookup(
                             fieldVal=record[field],
                             lookupType='normIncludes',
                             db=self.mongo,
@@ -284,18 +284,27 @@ class Dwm(object):
 
     def _derive(self, record, hist=None):
         """
+        Derivation filters like 'deriveValue' to replace given input values
+        from one or more fields. In case 'copyValue' copy value to the target
+        field from given an input value from one field. 'deriveRegex' replace
+        given an input value from one field, derive target field value using
+        regular expressions. If 'deriveIncludes' applies then given an input
+        value from one field, derive target field based on at least one of the
+        following: includes strings, excludes strings, starts with string,
+        ends with string
 
-        :param record:
-        :param hist:
-        :return:
+        :param dict record: dictionary of values to validate
+        :param dict hist: existing input of history values
         """
 
         def check_derive_options(option, derive_set_config):
             """
-            Check derive option is exist into options list and return relevant flag.
-            :param option: drive options value
-            :param derive_set_config: options list
-            :return: boolean True or False based on option exist into options list
+            Check derive option is exist into options list and return relevant
+            flag.
+            :param str option: drive options value
+            :param list derive_set_config: options list
+            :return boolean: True or False based on option exist into options
+            list
             """
 
             return option in derive_set_config
@@ -305,9 +314,9 @@ class Dwm(object):
 
         for field in record:
 
-            field_val = record[field]
+            field_val_new = field_val = record[field]
 
-            field_val_new = field_val
+            #field_val_new = field_val
 
             if field in self.fields:
 
@@ -411,18 +420,18 @@ class Dwm(object):
 
     def _apply_udfs(self, record, hist, udf_type):
         """
+        Excute user define processes, user-defined functionalty is designed to
+        applyies custome trasformations to data.
 
-        :param record:
-        :param hist:
-        :return:
+        :param dict record: dictionary of values to validate
+        :param dict hist: existing input of history values
         """
 
         def function_executor(func, *args):
             """
 
-            :param func:
-            :param args:
-            :return:
+            :param python method func:
+            :param methods arguments args:
             """
 
             result, result_hist = func(*args)
@@ -440,9 +449,11 @@ class Dwm(object):
 
     def run(self, record, hist=None):
         """
+        By passing the input record to be cleaned, and returns the input record
+        after cleaning with history(dictionary).
 
-        :param record:
-        :param hist:
+        :param dict record: dictionary of values to validate
+        :param dict hist: existing input of history values
         :return:
         """
 
