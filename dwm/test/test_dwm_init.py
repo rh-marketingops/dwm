@@ -29,7 +29,7 @@ def test_dwm_init_mongo():
 
 def test_dwm_init_default_fields():
     """ test Dwm class initializes with default fields empty """
-    assert Dwm(name='test', mongo=DB).fields == []
+    assert Dwm(name='test', mongo=DB).fields == {}
 
 
 def test_dwm_init_default_udf():
