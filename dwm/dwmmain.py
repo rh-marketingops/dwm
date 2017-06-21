@@ -2,12 +2,9 @@
 
 from .cleaning import DataLookup
 from .cleaning import RegexLookup
-
-
 from .cleaning import DeriveDataLookup
 from .cleaning import DeriveDataCopyValue
 from .cleaning import DeriveDataRegex
-
 from .cleaning import IncludesLookup
 
 ##########################################################################
@@ -75,7 +72,6 @@ class Dwm(object):
         self.mongo = mongo
         self.fields = fields
         self.udfs = udfs
-
 
     def get_field_list(self):
         """
@@ -309,14 +305,14 @@ class Dwm(object):
 
             return option in derive_set_config
 
+        hist_obj = {}
+
         if hist is None:
             hist = {}
 
         for field in record:
 
             field_val_new = field_val = record[field]
-
-            #field_val_new = field_val
 
             if field in self.fields:
 
