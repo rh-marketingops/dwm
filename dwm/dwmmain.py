@@ -447,11 +447,6 @@ class Dwm(object):
 
             for cust_function in cust_function_od_obj:
 
-                # record, hist = getattr(
-                #     sys.modules[cust_function_od_obj[cust_function]['module']],
-                #     cust_function_od_obj[cust_function]['name'])(data=record,
-                #                                                  histObj=hist)
-
                 record, hist = function_executor(
                     cust_function_od_obj[cust_function],
                     record,

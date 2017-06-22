@@ -30,21 +30,6 @@ def test_udf_before_generic_validation():
     """ Ensure udf before generic validation """
     # Setup Dwm instance
 
-    # udfs_obj = {
-    #         "beforeGenericValLookup": {
-    #             "1": {"module": __name__,
-    #                   "name": "ex_udf"}
-    #         },
-    #         "beforeGenericValRegex": {},
-    #         "beforeFieldSpecificLookup": {},
-    #         "beforeFieldSpecificRegex": {},
-    #         "beforeNormLookup": {},
-    #         "beforeNormRegex": {},
-    #         "beforeNormIncludes": {},
-    #         "beforeDerive": {},
-    #         "afterAll": {}
-    # }
-
     udfs_obj = {
         "beforeGenericValLookup": {
             "1": ex_udf
