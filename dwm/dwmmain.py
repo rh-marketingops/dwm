@@ -1,5 +1,8 @@
 """ Main class for DWM """
 
+import sys
+import collections
+
 from .cleaning import DataLookup
 from .cleaning import RegexLookup
 from .cleaning import DeriveDataLookup
@@ -425,9 +428,9 @@ class Dwm(object):
 
         def function_executor(func, *args):
             """
-
-            :param python method func:
-            :param methods arguments args:
+            Execute user define function
+            :param python method func: Function obj
+            :param methods arguments args: Function arguments
             """
 
             result, result_hist = func(*args)
@@ -436,10 +439,24 @@ class Dwm(object):
 
         if udf_type in self.udfs:
 
-            cust_function_list_obj = self.udfs[udf_type]
+            cust_function_od_obj = collections.OrderedDict(
+                sorted(
+                    self.udfs[udf_type].items()
+                )
+            )
 
-            for cust_function in cust_function_list_obj:
-                record, hist = function_executor(cust_function, record, hist)
+            for cust_function in cust_function_od_obj:
+
+                # record, hist = getattr(
+                #     sys.modules[cust_function_od_obj[cust_function]['module']],
+                #     cust_function_od_obj[cust_function]['name'])(data=record,
+                #                                                  histObj=hist)
+
+                record, hist = function_executor(
+                    cust_function_od_obj[cust_function],
+                    record,
+                    hist
+                )
 
         return record, hist
 
