@@ -1,20 +1,20 @@
+"""
+    dwm package setup
+"""
+
 from __future__ import print_function
 from setuptools import setup, find_packages
-from setuptools.command.test import test as TestCommand
-import io
-import codecs
-import os
-import sys
 
-import dwm
-#
-# def readme():
-#     with open('README.md') as f:
-#         return f.read()
+__version__ = '0.0.8'
+
+def readme():
+    """ open readme for long_description """
+    with open('README.md') as fle:
+        return fle.read()
 
 setup(
     name='dwm',
-    version=dwm.__version__,
+    version=__version__,
     url='https://github.com/rh-marketingops/dwm',
     license='GNU General Public License',
     author='Jeremiah Coleman',
@@ -22,12 +22,12 @@ setup(
     install_requires=['pymongo>=3.2.2', 'tqdm>=4.8.4'],
     author_email='colemanja91@gmail.com',
     description='Best practices for marketing data quality management',
-    #long_description=readme(),
-    packages=['dwm'],
+    long_description=readme(),
+    packages=find_packages(),
     include_package_data=True,
     platforms='any',
-    test_suite = 'nose.collector',
-    classifiers = [
+    test_suite='nose.collector',
+    classifiers=[
         'Programming Language :: Python',
         'Development Status :: 4 - Beta',
         'Natural Language :: English',
@@ -38,5 +38,5 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Software Development :: Libraries :: Application Frameworks'
         ],
-    keywords = 'marketing automation data quality cleanse washing cleaning'
+    keywords='marketing automation data quality cleanse washing cleaning'
 )
