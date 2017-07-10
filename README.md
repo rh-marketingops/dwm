@@ -90,181 +90,46 @@ We've found this to be the most efficient order in which to run the above cleani
 
 Record-level audit history is a record of what changes were made to which data fields. This includes what the previous value was, what the new/replacement value was, and what rule caused the change. The record is somewhat akin to a git commit, in that it only records where changes were made, and does not keep a record of anything that remained unchanged. Although it is optional in this package, it is recommended for any automation of these processes to provide both a record for troubleshooting and transparency for the business users of the database.
 
-# Architecture
+# Useage
 
-## Data Flow
+```python
+from pymongo import MongoClient
+from dwm import DWM
 
-![alt text](/diagrams/DWM_Arch_DataFlow.png "High-level flow of using the DWM")
+# Initialize mongo connection where rules are stored
+my_mongo = MongoClient()
 
-1. Data is gathered for cleaning by the Python script utilizing the DWM package (i.e., using an API to export contact data from a Marketing Automation Platform)
-2. Import custom functions (if applicable)
-3. Connect to MongoDB using pymongo `MongoClient`
-4. Data is passed (as a list of dictionaries), along with a `configName` and MongoDB connection, to the `dwmAll` function
-5. Script takes post-processing action (i.e., using an API to import the cleaned data back into a Marketing Automation Platform)
+field_config = {
+  'field1': {
+    'lookup': ['genericLookup', 'genericRegex', 'fieldSpecificLookup',
+               'fieldSpecificRegex', 'normLookup', 'normRegex', 'normIncludes'],
+    'derive': [
+      {
+        'type': 'deriveIncludes',
+        'fieldSet': ['field2'],
+        'options': ['overwrite', 'blankIfNoMatch']
+      }
+    ]
+  }
+}
 
-## dwmAll
+# Initialize DWM instance
+dwm_instance = (
+  name='MyDWM',
+  mongo=my_mongo,
+  fields=field_config
+)
 
-This function is the highest-level wrapper for all DWM functions.
+# Create a test record to run through DWM
+test_record = {
+  'field1': 'potentiallybaddata',
+  'field2': 'potentialderivematch'
+}
 
-![alt text](/diagrams/DWM_Arch_dwmAll.png "High-level flow of using dwmAll")
+# Run through DWM and return cleaned record = history/changes
+clean_record, hist = dwm_instance.run(test_record)
 
-1. Use `configName` to retrieve config document from MongoDB
-2. Apply sorting to relevant parts of config (`derive` and `userDefinedFunctions`)
-  - Do this because you can't store a Python OrderedDict in MongoDB, and the order in which some rules are applied can be important
-3. Loop through data, passing each record to `dwmOne` along with config and MongoDB collection
-4. If configured to write history *and* return the history ID, append the `_id` to each record
-5. Return list of dictionaries with cleaned data
-
-## dwmOne
-
-This function applies wrapper functions to each data record. It follows the specification above, in _Business Logic: Order_.
-
-![alt text](/diagrams/DWM_Arch_dwmOne.png "High-level flow of using dwmOne")
-
-1. Create a history collector `{}`
-2. Run `userDefinedFunctions=beforeGenericValidation`
-3. Run `lookupAll` with `lookupType='genericLookup'`
-4. Run `userDefinedFunctions=beforeGenericRegex`
-5. Run `lookupAll` with `lookupType='genericRegex'`
-6. Run `userDefinedFunctions=beforeFieldSpecificValidation`
-7. Run `lookupAll` with `lookupType='fieldSpecificLookup'`
-8. Run `userDefinedFunctions=beforeFieldSpecificRegex`
-9. Run `lookupAll` with `lookupType='fieldSpecificRegex'`
-10. Run `userDefinedFunctions=beforeNormalization`
-11. Run `lookupAll` with `lookupType='normLookup'`
-12. Run `userDefinedFunctions=beforeNormalizationRegex`
-13. Run `lookupAll` with `lookupType='normRegex'`
-14. Run `userDefinedFunctions=beforeNormalizationIncludes`
-15. Run `lookupAll` with `lookupType=normIncludes`
-16. Run `userDefinedFunctions=beforeDeriveData`
-17. Run `DeriveDataLookupAll`
-18. Run `userDefinedFunctions=afterProcessing`
-19. If `writeContactHistory==True`, write the history collector to the `contactHistory` collection in MongoDB
-20. Return data record and history ID (if applicable, `None` otherwise)
-
-## Wrapper functions
-
-These functions are responsible for applying all the specified cleaning functions to every field in the input record, based on the given config.
-
-### `lookupAll`
-
-This function applies a single cleaning function+type to every field in the input record, based on the given config. Also, since this function calls lookup functions that are based on the current value of a field, for performance it skips fields that have blank values.
-
-1. Loop through each field in the record
-2. If the field value is not blank *and* the field name is in the config, then proceed
-3. If the config value for the field contains the current `lookupType`, then pass to the appropriate function:
-  - `'genericLookup', 'fieldSpecificLookup', 'normLookup'`: `DataLookup`
-  - `'genericRegex', 'fieldSpecificRegex', 'normRegex'`: `RegexLookup`
-  - `normIncludes`: `IncludesLookup` with `lookupType='normIncludes'`
-4. Functions in _3_ return the new field value (potentially same as the original value, if no match was found) and an updated history object
-5. Set the field value in the data record to return value from _4_
-6. Return data record and history object
-
-### `DeriveDataLookupAll`
-
-This function applies all defined derive rules to every field in the input record, based on the given config.
-
-1. Loop through each field in the record
-2. If the field name is in the config, then proceed
-3. Loop through the derive configs for the current field (this is an OrderedDict which was sorted by dwmAll)
-4. If all the specified fields for a derive rule are present in the record, then proceed
-5. Apply the following based on the type specified in the config:
-  - `DeriveDataLookup`
-  - `DeriveDataCopyValue`
-  - `DeriveDataRegex`
-  - `IncludesLookup` with `lookupType='deriveIncludes'`
-6. Functions in _5_ return the new field value (potentially same as the original value, if no match was found) and an updated history object
-7. If the field value has changed, then update the field in the record and stop the loop
-8. Return data record and history object
-
-## Cleaning functions
-
-These functions are responsible for determining what the new value of a field should be, in most cases based on a lookup against MongoDB.
-
-### `DataLookup`
-
-Lookup the replacement value given a single input value from the same field.
-
-### `IncludesLookup`
-
-Query all applicable "includes" definitions (by field name) from MongoDB and look for a match.
-
-### `RegexLookup`
-
-Query all applicable regex (generic, or match on field name) from MongoDB and look for a match.
-
-### `DeriveDataLookup`
-
-Lookup replacement value given one or more input values from different fields.
-
-### `DeriveDataCopyValue`
-
-Copy a value from one field to another.
-
-### `DeriveDataRegex`
-
-Query all applicable regex (match on field name) from MongoDB and look for a match.
-
-## Helpers
-
-These are misc functions that are used throughout but don't fit in one general category.
-
-### `_CollectHistory_`
-
-Creates a basic dictionary of what change, if any, was applied to a record field.
-
-### `_CollectHistoryAgg_`
-
-Updates an existing history dictionary with the result of `_CollectHistory_`, if applicable.
-
-### `_DataClean_`
-
-Applies cleaning rules to lookup values before querying MongoDB, to ensure small differences don't screw it up.
-
-- Convert to uppercase
-- Strip leading and trailing whitespace
-- Remove line breaks, carriage returns, and non-visible characters
-
-### `_RunUserDefinedFunctions_`
-
-Passes data and history into functions defined by configuration.
-
-# Setup Process
-
-## Hosting
-
- - Local machine: it's entirely possible to run this complete process on your individual laptop/desktop, although may not be recommended due to backup and business continuity risks.
- - PaaS: Platform-as-a-Service is the recommended route to get up-and-running quickly. This way, developers don't have to worry about the engineering concerns of making sure their services remain running. We're using Red Hat's Openshift, but there are other options (such as Heroku) available on AWS. Be warned that the PaaS may have to be internally hosted at your workplace to ensure connectivity to internal databases. You should also be aware of potential security concerns around PII, especially if you're storing record history, and may need to work with your IT team to ensure secure storage/transit for such data.
-
-## Python
-
-Python 2.7 is the recommended minimum, although a 3.x release is advisable if unicode support is required. This package is tested to work with Python 2.7, 3.3, 3.4, and 3.5.
-
-## MongoDB
-
-MongoDB is required for persistent storage of runtime configurations, lookup tables, regex rules, and derivation rules. It also serves as an (optional, but recommended) home for record-level audit history. Also, since operational data will be stored here, you should have some sort of routine backup process in place. Exact description of the schema is included in the DataDictionary.
-
-This package was designed with MongoDB 3.2.x, but due to multi-key indexing requirements at least 2.5.5 is advised.
-
-## Configuration
-
-Runtime configuration for DWM is stored in a JSON document within MongoDB. It is retrieved by the unique "configName" field when the `dwmAll` function is called, and dictates which fields are cleaned, what types of lookups, regexes and derivation rules are called, and which user-defined functions should be called.
-Multiple configurations can be stored and called for different purposes. For example, a configuration for use directly against a database may include rules for 20 fields, while one running within an API may only run against five fields.
-
-Full example is given in the DataDictionary.md file.
-
-__Required Fields:__
-
- - `configName`: Must be a unique string
- - `fields`: Includes a document for each field to be cleaned; each should include the following:
-  * `lookup`: an array of which validation rules should be applied: `genericLookup, genericRegex, fieldSpecificLookup, fieldSpecificRegex, normLookup, normRegex, normIncludes`
-  * `derive`: a document of documents, each named in order of execution (1,2,...) and containing the following sub-fields:
-    * `type`: string indicating what type of derivation should be applied: `deriveValue, copyValue, deriveRegex`, `deriveIncludes`
-    * `fieldSet`: array of field names to be used in derive process. Must contain only one value if `type==copyValue OR deriveRegex OR deriveIncludes`.
-    * `overwrite`: boolean indicating whether to write over an existing value
-    * `blankIfNoMatch`: overwrite existing value with a blank value if no match found
- - `userDefinedFunctions`: document of the following sub-documents with ordered numeric names, indicating when user-defined functions should be run: `beforeGenericValidation, beforeGenericRegex, beforeFieldSpecificValidation, beforeFieldSpecificRegex, beforeNormalization, beforeNormalizationRegex, beforeNormalizationIncludes, beforeDeriveData, afterProcessing`
- - `history`: settings dictating if/how to write contact history
+```
 
 ## Lookups, Derivation, and Regex rules
 
@@ -274,7 +139,7 @@ A complete schema for these items is in the DataDictionary.md file. Also include
 
 User-Defined functions must take exactly two inputs, `data` (a single dictionary of data to which transformations are applied) and `histObj` (a dictionary object used to record field-level changes), and output the same two (with changes applied to `data` and any relevant updates made to `histObj`). Helper functions for recording history are included in the dwm package.
 
-UDFs should ideally be defined in a file separate from the script calling the DWM functions, then loaded in independently. If using UDFs, then the `dwmAll` parameter must be set `udfNamespace=__name__`
+UDFs should ideally be defined in a file separate from the script calling the DWM functions, then loaded in independently.
 
 __Example:__
 
@@ -301,17 +166,19 @@ def myFunction(data, histObj):
 __example.py__
 
 ```python
-from dwm import dwmAll
+from dwm import Dwm
 from udf import myFunction
 
-### get data to run through, define mongoDb collections and connection, etc
+# Set up UDF config to pass to Dwm
+udf_config = {
+  'beforeDerive': [myFunction]
+}
 
-dataOut = dwm.dwmAll(data=data, mongoDb=db, mongoConfig=mongoConfig, configName='myConfig', returnHistoryId=False, udfNamespace=__name__)
+# Initialize DWM instance
+dwm_instance = (
+  name='MyDWM',
+  mongo=my_mongo,
+  udfs=udf_config
+)
 
 ```
-
-# Application
-
-`dwm` is just a Python package which applies business logic. It still requires scripting and configuration to actually apply it to data. Here is our implementation using Openshift:
-
-https://github.com/rh-marketingops/dwmops
