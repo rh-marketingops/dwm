@@ -1,3 +1,6 @@
+## 2017-10-05 v1.0.0
+- Overhaul to new class-based implementation; we have been running it stable in PROD for about 3 months now. See docs for details. *Breaking Changes*
+
 ## 2017-01-16 v0.0.8
 - Feature Change - Field `derivations` check. Add an additional boolean flag indicater if the function found a match.      
 - Change hardcoded dict config values for `derive` to a list.
