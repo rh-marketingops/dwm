@@ -7,10 +7,15 @@ from setuptools import setup, find_packages
 
 __version__ = '1.0.0'
 
+
 def readme():
     """ open readme for long_description """
-    with open('README.md') as fle:
-        return fle.read()
+
+    try:
+        with open('README.md') as fle:
+            return fle.read()
+    except IOError:
+        return ''
 
 setup(
     name='dwm',
