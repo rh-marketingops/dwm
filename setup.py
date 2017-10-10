@@ -5,7 +5,7 @@
 from __future__ import print_function
 from setuptools import setup, find_packages
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 # def readme():
 #     """ open readme for long_description """

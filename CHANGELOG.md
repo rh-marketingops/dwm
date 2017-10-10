@@ -1,3 +1,6 @@
+## 2017-10-10 v1.0.1
+- Fix bug preventing install in some systems
+
 ## 2017-10-05 v1.0.0
 - Overhaul to new class-based implementation; we have been running it stable in PROD for about 3 months now. See docs for details. *Breaking Changes*
 
