@@ -1,4 +1,4 @@
-## 2017-10-10 v1.0.1
+## 2017-10-10 v1.0.2
 - Fix bug preventing install in some systems
 
 ## 2017-10-05 v1.0.0
