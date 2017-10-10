@@ -7,10 +7,14 @@ from setuptools import setup, find_packages
 
 __version__ = '1.0.1'
 
-# def readme():
-#     """ open readme for long_description """
-#     with open('README.md') as fle:
-#         return fle.read()
+def readme():
+    """ open readme for long_description """
+
+    try:
+        with open('README.md') as fle:
+            return fle.read()
+    except IOError:
+        return ''
 
 setup(
     name='dwm',
@@ -22,7 +26,7 @@ setup(
     install_requires=['pymongo>=3.2.2', 'tqdm>=4.8.4'],
     author_email='colemanja91@gmail.com',
     description='Best practices for marketing data quality management',
-    #long_description=readme(),
+    long_description=readme(),
     packages=find_packages(),
     include_package_data=True,
     platforms='any',
