@@ -35,7 +35,7 @@ UDF_POSITIONS = ['beforeGenericValLookup', 'beforeGenericValRegex',
 class Dwm(object):
     """ class for DWM config """
 
-    def __init__(self, name, mongo, fields=None, udfs=None, field_order=None):
+    def __init__(self, name, mongo, fields=None, udfs=None):
         """
         Set configuration for DWM runtime
 
@@ -46,14 +46,7 @@ class Dwm(object):
         """
 
         if fields is None:
-            self.fields = {}
-        elif field_order is not None:
-            ordered_fields = collections.OrderedDict()
-            for order in field_order:
-                ordered_fields.update({order: fields[order]})
-            self.fields = ordered_fields
-        else:
-            self.fields = fields
+            fields = {}
 
         if udfs is None:
             udfs = {}
@@ -80,7 +73,7 @@ class Dwm(object):
 
         self.name = name
         self.mongo = mongo
-        # self.fields = fields
+        self.fields = fields
         self.udfs = udfs
 
     def get_field_list(self):
