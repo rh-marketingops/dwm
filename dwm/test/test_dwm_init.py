@@ -1,5 +1,5 @@
 """ test_dwm_init """
-
+import collections
 import mongomock
 from nose.tools import raises
 
@@ -56,6 +56,50 @@ def test_dwm_init_fields():
     }
 
     assert Dwm(name='test', mongo=DB, fields=fields).fields == fields
+
+
+def test_dwm_init_order_fields():
+    """ test Dwm class initializes with defined field set in specified order"""
+    field_order = ['field4', 'field3', 'field2', 'field1']
+    fields = {
+        'field1': {
+            'lookup': ['genericLookup', 'genericRegex', 'fieldSpecificRegex',
+                       'fieldSpecificLookup', 'normLookup', 'normIncludes'],
+            'derive': [
+                {
+                    'type': 'deriveIncludes',
+                    'fieldSet': ['field2'],
+                    'options': []
+                }
+            ]
+        },
+        'field3': {
+            'lookup': ['genericLookup', 'genericRegex', 'fieldSpecificRegex',
+                       'fieldSpecificLookup', 'normLookup', 'normIncludes'],
+            'derive': [
+                {
+                    'type': 'deriveIncludes',
+                    'fieldSet': ['field2'],
+                    'options': []
+                }
+            ]
+        },
+        'field4': {
+            'lookup': ['genericLookup', 'genericRegex', 'fieldSpecificRegex',
+                       'fieldSpecificLookup', 'normLookup', 'normIncludes'],
+            'derive': []
+        },
+        'field2': {
+            'lookup': ['genericLookup', 'genericRegex', 'fieldSpecificRegex',
+                       'fieldSpecificLookup', 'normLookup', 'normIncludes'],
+            'derive': []
+        }
+    }
+    ordered_fields = collections.OrderedDict()
+    for x in field_order:
+        ordered_fields.update({x: fields[x]})
+
+    assert Dwm(name='test', mongo=DB, fields=fields, field_order=field_order).fields == ordered_fields
 
 
 @raises(ValueError)
