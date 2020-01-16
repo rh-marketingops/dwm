@@ -90,7 +90,7 @@ We've found this to be the most efficient order in which to run the above cleani
 
 Record-level audit history is a record of what changes were made to which data fields. This includes what the previous value was, what the new/replacement value was, and what rule caused the change. The record is somewhat akin to a git commit, in that it only records where changes were made, and does not keep a record of anything that remained unchanged. Although it is optional in this package, it is recommended for any automation of these processes to provide both a record for troubleshooting and transparency for the business users of the database.
 
-# Useage
+# Usage
 
 ```python
 from pymongo import MongoClient
